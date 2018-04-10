@@ -1,0 +1,13 @@
+var user = {
+   _id: USER_ID
+   name: USER_NAME, 
+   email: USER_EMAIL,
+   password: USER_PASSWORD,
+   phone: USER_PHONE,
+   skills: [SKILL1, SKILL2, SKILL3],
+   about: USER_ABOUT,
+   profile: USER_PROFILE_PATH,
+   registration: USER_REGISTRATION_DATE,
+   account_balance: USER_ACCOUNT_BALANCE	
+
+}
