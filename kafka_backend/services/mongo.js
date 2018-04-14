@@ -1,12 +1,12 @@
 
 //DB Config
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://root:root@ds221609.mlab.com:21609/freelancer', {poolSize: 10})
+mongoose.connect('mongodb://root:root@ds243059.mlab.com:43059/fandango', {poolSize: 10})
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 db.once('connected', function () {
-  console.log(db)
+  //console.log(db)
   return console.log('Successfully connected to  MongoDB Database');
 
 });
