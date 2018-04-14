@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom';
 import LogIn from './Components/LogIn';
 import SignUp from './Components/SignUp';
 import Index from './Components/Index';
+import AdminLogin from './Components/AdminLogin';
+import AdminDashboard from './Components/AdminDashboard';
+
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import './assets/css/bootstrap.min.css'
 import './assets/css/bootstrap-responsive.min.css'
@@ -17,6 +20,8 @@ ReactDOM.render(
   <Provider store={store}>
     <Router>
       <div>
+      <Route exact path="/adminDashboard" component={AdminDashboard} />
+      <Route exact path="/adminlogin" component={AdminLogin} />
         <Route exact path="/" component={Index} />
         <Route exact path="/login" component={LogIn} />
         <Route exact path="/signup" component={SignUp} />
