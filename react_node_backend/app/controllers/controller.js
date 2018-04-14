@@ -7,6 +7,138 @@ var passport = require('../config/passport.js');
 var kafka = require('../kafka/client');
 
 
+//Multiplex Operations
+exports.findAllMultiplex = function (req, res) {
+    console.log("findAllMultiplex_request : node backend");
+    let data = { data: req.body, request_code:1 };
+
+    console.log(data);
+    kafka.make_request('multiplex_request', data, function (err, results) {
+        console.log('Kafka Response:');
+        console.log(results);
+        if (err) {
+            console.log('Controller : Error Occurred : ');
+            console.log(err);
+            res.json(results);
+        }
+        else {
+            res.json(results);
+            return;
+        }
+    });
+}
+
+exports.createNewMultiplex = function (req, res) {
+    // Post Project API
+    console.log('createNewMultiplex API Called');
+    let form = new multiparty.Form();
+    form.parse(req, (err, fields, files) => {
+        var resultObject = {
+            successMsg: '',
+            errorMsg: 'Error adding Multiplex',
+            data: {}
+        }
+        if(err){
+            console.log(err);
+            resultObject.errorMsg = 'Error adding Multiplex';
+            res.json(resultObject);
+            return;
+
+        }else{
+            let { path: tempPath, originalFilename } = files.file[0];
+            let copyToPath = "./src/images/_" + Date.now() + '_' + originalFilename;
+            let dbPath = '_' + Date.now() + '_' + originalFilename;
+            try {
+                fs.readFile(tempPath, (err, data) => {
+                    if (err) throw err;
+                    fs.writeFile(copyToPath, data, (err) => {
+                        if (err) throw err;
+                        // delete temp image
+                        fs.unlink(tempPath, () => {
+                        });
+                    });
+                });
+    
+                console.log("createNewMultiplex_request : node backend");
+                let data = fields;
+                data.dbPath = dbPath;
+                data.request_code=2;
+                console.log(data);
+                kafka.make_request('multiplex_request', data, function (err, results) {
+                    responseUtil(err, results, res);
+                });
+            } catch (e) {
+                console.log('Catch');
+                console.log(e);
+                resultObject.errorMsg = 'Error Uploading Image';
+                res.json(resultObject);
+                return;
+            }
+      
+        }
+
+    })}
+    exports.updateMultiplex = function (req, res) {
+        // Post Project API
+        console.log('update Multiplex API Called');
+        let form = new multiparty.Form();
+        form.parse(req, (err, fields, files) => {
+            var resultObject = {
+                successMsg: '',
+                errorMsg: 'Error Posting Project',
+                data: {}
+            }
+            if(err){
+                resultObject.errorMsg = 'Error updating multiplex';
+                res.json(resultObject);
+                return;
+            }else{
+                try {
+                    let { path: tempPath, originalFilename } = files.file[0];
+                    let copyToPath = "./src/images/_" + Date.now() + '_' + originalFilename;
+                    let dbPath = '_' + Date.now() + '_' + originalFilename;    
+                    fs.readFile(tempPath, (err, data) => {
+                        if (err) throw err;
+                        fs.writeFile(copyToPath, data, (err) => {
+                            if (err) throw err;
+                            // delete temp image
+                            fs.unlink(tempPath, () => {
+                            });
+                        });
+                    });
+        
+                    console.log("createNewMultiplex_request : node backend");
+                    let data = fields;
+                    data.dbPath = dbPath;
+                    data.request_code=3;
+                    console.log(data);
+                    kafka.make_request('multiplex_request', data, function (err, results) {
+                        responseUtil(err, results, res);
+                    });
+                } catch (e) {
+                    console.log('Catch');
+                    console.log(e);
+                    resultObject.errorMsg = 'Error updating multiplex';
+                    res.json(resultObject);
+                    return;
+                }
+            }
+            
+        })}
+    
+    function responseUtil(err, results, res) {
+        console.log('Kafka Response:');
+        console.log(results);
+        if (err) {
+            console.log('Controller : Error Occurred : ');
+            console.log(err);
+            res.json(results);
+        }
+        else {
+            res.json(results);
+            return;
+        }
+    }
 //New method with passport
 exports.login = function (req, res, next) {
     passport.authenticate('local-login', function (err, user, info) {

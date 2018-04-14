@@ -13,6 +13,16 @@ module.exports = function (app) {
 
   //Get profile
   app.post('/getProfile', api_controller.getprofile);
+
+  //Find All Multiplex
+  app.get('/findAllMultiplex', api_controller.findAllMultiplex);
+
+  //Create Multiplx  
+  app.post('/createNewMultiplex', api_controller.createNewMultiplex);
+
+  //update Multiplx  
+  app.post('/updateMultiplex', api_controller.updateMultiplex);
+
 }
 
 
