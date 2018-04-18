@@ -47,3 +47,432 @@ body {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
+
+.heading-style-1
+{
+  font-size: 22px !important;
+}
+
+.movie-header{
+  font-size: 14px !important;
+}
+
+.arrows{
+  display: none !important;
+}
+
+#page{
+  margin-top: -20px;
+}
+
+#global-footer {
+  margin-top: -20px;
+}
+
+.media-footer{
+  display: block !important;
+}
+
+.form-header{
+  background-color: black !important;
+}
+
+.form-btn {
+  font-size: 20px;
+  color: white;
+  margin-left: 40px;
+}
+
+.width-25 {
+  color: black;
+ 
+}
+
+.header-logo{
+  height: 68px !important;
+}
+
+.page.registration {
+  padding: 0;
+}
+
+.registration label, .registration small {
+  color: #FFF;
+}
+
+.page.registration {
+  padding: 80px 0 136px;
+}
+
+
+.intercept-container {
+  color: #FFF;
+  border: none;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+  .intercept-container h3 {
+      color: #FFF;
+      text-align: center;
+  }
+
+  .intercept-container.columns {
+      width: 48%;
+  }
+
+  .intercept-container .content-title {
+      color: #FFF;
+      text-align: center;
+  }
+
+  .intercept-container .vip-perks div {
+      margin-bottom: 5px !important;
+  }
+
+  .intercept-container header,
+  .intercept-container .theater-info {
+      padding: 20px 30px 20px 30px;
+      text-align: center;
+  }
+
+  .intercept-container .movie-info {
+      padding: 20px;
+  }
+
+  .intercept-container header {
+      border-bottom: 1px solid #929292;
+  }
+
+      .intercept-container header strong {
+          color: #FFF;
+      }
+
+.site-wrap.signin {
+    min-height: 960px;
+}
+
+form {
+  margin: 0;
+}
+
+
+element.style {
+}
+*, *:before, *:after {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+user agent stylesheet
+div {
+    display: block;
+}
+.signin {
+    /* border-radius: 4px; */
+    /* color: #fff; */
+    /* margin: 0 0 19px 0; */
+}
+body {
+    color: #4c4c4c;
+    font-family: "proxima-nova", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+@media only screen and (min-width: 64.063em){
+  .column.large-centered, .columns.large-centered {
+    margin-left: auto;
+    margin-right: auto;
+    float: none !important;
+}
+}
+
+
+@media only screen and (min-width: 40.063em){
+  .column.medium-centered, .columns.medium-centered {
+    margin-left: auto;
+    margin-right: auto;
+    float: none !important;
+  }
+}
+
+@media only screen and (min-width: 64.063em){
+  .large-8 {
+    width: 66.66667%;
+  }
+}
+
+form .row .row {
+  margin: 0 -0.5rem;
+}
+
+.row .row {
+  width: auto;
+  /* margin-left: -0.714em; */
+  /* margin-right: -0.714em; */
+  margin-top: 0;
+  margin-bottom: 0;
+  max-width: none;
+}
+
+.intercept-container {
+  color: #FFF;
+  border: none;
+  padding: 0 !important;
+}
+
+.intercept-container.columns {
+  width: 48%;
+}
+
+.panel {
+  background: none repeat scroll 0 0 rgba(34, 34, 34, 0.8);
+  border: 1px solid #929292;
+  overflow: visible;
+}
+
+.panel {
+  background: none repeat scroll 0 0 rgba(34, 34, 34, 0.8);
+  border: 1px solid #929292;
+  overflow: visible;
+}
+
+@media only screen and (min-width: 64.063em){
+.large-6 {
+    width: 50%;
+  }
+}
+
+@media only screen and (min-width: 40.063em){
+  .medium-6 {
+    width: 50%;
+  }
+}
+
+.action-details {
+  padding: 15px !important;
+}
+
+.column, .columns {
+  float: left;
+}
+
+.vip-perks {
+  background: transparent;
+}
+
+.vip-perks h4 {
+  color: #FFF;
+  text-align: center;
+  padding: 0 15px 20px 0;
+  text-transform: none;
+}
+
+h4 {
+  font-family: "Times New Roman", Times, Baskerville, Georgia, serif;
+  font-size: 18px;
+  font-style: italic;
+  font-weight: normal;
+  line-height: 22px;
+  text-transform: capitalize;
+}
+
+.intercept-container .vip-perks div {
+  margin-bottom: 5px !important;
+}
+
+.worry-free-tickets.icon, .insider-perks.icon, .theater-rewards.icon, .my-fandango.icon {
+  margin: 0;
+}
+
+.worry-free-tickets.icon, .insider-perks.icon, .theater-rewards.icon, .my-fandango.icon {
+  line-height: 45px;
+  padding: 5px 0;
+}
+
+.light {
+  color: #fff;
+}
+
+@media only screen and (min-width: 64.063em){
+  [class*="column"] + [class*="column"]:last-child {
+    float: right;
+}
+}
+
+@media only screen and (min-width: 40.063em){
+  [class*="column"] + [class*="column"]:last-child {
+    float: right;
+  }
+}
+
+
+[class*="column"] + [class*="column"]:last-child {
+    float: right;
+}
+
+.panel.sign-up-form {
+  padding: 0 !important;
+}
+
+.sub-panel {
+  padding: 25px 25px 0;
+}
+
+.signin .join-header {
+  text-align: center;
+}
+
+.join-header {
+  color: #fff;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 3px;
+}
+
+@media only screen and (min-width: 0em){
+  .page-header-emphasis {
+    color: #FF7900;
+}
+}
+
+.registration label, .registration small {
+  color: #FFF;
+  font-size: 14px;
+  margin-top: 20px; 
+}
+
+label {
+  font-size: 0.875rem;
+  color: #4d4d4d;
+  cursor: pointer;
+  display: block;
+  font-weight: normal;
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
+.signin #PasswordBox {
+  /* margin-bottom: 15px; */
+}
+
+.signin #ForgotPasswordLink {
+  float: right;
+  margin-top: 4%;
+}
+
+.signin .btn-cta.full-width {
+  margin-top: 15px;
+  width: 100%;
+}
+.panel .btn-cta {
+  margin: 0;
+  margin-bottom: 25px;
+  padding: 18px;
+  font-size: 18px;
+}
+
+.btn-cta {
+  border: none;
+  box-shadow: none;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "proxima-nova", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1;
+  margin: 0 0 1em 0;
+  outline: none;
+  padding: 15px 15px;
+  position: relative;
+  text-align: center;
+  text-transform: uppercase;
+  z-index:0;
+}
+
+.divider {
+  position: relative;
+  overflow: hidden;
+  height: 62px;
+}
+
+.social-login-button {
+  position: relative;
+  font-style: normal;
+  height: 40px;
+  padding: 12px;
+  background-color: rgba(223, 223, 223, 0.2);
+  border-radius: 4px;
+  color: #FFF;
+  display: block;
+  margin: 0 0 13px 0;
+  padding-left: 44px;
+  font-weight: normal;
+  cursor: pointer;
+}
+
+.social-signin {
+  padding-bottom: 15px !important;
+  /* font-style: italic; */
+  text-align: center;
+}
+
+.panel.sign-up-form small {
+  font-size: 12px;
+  color: #929292;
+}
+
+.main-panel{
+  background: none repeat scroll 0 0 rgba(34, 34, 34, 0.8) !important;
+}
+
+.vipsignin{
+  background-color: black;
+}
+
+.panel.main-panel.sign-up-form.large-6.medium-6.small-12.columns {
+  margin-left: 2%;
+}
+
+.panel.main-panel.intercept-container.large-6.medium-6.small-12.columns {
+  margin-top: 5px;
+  height: 100%;
+}
+
+.left-text {
+  font-size: 18px;
+}
+
+.vip-perks.vip-perks--authentication {
+  margin-left: 50px;
+}
+
+.or-img{
+  margin-left: 4px;
+}
+
+.social-login-facebook::before {
+  content: "";
+  position: absolute;
+  background: url("../static_images/facebook.png") no-repeat scroll center center;
+  background-size: contain;
+  height: 40px;
+  width: 40px;
+  left: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.social-login-gplus::before {
+  content: "";
+  position: absolute;
+  background: url("../static_images/google.png") no-repeat scroll center center;
+  height: 40px;
+  width: 40px;
+  left: 0;
+  top: 0;
+  bottom: 0;
+}

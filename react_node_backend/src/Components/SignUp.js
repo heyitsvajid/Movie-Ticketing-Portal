@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { FormErrors } from './FormErrors';
 import { Link } from 'react-router-dom';
 import '../assets/css/custom.css'
 import axios from 'axios';
@@ -130,7 +129,6 @@ class SignUp extends Component {
                     <h1 className="h3 mb-3 font-weight-normal">Please Sign Up</h1>
                     <div class='mt-2 mb-2'>
                         <div className="panel panel-default">
-                            <FormErrors formErrors={this.state.formErrors} />
                         </div>
                     </div>
                     <label className="sr-only">Name</label>

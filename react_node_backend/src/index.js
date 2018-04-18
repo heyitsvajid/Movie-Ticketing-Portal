@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import LogIn from './Components/LogIn';
 import SignUp from './Components/SignUp';
+import Layout from './Components/Layout';
 import Index from './Components/Index';
 import AdminLogin from './Components/AdminLogin';
 import AdminDashboard from './Components/AdminDashboard';
