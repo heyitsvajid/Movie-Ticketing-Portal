@@ -35,7 +35,7 @@ class SignIn extends Component {
                                 <div class="panel-group row">
                                     <div class="panel main-panel intercept-container large-6 medium-6 small-12 columns">
                                         <div class="action-details small-12 columns">
-                                            <img src={require('../static_images/signup.png')} alt="text" />
+                                            <img src={require('../assets/static_images/signup.png')} alt="text" />
                                         </div>
                                     </div>
                                     <div class="panel main-panel sign-up-form large-6 medium-6 small-12 columns">
@@ -56,7 +56,7 @@ class SignIn extends Component {
                                             
                                         </div>
                                         <div class="divider">
-                                            <img class = "or-img" src={require('../static_images/or.png')} alt="text" />
+                                            <img class = "or-img" src={require('../assets/static_images/or.png')} alt="text" />
                                         </div>
                                         <div class="large-8 medium-12 columns social-signin large-centered">
                                             <div id="googlePlusSignIn" class="social-login-button social-login-gplus">Sign in with Google+</div>

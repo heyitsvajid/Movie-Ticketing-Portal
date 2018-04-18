@@ -19,16 +19,16 @@ class Layout extends Component {
           <div id="myCarousel" class="carousel slide" data-ride="carousel">
             <div class="carousel-inner">
               <div class="item active">
-                <img src={require('../static_images/img1.png')} alt="Los Angeles"  />
+                <img src={require('../assets/static_images/img1.png')} alt="Los Angeles"  />
               </div>
               <div class="item">
-                <img src={require('../static_images/img2.png')} alt="Chicago"  />
+                <img src={require('../assets/static_images/img1.png')} alt="Chicago"  />
               </div>
               <div class="item">
-                <img src={require('../static_images/img4.png')} alt="New york" />
+                <img src={require('../assets/static_images/img1.png')} alt="New york" />
               </div>
               <div class="item">
-                <img src={require('../static_images/img3.png')} alt="New york" />
+                <img src={require('../assets/static_images/img1.png')} alt="New york" />
               </div>
             </div>
             <a class="left carousel-control" href="#myCarousel" data-slide="prev">
