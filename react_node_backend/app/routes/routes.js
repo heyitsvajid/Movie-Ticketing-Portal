@@ -23,6 +23,18 @@ module.exports = function (app) {
   //update Multiplx  
   app.post('/updateMultiplex', api_controller.updateMultiplex);
 
+  //Find All Movie
+  app.get('/findAllMovie', api_controller.findAllMovie);
+
+  //Create Movie  
+  app.post('/createNewMovie', api_controller.createNewMovie);
+
+  //update Movie  
+  app.post('/updateMovie', api_controller.updateMovie);
+
+  //add Movie Character  
+  app.post('/addMovieCharacter', api_controller.addMovieCharacter);
+
 }
 
 

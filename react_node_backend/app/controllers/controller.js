@@ -10,7 +10,7 @@ var kafka = require('../kafka/client');
 //Multiplex Operations
 exports.findAllMultiplex = function (req, res) {
     console.log("findAllMultiplex_request : node backend");
-    let data = { data: req.body, request_code:1 };
+    let data = { data: req.body, request_code: 1 };
 
     console.log(data);
     kafka.make_request('multiplex_request', data, function (err, results) {
@@ -38,13 +38,13 @@ exports.createNewMultiplex = function (req, res) {
             errorMsg: 'Error adding Multiplex',
             data: {}
         }
-        if(err){
+        if (err) {
             console.log(err);
             resultObject.errorMsg = 'Error adding Multiplex';
             res.json(resultObject);
             return;
 
-        }else{
+        } else {
             let { path: tempPath, originalFilename } = files.file[0];
             let copyToPath = "./src/images/_" + Date.now() + '_' + originalFilename;
             let dbPath = '_' + Date.now() + '_' + originalFilename;
@@ -58,11 +58,11 @@ exports.createNewMultiplex = function (req, res) {
                         });
                     });
                 });
-    
+
                 console.log("createNewMultiplex_request : node backend");
                 let data = fields;
                 data.dbPath = dbPath;
-                data.request_code=2;
+                data.request_code = 2;
                 console.log(data);
                 kafka.make_request('multiplex_request', data, function (err, results) {
                     responseUtil(err, results, res);
@@ -74,59 +74,68 @@ exports.createNewMultiplex = function (req, res) {
                 res.json(resultObject);
                 return;
             }
-      
+
         }
 
-    })}
-    exports.updateMultiplex = function (req, res) {
-        // Post Project API
-        console.log('update Multiplex API Called');
-        let form = new multiparty.Form();
-        form.parse(req, (err, fields, files) => {
-            var resultObject = {
-                successMsg: '',
-                errorMsg: 'Error Posting Project',
-                data: {}
-            }
-            if(err){
+    })
+}
+exports.updateMultiplex = function (req, res) {
+    // Post Project API
+    console.log('update Multiplex API Called');
+    let form = new multiparty.Form();
+    form.parse(req, (err, fields, files) => {
+        var resultObject = {
+            successMsg: '',
+            errorMsg: 'Error Posting Project',
+            data: {}
+        }
+        if (err) {
+            resultObject.errorMsg = 'Error updating multiplex';
+            res.json(resultObject);
+            return;
+        } else {
+            try {
+                let { path: tempPath, originalFilename } = files.file[0];
+                let copyToPath = "./src/images/_" + Date.now() + '_' + originalFilename;
+                let dbPath = '_' + Date.now() + '_' + originalFilename;
+                fs.readFile(tempPath, (err, data) => {
+                    if (err) throw err;
+                    fs.writeFile(copyToPath, data, (err) => {
+                        if (err) throw err;
+                        // delete temp image
+                        fs.unlink(tempPath, () => {
+                        });
+                    });
+                });
+
+                console.log("createNewMultiplex_request : node backend");
+                let data = fields;
+                data.dbPath = dbPath;
+                data.request_code = 3;
+                console.log(data);
+                kafka.make_request('multiplex_request', data, function (err, results) {
+                    responseUtil(err, results, res);
+                });
+            } catch (e) {
+                console.log('Catch');
+                console.log(e);
                 resultObject.errorMsg = 'Error updating multiplex';
                 res.json(resultObject);
                 return;
-            }else{
-                try {
-                    let { path: tempPath, originalFilename } = files.file[0];
-                    let copyToPath = "./src/images/_" + Date.now() + '_' + originalFilename;
-                    let dbPath = '_' + Date.now() + '_' + originalFilename;    
-                    fs.readFile(tempPath, (err, data) => {
-                        if (err) throw err;
-                        fs.writeFile(copyToPath, data, (err) => {
-                            if (err) throw err;
-                            // delete temp image
-                            fs.unlink(tempPath, () => {
-                            });
-                        });
-                    });
-        
-                    console.log("createNewMultiplex_request : node backend");
-                    let data = fields;
-                    data.dbPath = dbPath;
-                    data.request_code=3;
-                    console.log(data);
-                    kafka.make_request('multiplex_request', data, function (err, results) {
-                        responseUtil(err, results, res);
-                    });
-                } catch (e) {
-                    console.log('Catch');
-                    console.log(e);
-                    resultObject.errorMsg = 'Error updating multiplex';
-                    res.json(resultObject);
-                    return;
-                }
             }
-            
-        })}
-    
-    function responseUtil(err, results, res) {
+        }
+
+    })
+}
+
+
+//Movie Operations
+exports.findAllMovie = function (req, res) {
+    console.log("findAllMovie_request : node backend");
+    let data = { data: req.body, request_code: 1 };
+
+    console.log(data);
+    kafka.make_request('movie_request', data, function (err, results) {
         console.log('Kafka Response:');
         console.log(results);
         if (err) {
@@ -138,7 +147,170 @@ exports.createNewMultiplex = function (req, res) {
             res.json(results);
             return;
         }
+    });
+}
+
+exports.createNewMovie = function (req, res) {
+    // Post Project API
+    console.log('createNewMovie API Called');
+    let form = new multiparty.Form();
+    form.parse(req, (err, fields, files) => {
+        var resultObject = {
+            successMsg: '',
+            errorMsg: 'Error adding Movie',
+            data: {}
+        }
+        if (err) {
+            console.log(err);
+            resultObject.errorMsg = 'Error adding Movie';
+            res.json(resultObject);
+            return;
+
+        } else {
+            let { path: tempPath, originalFilename } = files.file[0];
+            let copyToPath = "./src/images/_" + Date.now() + '_' + originalFilename;
+            let dbPath = '_' + Date.now() + '_' + originalFilename;
+            try {
+                fs.readFile(tempPath, (err, data) => {
+                    if (err) throw err;
+                    fs.writeFile(copyToPath, data, (err) => {
+                        if (err) throw err;
+                        // delete temp image
+                        fs.unlink(tempPath, () => {
+                        });
+                    });
+                });
+
+                console.log("createNewMovie_request : node backend");
+                let data = fields;
+                data.dbPath = dbPath;
+                data.request_code = 2;
+                console.log(data);
+                kafka.make_request('movie_request', data, function (err, results) {
+                    responseUtil(err, results, res);
+                });
+            } catch (e) {
+                console.log('Catch');
+                console.log(e);
+                resultObject.errorMsg = 'Error Uploading Image';
+                res.json(resultObject);
+                return;
+            }
+
+        }
+
+    })
+}
+exports.updateMovie = function (req, res) {
+    // Post Project API
+    console.log('update Movie API Called');
+    let form = new multiparty.Form();
+    form.parse(req, (err, fields, files) => {
+        var resultObject = {
+            successMsg: '',
+            errorMsg: 'Error Posting Project',
+            data: {}
+        }
+        if (err) {
+            resultObject.errorMsg = 'Error updating movie';
+            res.json(resultObject);
+            return;
+        } else {
+            try {
+                let { path: tempPath, originalFilename } = files.file[0];
+                let copyToPath = "./src/images/_" + Date.now() + '_' + originalFilename;
+                let dbPath = '_' + Date.now() + '_' + originalFilename;
+                fs.readFile(tempPath, (err, data) => {
+                    if (err) throw err;
+                    fs.writeFile(copyToPath, data, (err) => {
+                        if (err) throw err;
+                        // delete temp image
+                        fs.unlink(tempPath, () => {
+                        });
+                    });
+                });
+
+                console.log("updateMovie_request : node backend");
+                let data = fields;
+                data.dbPath = dbPath;
+                data.request_code = 3;
+                console.log(data);
+                kafka.make_request('movie_request', data, function (err, results) {
+                    responseUtil(err, results, res);
+                });
+            } catch (e) {
+                console.log('Catch');
+                console.log(e);
+                resultObject.errorMsg = 'Error updating movie';
+                res.json(resultObject);
+                return;
+            }
+        }
+
+    })
+}
+
+exports.addMovieCharacter= function (req, res) {
+    // Post Project API
+    console.log('addMovieCharacter API Called');
+    let form = new multiparty.Form();
+    form.parse(req, (err, fields, files) => {
+        var resultObject = {
+            successMsg: '',
+            errorMsg: 'Error Adding Movie Characters',
+            data: {}
+        }
+        if (err) {
+            resultObject.errorMsg = 'Error updating movie character';
+            res.json(resultObject);
+            return;
+        } else {
+            try {
+                let { path: tempPath, originalFilename } = files.file[0];
+                let copyToPath = "./src/images/_" + Date.now() + '_' + originalFilename;
+                let dbPath = '_' + Date.now() + '_' + originalFilename;
+                fs.readFile(tempPath, (err, data) => {
+                    if (err) throw err;
+                    fs.writeFile(copyToPath, data, (err) => {
+                        if (err) throw err;
+                        // delete temp image
+                        fs.unlink(tempPath, () => {
+                        });
+                    });
+                });
+
+                console.log("updateMovie_request : node backend");
+                let data = fields;
+                data.dbPath = dbPath;
+                data.request_code = 4;
+                console.log(data);
+                kafka.make_request('movie_request', data, function (err, results) {
+                    responseUtil(err, results, res);
+                });
+            } catch (e) {
+                console.log('Catch');
+                console.log(e);
+                resultObject.errorMsg = 'Error Adding Movie Characters';
+                res.json(resultObject);
+                return;
+            }
+        }
+    })
+}
+
+function responseUtil(err, results, res) {
+    console.log('Kafka Response:');
+    console.log(results);
+    if (err) {
+        console.log('Controller : Error Occurred : ');
+        console.log(err);
+        res.json(results);
     }
+    else {
+        res.json(results);
+        return;
+    }
+}
 //New method with passport
 exports.login = function (req, res, next) {
     passport.authenticate('local-login', function (err, user, info) {
@@ -186,7 +358,7 @@ exports.signup = function (req, res) {
 
     let data = req.body;
     console.log(data);
-    kafka.make_request('signup_request', data, function (err, results) {
+    kafka.make_request('user_request', data, function (err, results) {
         console.log('Kafka Response:');
         console.log(results);
         if (err) {
