@@ -36,22 +36,6 @@ class SignIn extends Component {
                                     <div class="panel main-panel intercept-container large-6 medium-6 small-12 columns">
                                         <div class="action-details small-12 columns">
                                             <img src={require('../static_images/signup.png')} alt="text" />
-                                            {/* <div class="vip-perks vip-perks--authentication">
-                                                <h4>As a Fandango VIP You Have Access To</h4>
-                                                <div class="row">
-                                                    <span class="left-text worry-free-tickets columns"><span class="light">1. Refunds + Exchanges</span></span>
-                                                </div>
-                                                <div class="row">    
-                                                    <span class="left-text insider-perks  columns"><span class="light">2. Insider Perks</span></span>
-                                                </div>
-                                                <div class="row">
-                                                    <span class="left-text worry-free-tickets columns"><span class="light">3. Partner Rewards</span></span>
-                                                </div>
-                                                <div class="row">    
-                                                    <span class="left-text insider-perks  columns"><span class="light">4. My Fandangos</span></span>
-                                                </div>
-
-                                            </div> */}
                                         </div>
                                     </div>
                                     <div class="panel main-panel sign-up-form large-6 medium-6 small-12 columns">

@@ -25,21 +25,10 @@ class LoginSignupHeader extends Component {
                   </div>
                   <a class="icon left fandango-logo header-logo" href="/">Fandango</a>
                 </li>
-                {/* <li id="global-search">
-                  <form action="/search" autocomplete="off" role="search" novalidate>
-                    <div class="fan-autocomplete">
-                      <div class="fan-autocomplete-results"></div>
-                      <input class="fan-input style-search" type="text" name="q" placeholder="Enter City + State, ZIP Code, or Movie" />
-                      <div class="csspinner double-up no-overlay"></div>
-                    </div>
-                    <input type="hidden" name="mode" value="general"/>
-                    <button class="fan-btn fan-btn-style-go" type="button">Go</button>
-                  </form>
-                </li> */}
               </ul>
           </div>
           <div class="col-md-6">
-            <div class="width-25 right">
+            <div class=" right">
               <a href="/fandango-gift-cards" class = "form-btn">SignUp</a> |
               <a href="/freemovietickets" class = "form-btn">SignIn</a> |
             </div>

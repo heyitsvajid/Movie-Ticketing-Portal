@@ -8,7 +8,6 @@ import LatestMovies from './LatestMovies';
 import MovieSlider from './MovieSlider';
 import Header from './Header';
 
-require ('../custom.css');
 
 class Index extends Component {
 
