@@ -26,6 +26,17 @@ var autoIncrement = require('mongoose-auto-increment');
 autoIncrement.initialize(db);
 module.exports = autoIncrement;
 
+//To prevent errors from Cross Origin Resource Sharing
+app.use(function (req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT,DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers');
+  //and remove cacheing so we get the most recent comments
+  res.setHeader('Cache-Control', 'no-cache');
+  next();
+});
+
 app.use(session({
   name: 'CMPE273 Team Project Gandango',
   store: new mongodbStore({
@@ -50,16 +61,16 @@ var port = process.env.API_PORT || 3001;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-//To prevent errors from Cross Origin Resource Sharing
-app.use(function (req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT,DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers');
-  //and remove cacheing so we get the most recent comments
-  res.setHeader('Cache-Control', 'no-cache');
-  next();
-});
+// //To prevent errors from Cross Origin Resource Sharing
+// app.use(function (req, res, next) {
+//   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+//   res.setHeader('Access-Control-Allow-Credentials', 'true');
+//   res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT,DELETE');
+//   res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers');
+//   //and remove cacheing so we get the most recent comments
+//   res.setHeader('Cache-Control', 'no-cache');
+//   next();
+// });
 
 //initializing route and API
 router.get('/', function (req, res) {

@@ -408,7 +408,21 @@ exports.login = function (req, res, next) {
             resultObject.data = user.data;
         }
         console.log("In passport authenticate...after forming the resultobject", resultObject);
+        req.session.email = resultObject.data.email;
+        req.session.id = resultObject.data.id;
+        req.session.first_name = resultObject.data.first_name;
+        req.session.last_name = resultObject.data.last_name;
+        req.session.address = resultObject.data.address;
+        req.session.profile_image_path = resultObject.data.profile_image_path;
+        req.session.city = resultObject.data.city;
+        req.session.state = resultObject.data.state;
+        req.session.zipcode = resultObject.data.zipcode;
+        req.session.phone_number = resultObject.data.phone_number;
+        req.session.disable = resultObject.data.disable;
+        req.session.role_number = resultObject.data.role_number;
+        console.log("Session Started...", req.session);
         res.json(resultObject);
+
 
     })(req, res, next);
 
@@ -458,28 +472,53 @@ exports.getprofile = function (req, res) {
 exports.isLoggedIn = function (req, res) {
     console.log('Check Login');
 
-    if (req.isAuthenticated()) {
-
-        console.log(req.user);
-        console.log('is logged in');
-        let responsePayload = {
-            responseCode: 0,
-            responseMsg: 'Allready Logged In',
-            name: req.session.name,
+    if(req.session.email) {
+        console.log("Session is still valid", req.session);
+        var data = {
+            id: req.session.id,
             email: req.session.email,
-            id: req.session.passport.user
+            first_name: req.session.first_name,
+            last_name: req.session.last_name,
+            address: req.session.address,
+            profile_image_path: req.session.profile_image_path,
+            city: req.session.city,
+            state: req.session.state,
+            zipcode: req.session.zipcode,
+            phone_number: req.session.phone_number,
+            disable: req.session.disable,
+            role_number: req.session.role_number
         }
-        res.json(responsePayload);
-        return;
-    } else {
-        console.log('Not logged in');
-        let responsePayload = {
-            responseCode: 1,
-            responseMsg: 'Log In Required',
-        }
-        res.json(responsePayload);
-        return;
+        res.json(data);
     }
+    else {
+        console.log("Session is invalid");
+        res.json("Session Invalid...Please Login Again");
+    }
+
+    // if (req.isAuthenticated()) {
+    //
+    //     console.log(req.user);
+    //     console.log('is logged in');
+    //     let responsePayload = {
+    //         responseCode: 0,
+    //         responseMsg: 'Allready Logged In',
+    //         name: req.session.name,
+    //         email: req.session.email,
+    //         id: req.session.passport.user
+    //     }
+    //     res.json(responsePayload);
+    //     return;
+    // } else {
+    //     console.log('Not logged in');
+    //     let responsePayload = {
+    //         responseCode: 1,
+    //         responseMsg: 'Log In Required',
+    //     }
+    //     res.json(responsePayload);
+    //     return;
+    // }
+
+
 };
 
 //method converted

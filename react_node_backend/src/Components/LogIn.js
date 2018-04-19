@@ -21,6 +21,13 @@ class SignIn extends Component {
         this.handleLogin = this.handleLogin.bind(this);
     }
 
+    componentWillMount() {
+        axios.get(envURL + 'isLoggedIn', {withCredentials: true})
+            .then((response) => {
+                console.log("After checking the session", response.data);
+            })
+    }
+
     handleUsernameChange(e) {
         e.preventDefault();
         this.setState({
@@ -46,7 +53,7 @@ class SignIn extends Component {
             .then((response) => {
                 console.log("In Login Component handleLogin",response.data);
                 if(response.data.errorMsg === '') {
-                    //alert("User looging in...");
+                    alert("User logging in...");
                     this.setState({
                         username: response.data.email,
                         isLoggedIn: true
