@@ -6,6 +6,7 @@ import Layout from './Components/Layout';
 import Index from './Components/Index';
 import AdminLogin from './Components/AdminLogin';
 import AdminDashboard from './Components/AdminDashboard';
+import MovieShowTimings from './Components/MovieShowTimings';
 
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import './assets/css/bootstrap.min.css'
@@ -24,6 +25,7 @@ ReactDOM.render(
       <Route exact path="/adminDashboard" component={AdminDashboard} />
       <Route exact path="/adminlogin" component={AdminLogin} />
         <Route exact path="/" component={Index} />
+        <Route exact path="/movies" component={MovieShowTimings} />
         <Route exact path="/login" component={LogIn} />
         <Route exact path="/signup" component={SignUp} />
       </div>

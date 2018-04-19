@@ -476,3 +476,63 @@ label {
   top: 0;
   bottom: 0;
 }
+
+.timing-header {
+  margin-top: 20px;
+  color: #fff !important;
+  display: inline-block;
+  vertical-align: top;
+}
+
+#scroll-date-picker__list{
+  transition: 1s;
+}
+
+.js-movie-calendar{
+  overflow: visible !important
+}
+
+.date-picker__wrap {
+  margin-top: 8%;
+}
+
+.date-picker__date-day{
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.date-picker__date-month{
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.nearby-theaters__label {
+  font-size: 15px;
+}
+
+.nearby-theaters__select{
+  font-size: 1.875rem;
+}
+
+.font-lg {
+  font-size: 20px !important;
+}
+
+a.dark{
+  font-weight: bold;
+}
+
+.advertise{
+  margin-top: 15%;
+}
+
+.icon.icon-amenity-print-at-home-tickets {
+  width: 40px !important;
+  height: 40px !important;
+}
+
+.fd-theater__promoted-amenity-wrap .fd-theater__promoted-amenity {
+  height: 40px !important;
+  width: 40px !important;
+  margin-left: 5px;
+}

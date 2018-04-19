@@ -478,17 +478,7 @@ class Header extends Component {
           </nav>
         </header>
       </div>
-      <h1 class="h1-seo">Movie Tickets and Times</h1>
-      <section class="home-module">
-        <section class="movie-tickets-header">
-          <div class="row">
-            <div class="width-50 mobile-width-60 columns movie-tickets-header--container">
-              <h2 class="movie-tickets-header--heading heading-size-l heading-style-1 inline">BUY MOVIE TICKETS</h2>
-              <a class="movie-tickets-header--see-all inline" href="https://www.fandango.com/moviesintheaters">See All Movies</a>
-            </div>
-          </div>
-        </section>
-      </section>
+      
     </div>
     )
   }
