@@ -5,6 +5,8 @@ import { withRouter } from 'react-router-dom'
 import '../assets/css/admin.css'
 import MultiplexForm from './MultiplexForm'
 import MovieForm from './MovieForm'
+import ShowTimingsForm from './ShowTimingsForm'
+
 
 
 
@@ -20,6 +22,7 @@ class AdminDashboard extends Component {
             addMultiplexAdmin: false,
             addDashboard: true,
             addUserTracking: false,
+            showTimings: false
         };
     }
 
@@ -48,6 +51,8 @@ class AdminDashboard extends Component {
             addMovie: e.currentTarget.value == 3,
             addMultiplex: e.currentTarget.value == 4,
             addMultiplexAdmin: e.currentTarget.value == 5,
+            showTimings: e.currentTarget.value == 6,
+            
         })
         console.log(this.state);
     }
@@ -79,6 +84,7 @@ class AdminDashboard extends Component {
         let addMovie = 3;
         let addMultiplex = 4;
         let addMultiplexAdmin = 5;
+        let showTimings = 6;
         var abc = require('../images/fandango_logo.png' + '')
         return (
             <body class="sticky-footer bg-dark fixed-nav" id="page-top">
@@ -122,15 +128,15 @@ class AdminDashboard extends Component {
                                     <span class="nav-link-text">Add Movie</span>
                                 </a>
                             </li>
-
-                        </ul>
-                        <ul class="navbar-nav sidenav-toggler">
-                            <li class="nav-item">
-                                <a class="nav-link text-center" id="sidenavToggler">
-                                    <i class="fa fa-fw fa-angle-left"></i>
+                            <li class="nav-item" value={showTimings} onClick={this.handleLinkClick.bind(this)} data-toggle="tooltip" data-placement="right" title="" data-original-title="Link">
+                                <a class="nav-link" href="#">
+                                    <i class="fa fa-fw fa-link"></i>
+                                    <span class="nav-link-text">Add Show Timing</span>
                                 </a>
                             </li>
+
                         </ul>
+                        
                         <ul class="navbar-nav ml-auto">
 
                             <li class="nav-item">
@@ -145,6 +151,7 @@ class AdminDashboard extends Component {
                 {this.state.addMultiplex ? this.returnMultiplex() : ''}
                 {this.state.addDashboard ? this.returnDashboard() : ''}
                 {this.state.addUserTracking ? this.returnMultiplex() : ''}
+                {this.state.showTimings ? this.returnShowTimings() : ''}
             </body>)
     }
 
@@ -185,6 +192,22 @@ class AdminDashboard extends Component {
                         <li class="breadcrumb-item active">Movie</li>
                     </ol>
                     <MovieForm />
+                </div>
+
+            </div>
+        )
+    }
+    returnShowTimings(){
+        return (
+            <div class="content-wrapper">
+                <div class="container-fluid">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="#">Dashboard</a>
+                        </li>
+                        <li class="breadcrumb-item active">Movie</li>
+                    </ol>
+                    <ShowTimingsForm />
                 </div>
 
             </div>

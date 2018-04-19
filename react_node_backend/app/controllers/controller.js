@@ -7,6 +7,78 @@ var passport = require('../config/passport.js');
 var kafka = require('../kafka/client');
 
 
+
+//Creating New Multiplex Admin
+exports.createMultiplexAdmin =  ( req, res ) => {
+    console.log("In Node Backend, Creating new multiplex admin", req.body);
+    let data = { data: req.body, request_code: 1};
+    kafka.make_request('multiplexadmin_request', data, (err, result) => {
+        console.log("###########################3");
+        console.log(err);
+
+        console.log(result);
+        var resultObject = {
+            successMsg: '',
+            errorMsg: '',
+            data: {}
+        };
+        if(err) {
+            console.log(err);
+            resultObject.errorMsg = 'Error creating Multiplex Admin';
+            res.json(resultObject);
+            return;
+        }
+        else {
+            console.log(result);
+            res.json(result);
+            return;
+        }
+    })
+};
+
+
+
+//Multiplex Operations
+exports.addShowTimings = function (req, res) {
+    console.log("addShowTimings_request : node backend");
+    let data = { data: req.body, request_code: 1 };
+
+    console.log(data);
+    kafka.make_request('showtiming_request', data, function (err, results) {
+        console.log('Kafka Response:');
+        console.log(results);
+        if (err) {
+            console.log('Controller : Error Occurred : ');
+            console.log(err);
+            res.json(results);
+        }
+        else {
+            res.json(results);
+            return;
+        }
+    });
+}
+
+exports.updateShowTimings= function (req, res) {
+    console.log("updateShowTimings_request : node backend");
+    let data = { data: req.body, request_code: 2 };
+
+    console.log(data);
+    kafka.make_request('showtiming_request', data, function (err, results) {
+        console.log('Kafka Response:');
+        console.log(results);
+        if (err) {
+            console.log('Controller : Error Occurred : ');
+            console.log(err);
+            res.json(results);
+        }
+        else {
+            res.json(results);
+            return;
+        }
+    });
+}
+
 //Multiplex Operations
 exports.findAllMultiplex = function (req, res) {
     console.log("findAllMultiplex_request : node backend");

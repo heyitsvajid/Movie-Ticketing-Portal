@@ -35,6 +35,19 @@ module.exports = function (app) {
   //add Movie Character  
   app.post('/addMovieCharacter', api_controller.addMovieCharacter);
 
+  //add Show Timings  
+  app.post('/addShowTimings', api_controller.addShowTimings);
+
+  //update Show Timings  
+  app.post('/updateShowTimings', api_controller.updateShowTimings);
+
+  //Creating Multiplex Admin
+  app.post('/createmultiplexadmin', api_controller.createMultiplexAdmin);
+
+  //Add Movie Review
+  app.post('/addMovieReview', api_controller.addMovieReview);
+
+
 }
 
 

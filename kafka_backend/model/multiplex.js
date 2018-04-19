@@ -22,12 +22,11 @@ var MultiplexSchema = new Schema({
     }],
     show_timings: [
         {
-            screen_number: { type: Number },
-            date: { type: Date },
-            display_time:{type:'String'},
+            screen_number: { type: String },
+            date_time: { type: String },
             sort_field:{type:Number},
             seats_left: { type: Number },
-            movie_id: { type: Number },//(for now, if we get data from cache/ add   whole movie obj), 
+            movie: { type: Object },//(for now, if we get data from cache/ add   whole movie obj), 
             price: { adult: { type: Number }, child: { type: Number }, disabled: { type: Number } }
         }],
     date_added: { type: Date, default: Date.now },

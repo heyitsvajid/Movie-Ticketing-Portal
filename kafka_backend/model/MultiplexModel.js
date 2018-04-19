@@ -16,103 +16,160 @@ function errHandler(err) {
 function validationErr(err, res) {
   Object.keys(err.errors).forEach(function (k) {
     var msg = err.errors[k].message;
-    console.error('Validation error for \'%s' +': %s', k, msg);
+    console.error('Validation error for \'%s' + ': %s', k, msg);
     return res.status(404).json({
-      msg: 'Please ensure required fields are filled'});
+      msg: 'Please ensure required fields are filled'
+    });
   });
 }
 
-function createNewMultiplex(multiplex,path,callback) {
-   MultiplexModel.create({
+function createNewMultiplex(multiplex, path, callback) {
+  MultiplexModel.create({
     name: multiplex.name[0],
     address: multiplex.address[0],
     city: multiplex.city[0],
-    state:multiplex.state[0],
+    state: multiplex.state[0],
     zipcode: multiplex.zipcode[0],
     contact_number: multiplex.contact_number[0],
     multiplex_owner_id: multiplex.multiplex_owner_id[0],
     amenities: multiplex.amenities[0],
     screens: JSON.parse(multiplex.screen),
-    multiplex_logo:path
-}, function (err, multiplex) {
-      if(err) {
-        console.error('There was an error creating the multiplex');
-        errHandler(err);
-      }else{
-        console.log('New multiplex successfully created...');
-        console.log(multiplex);  
-      }
-      callback(err,multiplex);
+    multiplex_logo: path
+  }, function (err, multiplex) {
+    if (err) {
+      console.error('There was an error creating the multiplex');
+      errHandler(err);
+    } else {
+      console.log('New multiplex successfully created...');
+      console.log(multiplex);
+    }
+    callback(err, multiplex);
   })
 }
 
-function findMultiplex(id,callback) {
-   MultiplexModel.findOne({_id: id},
+function findMultiplex(id, callback) {
+  MultiplexModel.findOne({ _id: id },
     function (err, multiplex) {
-      if(err) {
+      if (err) {
         errHandler(err);
-      }else{
+      } else {
         console.log('Multiplex successfully found...');
       }
-      callback(err,multiplex);
-  });
+      callback(err, multiplex);
+    });
 }
 
 function findAllMultiplex(callback) {
-   MultiplexModel.find({},
-  function (err, multiplexes) {
-    if(err) {
-      errHandler(err);
-    }else{
+  MultiplexModel.find({},
+    function (err, multiplexes) {
+      if (err) {
+        errHandler(err);
+      } else {
         console.log(multiplexes);
-    }
-    callback(err,multiplexes)
-  });
+      }
+      callback(err, multiplexes)
+    });
 }
 
-function updateMultiplex(multiplex,path,callback) {
-   MultiplexModel.findOne({_id: multiplex._id[0]},
-  function (err, updateMultiplex) {
-    if(err) {
-      errHandler(err);
-    }
-    if(updateMultiplex){
-        updateMultiplex.name= multiplex.name[0],
-        updateMultiplex.address= multiplex.address[0],
-        updateMultiplex.city= multiplex.city[0],
-        updateMultiplex.state=multiplex.state[0],
-        updateMultiplex.zipcode= multiplex.zipcode[0],
-        updateMultiplex.contact_number= multiplex.contact_number[0],
-        updateMultiplex.multiplex_owner_id= multiplex.multiplex_owner_id[0],
-        updateMultiplex.amenities= multiplex.amenities[0],
-        updateMultiplex.screens= JSON.parse(multiplex.screen[0]),
-        updateMultiplex.multiplex_logo=path
+function updateMultiplex(multiplex, path, callback) {
+  MultiplexModel.findOne({ _id: multiplex._id[0] },
+    function (err, updateMultiplex) {
+      if (err) {
+        errHandler(err);
+      }
+      if (updateMultiplex) {
+        updateMultiplex.name = multiplex.name[0],
+          updateMultiplex.address = multiplex.address[0],
+          updateMultiplex.city = multiplex.city[0],
+          updateMultiplex.state = multiplex.state[0],
+          updateMultiplex.zipcode = multiplex.zipcode[0],
+          updateMultiplex.contact_number = multiplex.contact_number[0],
+          updateMultiplex.multiplex_owner_id = multiplex.multiplex_owner_id[0],
+          updateMultiplex.amenities = multiplex.amenities[0],
+          updateMultiplex.screens = JSON.parse(multiplex.screen[0]),
+          updateMultiplex.multiplex_logo = path
         updateMultiplex.save(function (err, multiplex) {
-          if(err) {
+          if (err) {
             errHandler(err);
-          }else{
+          } else {
             console.log('Multiplex updated= ', multiplex);
           }
-          callback(err,updateMultiplex)
+          callback(err, updateMultiplex)
         });
-    }else{
-        callback(err,{})
-    }
-    
-  });
+      } else {
+        callback(err, {})
+      }
+
+    });
 }
 
-// function deleteUser(req, res) {
-//    UserModel.findOneAndRemove({email: req.params.email},
-//  function (err, user) {
-//    if(err) {
-//      return errHandler(err);
-//    }
-//    console.log('User deleted ', user);
-//    return res.json(user);
-//  });
-// }
+function addShowTiming(addShow, callback) {
+  console.log(addShow)
 
+  MultiplexModel.findOne({ _id: addShow.data._id },
+    function (err, updateMultiplex) {
+      console.log(updateMultiplex)
+
+      if (err) {
+        errHandler(err);
+      }
+      if (updateMultiplex) {
+        console.log('Multiplex found. Adding Show')
+        updateMultiplex.show_timings.push(addShow.data.show),
+          updateMultiplex.save(function (err, multiplex) {
+            if (err) {
+              errHandler(err);
+            } else {
+              console.log('Multiplex updated= ', multiplex);
+            }
+            callback(err, updateMultiplex)
+          });
+      } else {
+        console.log('Multiplex not found')
+
+        callback(err, {})
+      }
+
+    });
+}
+function updateShowTiming(updateShow, callback) {
+  console.log('Inside MultiplexModal updateShowTiming')
+  console.log(updateShow)
+
+  MultiplexModel.findOne({ _id: updateShow.data._id },
+    function (err, updateMultiplex) {
+      if (err) {
+        errHandler(err);
+      }
+      if (updateMultiplex) {
+        console.log('Multiplex found. Updating Show')
+
+        updateMultiplex.show_timings.forEach(element => {
+          if(element._id==updateShow.data.show._id){
+            console.log('Updating show values');
+            element.price=updateShow.data.show.price;
+            element.screen_number=updateShow.data.show.screen_number,
+            element.date_time=updateShow.data.show.date_time,
+            element.sort_field=updateShow.data.show.sort_field,
+            element.seats_left=updateShow.data.show.seats_left,            
+            element.movie=updateShow.data.show.movie
+          }
+        });
+        updateMultiplex.save(function (err, multiplex) {
+          if (err) {
+            errHandler(err);
+          } else {
+            console.log('Multiplex updated= ', multiplex);
+          }
+          callback(err, updateMultiplex)
+        });
+      } else {
+        console.log('Multiplex not found')
+        callback(err, {})
+      }
+
+    });
+}
 //==============================================================================
 /**
 * Export module
@@ -124,6 +181,8 @@ module.exports = {
   findMultiplex: findMultiplex,
   findAllMultiplex: findAllMultiplex,
   updateMultiplex: updateMultiplex,
-//  deleteUser: deleteUser
+  addShowTiming: addShowTiming,
+  updateShowTiming: updateShowTiming
+  //  deleteUser: deleteUser
 };
 //==============================================================================
