@@ -13,6 +13,7 @@
     "express-session": "^1.15.6",
     "foreman": "^2.0.0",
     "kafka-node": "^2.5.0",
+    "moment": "^2.22.1",
     "mongoose": "^5.0.14",
     "mongoose-auto-increment": "^5.0.1",
     "multiparty": "^4.1.3",

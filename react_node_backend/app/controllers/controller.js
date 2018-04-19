@@ -383,44 +383,33 @@ function responseUtil(err, results, res) {
         return;
     }
 }
+
+
+
 //New method with passport
 exports.login = function (req, res, next) {
-    passport.authenticate('local-login', function (err, user, info) {
+    passport.authenticate('local-login', function (err, user) {
         var resultObject = {
             successMsg: '',
             errorMsg: 'Error Signing user in',
             data: {}
         }
-        if (err) {
-            return next(err); // will generate a 500 error
+        if(err) {
+            resultObject.successMsg = '';
+            resultObject.errorMsg = 'Error Signing user in';
         }
-        if (!user) {
-            console.log(info.errMsg);
-            resultObject.errorMsg = info.errMsg;
-            res.json(resultObject);
-            return;
+        else if(user == false) {
+            resultObject.successMsg = '';
+            resultObject.errorMsg = 'Error Signing user in';
         }
-        req.login(user, function (err) {
-            if (err) {
-                console.error(err);
-                res.json(resultObject);
-                return;
-            }
-            resultObject.successMsg = 'Log In Successful';
-            resultObject.errorMsg = '';
-            console.log(user._id);
-            resultObject.data = {
-                id: user._id,
-                name: user.name,
-                email: user.email
-            }
-            req.session.id = user._id;
-            req.session.name = user.name;
-            req.session.email = user.email;
-            res.json(resultObject);
-            return;
+        else if(user) {
+            resultObject.successMsg = user.successMsg;
+            resultObject.errorMsg = user.errorMsg;
+            resultObject.data = user.data;
+        }
+        console.log("In passport authenticate...after forming the resultobject", resultObject);
+        res.json(resultObject);
 
-        });
     })(req, res, next);
 
 }

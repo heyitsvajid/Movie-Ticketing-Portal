@@ -5,7 +5,7 @@ var utility = require('./util/util.js');
 
 var MultiplexModel = require('./model/MultiplexModel');
 var MovieModel = require('./model/MovieModal');
-let UserModal = require('./model/UserModal');
+var UserModal = require('./model/UserModal');
 //Kafka Topics
 var user_topic = 'user_request';
 var response_topic = 'response_topic';
@@ -34,34 +34,55 @@ user_consumer.on('message', function (message) {
     console.log('Kafka Server login_consumer : message received');
     console.log(JSON.stringify(message.value));
     var data = JSON.parse(message.value);
-    user.login_request(data.data, function (err, res) {
-        console.log('Kafka Server : after handle');
-        console.log(res);
-        var payloads = utility.createPayload(data, res);
-        console.log('is producer ready : ' + producer.ready);
-        producer.send(payloads, function (err, data) {
-            utility.log(data, err);
+    console.log("Data after parsing in user_consumer for login...", data);
+    if(data.data.request_code === 1) {
+        UserModal.login_request(data.data, function (err, res) {
+            console.log('Kafka Server : after handle in login');
+            var resultObject = {
+                successMsg: '',
+                errorMsg: '',
+                data: {}
+            }
+
+            if(res !== null) {
+                resultObject.successMsg = 'User Found';
+                resultObject.errorMsg = '';
+                resultObject.data = res
+            } else {
+                resultObject.successMsg = '';
+                resultObject.errorMsg = 'User not found';
+                resultObject.data =  {};
+            }
+
+
+            console.log("After formation of resultobject in login_request in serverjs",resultObject);
+            var payloads = utility.createPayload(data, resultObject);
+            console.log('is producer ready : ' + producer.ready);
+            producer.send(payloads, function (err, data) {
+                utility.log(data, err);
+            });
+            return;
         });
-        return;
-    });
+    }
+
 });
 
 
 //Signup Consumer
-user_consumer.on('message', function (message) {
-    console.log('Kafka Server signup_consumer : message received');
-    console.log(JSON.stringify(message.value));
-    var data = JSON.parse(message.value);
-    user.signup_request(data.data, function (err, res) {
-        console.log('Kafka Server : after handle');
-        var payloads = utility.createPayload(data, res);
-        console.log('is producer ready : ' + producer.ready);
-        producer.send(payloads, function (err, data) {
-            utility.log(data, err);
-        });
-        return;
-    });
-});
+// user_consumer.on('message', function (message) {
+//     console.log('Kafka Server signup_consumer : message received');
+//     console.log(JSON.stringify(message.value));
+//     var data = JSON.parse(message.value);
+//     user.signup_request(data.data, function (err, res) {
+//         console.log('Kafka Server : after handle');
+//         var payloads = utility.createPayload(data, res);
+//         console.log('is producer ready : ' + producer.ready);
+//         producer.send(payloads, function (err, data) {
+//             utility.log(data, err);
+//         });
+//         return;
+//     });
+// });
 
 //Multiplex Consumer
 multiplex_consumer.on('message', function (message) {
@@ -382,7 +403,7 @@ multiplexadmin_consumer.on('message', function (message) {
 
 console.log('server is running');
 process.on("SIGINT", function () {
-    login_consumer.close(true, function () {
+    multiplexadmin_consumer.close(true, function () {
         process.exit();
     });
     multiplex_consumer.close(true, function () {

@@ -18,7 +18,8 @@ class Header extends Component {
           <div class="width-25 right">
             <a href="/fandango-gift-cards">Gift Cards</a> |
             <a href="/freemovietickets">Offers</a> |
-            <a href="https://www.fandango.com/account/signin?from=%2F" class="hide-logged-in">Sign In</a>
+            {/*<a href="https://www.fandango.com/account/signin?from=%2F" class="hide-logged-in">Sign In</a>*/}
+            <a href="/login" class="hide-logged-in">Sign In</a>
             <a href="/signout" class="show-logged-in">Sign Out</a>
           </div>
         </div>

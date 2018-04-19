@@ -45,7 +45,7 @@ module.exports = function (app) {
   app.post('/createmultiplexadmin', api_controller.createMultiplexAdmin);
 
   //Add Movie Review
-  app.post('/addMovieReview', api_controller.addMovieReview);
+  //app.post('/addMovieReview', api_controller.addMovieReview);
 
 
 }
