@@ -11,8 +11,6 @@ module.exports = function (app) {
   //Check Login
   app.get('/isLoggedIn', api_controller.isLoggedIn);
 
-  //Get profile
-  app.post('/getProfile', api_controller.getprofile);
 
   //Find All Multiplex
   app.get('/findAllMultiplex', api_controller.findAllMultiplex);

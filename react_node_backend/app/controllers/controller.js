@@ -514,7 +514,6 @@ exports.signup = function (req, res) {
 }
 
 
-
 //method converted
 exports.isLoggedIn = function (req, res) {
     console.log('Check Login');
