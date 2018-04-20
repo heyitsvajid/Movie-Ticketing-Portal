@@ -11,9 +11,11 @@ module.exports = function (app) {
   //Check Login
   app.get('/isLoggedIn', api_controller.isLoggedIn);
 
-
   //Find All Multiplex
   app.get('/findAllMultiplex', api_controller.findAllMultiplex);
+
+  //Find Multiplex By Id
+  app.post('/findMultiplexById', api_controller.findMultiplexById);
 
   //Create Multiplx  
   app.post('/createNewMultiplex', api_controller.createNewMultiplex);
@@ -23,6 +25,9 @@ module.exports = function (app) {
 
   //Find All Movie
   app.get('/findAllMovie', api_controller.findAllMovie);
+
+  //Find Movie By Id
+  app.post('/findMovieById', api_controller.findMovieById);
 
   //Create Movie  
   app.post('/createNewMovie', api_controller.createNewMovie);

@@ -156,6 +156,23 @@ function addMovieReview(review, callback) {
     });
 }
 
+
+function findMovieById(id, callback) {
+  console.log('Inside Movie Modal :findMovieById');
+  MovieModel.findOne({ _id: id.data._id },
+    function (err, movie) {
+      if (err) {
+        errHandler(err);
+      }
+      if (movie) {
+            callback(err, movie)
+      } else {
+        callback(err, null)
+        console.log('Movie not found');
+      }
+
+    });
+}
 // function deleteUser(req, res) {
 //    UserModel.findOneAndRemove({email: req.params.email},
 //  function (err, user) {
@@ -179,7 +196,8 @@ module.exports = {
   findMovie: findMovie,
   findAllMovie: findAllMovie,
   updateMovie: updateMovie,
-  addMovieReview:addMovieReview
+  addMovieReview:addMovieReview,
+  findMovieById:findMovieById
   //  deleteUser: deleteUser
 };
 //==============================================================================

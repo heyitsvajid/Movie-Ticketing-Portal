@@ -168,6 +168,31 @@ multiplex_consumer.on('message', function (message) {
         });
         return;    
     }
+    if (request_data.data.request_code == 4) {
+        MultiplexModel.findMultiplexById(request_data.data,function (err, res) {
+            var resultObject = {
+                successMsg: '',
+                errorMsg: '',
+                data: {}
+            }
+            console.log('Kafka Server : after handle');
+            console.log(res);
+            if(err || !res){
+                resultObject.successMsg= '';
+                resultObject.errorMsg= 'Error fetching multiplex';
+            }else{
+                resultObject.successMsg= 'Fetching Multiplex';
+                resultObject.errorMsg= '';
+                resultObject.data=res;         
+            }
+            let payloads = utility.createPayload(request_data, resultObject);
+            console.log('is producer ready : ' + producer.ready);
+            producer.send(payloads, function (err, data) {
+                utility.log(data, err);
+            });
+            return;
+        });
+    }
 });
 
 //Movie Consumer
@@ -234,7 +259,7 @@ movie_consumer.on('message', function (message) {
             }
             console.log('Kafka Server : after handle');
             console.log(res);
-            if(err){
+            if(err  || !res){
                 resultObject.successMsg= '';
                 resultObject.errorMsg= 'Error updating movie';
             }else{
@@ -275,6 +300,32 @@ movie_consumer.on('message', function (message) {
         });
         return;    
     }
+    else if (request_data.data.request_code == 5) {
+        MovieModel.findMovieById(request_data.data,function (err, res) {
+            var resultObject = {
+                successMsg: '',
+                errorMsg: '',
+                data: {}
+            }
+            console.log('Kafka Server : after handle');
+            console.log(res);
+            if(err || !res){
+                resultObject.successMsg= '';
+                resultObject.errorMsg= 'Error fetching movie';
+            }else{
+                resultObject.successMsg= 'Fetching Movie';
+                resultObject.errorMsg= '';
+                resultObject.data=res;         
+            }
+            let payloads = utility.createPayload(request_data, resultObject);
+            console.log('is producer ready : ' + producer.ready);
+            producer.send(payloads, function (err, data) {
+                utility.log(data, err);
+            });
+            return;
+        });
+    }
+
 
 });
 
@@ -316,8 +367,8 @@ showtiming_consumer.on('message', function (message) {
                 data: {}
             }
             console.log('Kafka Server : after handle');
-            console.log(res);
-            if(err){
+            console.log(res );
+            if(err || !res){
                 resultObject.successMsg= '';
                 resultObject.errorMsg= 'Error updating show';
             }else{

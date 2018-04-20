@@ -107,7 +107,7 @@ exports.addMovieReview= function (req, res) {
 }
 
 
-//Multiplex Operations
+//Show timing Operations
 exports.addShowTimings = function (req, res) {
     console.log("addShowTimings_request : node backend");
     let data = { data: req.body, request_code: 1 };
@@ -147,6 +147,8 @@ exports.updateShowTimings= function (req, res) {
         }
     });
 }
+
+
 
 //Multiplex Operations
 exports.findAllMultiplex = function (req, res) {
@@ -270,6 +272,31 @@ exports.updateMultiplex = function (req, res) {
 }
 
 
+exports.findMultiplexById =  ( req, res ) => {
+    console.log("In Node Backend, finding multiplex by ID", req.body);
+    let data = { data: req.body, request_code: 4 };
+    kafka.make_request('multiplex_request', data, (err, result) => {
+        console.log(result);
+        var resultObject = {
+            successMsg: '',
+            errorMsg: '',
+            data: {}
+        };
+        if(err || result==null) {
+            console.log(err);
+            resultObject.errorMsg = 'Error in finding Multiplex Admin by ID';
+            res.json(resultObject);
+            return;
+        }
+        else {
+            console.log(result);
+            res.json(result);
+            return;
+        }
+    })
+};
+
+
 //Movie Operations
 exports.findAllMovie = function (req, res) {
     console.log("findAllMovie_request : node backend");
@@ -290,6 +317,30 @@ exports.findAllMovie = function (req, res) {
         }
     });
 }
+
+exports.findMovieById =  ( req, res ) => {
+    console.log("In Node Backend, finding movie by ID", req.body);
+    let data = { data: req.body, request_code: 5 };
+    kafka.make_request('movie_request', data, (err, result) => {
+        console.log(result);
+        var resultObject = {
+            successMsg: '',
+            errorMsg: '',
+            data: {}
+        };
+        if(err || result==null) {
+            console.log(err);
+            resultObject.errorMsg = 'Error in finding movie by ID';
+            res.json(resultObject);
+            return;
+        }
+        else {
+            console.log(result);
+            res.json(result);
+            return;
+        }
+    })
+};
 
 exports.createNewMovie = function (req, res) {
     // Post Project API

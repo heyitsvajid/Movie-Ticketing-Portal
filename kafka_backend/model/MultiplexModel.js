@@ -170,6 +170,28 @@ function updateShowTiming(updateShow, callback) {
 
     });
 }
+
+
+function findMultiplexById(id, callback) {
+  console.log('Inside MultiplexModal findMultiplexById')
+  console.log(id.data._id)
+
+  MultiplexModel.findOne({ _id: id.data._id },
+    function (err, multiplex) {
+      if (err) {
+        errHandler(err);
+      }
+      if (multiplex) {
+        console.log('Multiplex found')
+        callback(err, multiplex)
+
+      } else {
+        console.log('Multiplex not found')
+        callback(err, null)
+      }
+
+    });
+}
 //==============================================================================
 /**
 * Export module
@@ -182,7 +204,8 @@ module.exports = {
   findAllMultiplex: findAllMultiplex,
   updateMultiplex: updateMultiplex,
   addShowTiming: addShowTiming,
-  updateShowTiming: updateShowTiming
+  updateShowTiming: updateShowTiming,
+  findMultiplexById:findMultiplexById
   //  deleteUser: deleteUser
 };
 //==============================================================================
