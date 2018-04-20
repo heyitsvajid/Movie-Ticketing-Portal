@@ -28,6 +28,7 @@ class MultiplexForm extends Component {
             row_count: '',
             screens: [],
             multiplexList: [],
+            multiplexAdminList:[],
             update_id: 0
         }
     }
@@ -57,7 +58,8 @@ class MultiplexForm extends Component {
     }
 
     componentWillMount() {
-        this.loadMultiplex()
+        this.loadMultiplex();
+        this.handleFindAllAdmins();
     }
 
     handleSubmit(e) {
@@ -178,6 +180,19 @@ class MultiplexForm extends Component {
             amenities: multiValues.join(',')
         })
     }
+
+    handleFindAllAdmins = () => {
+        let url = envURL+'findallmultiplexadmin';
+        axios.get( url, {withCredentials : true} )
+            .then( (response) => {
+                console.log(response.data);
+
+                this.setState({
+                    multiplexAdminList:response.data.data?response.data.data:[]
+                })
+            } )
+    };
+
 
     handleUserInput = (e) => {
         const name = e.target.name;
@@ -347,14 +362,14 @@ class MultiplexForm extends Component {
                 <hr />
                 <form class="form-horizontal">
                     <div class="form-group">
-                        <label class="col-lg-3 control-label"><strong>Name</strong></label>
+                        <label class="col-lg-3 control-label"><h5>Name</h5></label>
                         <div class="col-lg-5">
                             <input class="form-control" type="text" name="name"
                                 placeholder="Name" required="" value={this.state.name} onChange={this.handleUserInput} />
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-lg-3 control-label"><strong>Address</strong></label>
+                        <label class="col-lg-3 control-label"><h5>Address</h5></label>
                         <div class="col-lg-5">
                             <input class="form-control" type="text" name="address"
                                 placeholder="Address Line" required="" value={this.state.address} onChange={this.handleUserInput} />
@@ -368,7 +383,7 @@ class MultiplexForm extends Component {
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-md-3 control-label"><strong>Contact</strong></label>
+                        <label class="col-md-3 control-label"><h5>Contact</h5></label>
                         <div class="col-md-5">
                             <input class="form-control" type="number" name="contact_number"
                                 placeholder="Contact" required="" value={this.state.contact_number} onChange={this.handleUserInput} />
@@ -377,26 +392,32 @@ class MultiplexForm extends Component {
                     </div>
 
                     <div class="form-group">
-                        <label class="col-md-3 control-label"><strong>Multiplex Owner</strong></label>
+                        <label class="col-md-3 control-label"><h5>Multiplex Owner</h5></label>
                         <div class="col-md-5">
                             <select class="form-control col-sm-5" value={this.state.multiplex_owner_id}
                                 onChange={this.handleUserInput} name="multiplex_owner_id" id="multiplex_owner_id">
-                                <option value="00">Owner</option>
-                                <option value="01">Jan (01)</option>
-                            </select>
+                                   <option value="" disabled>Multiplex Owner</option>
+                                {
+                                    this.state.multiplexAdminList.map(function (admin) {
+                                        return <option key={admin.id}
+                                            value={admin._id}>{admin.first_name} : {admin.email}</option>;
+                                    })
+                                }
+                                      </select>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-lg-3 control-label"><strong>Amenities</strong></label>
+                        <label class="col-lg-3 control-label"><h5>Amenities</h5></label>
                         <div class="col-lg-5">
                             <Creatable amenities={this.state.amenities} multiValueChange={this.multiValueChange.bind(this)} />
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-lg-3 control-label"><strong>Add Multiplex Screens</strong></label>
+                        <label class="col-lg-3 control-label"><h5>Add Multiplex Screens</h5></label>
+ 
                         <div class="col-lg-8">
                             <div class="ml-5 row">
-                                <div class="col-2"> <label class="col-lg-15 control-label"><strong>Seat Count</strong></label>
+                                <div class="col-2"> <label class="col-lg-15 control-label"><h5>Seat Count</h5></label>
                                 </div>
                                 <div class="col-3"> <input class="form-control" type="number" name="seat_count"
                                     placeholder="Seat Count" required="" value={this.state.seat_count} onChange={this.handleUserInput} />
@@ -405,7 +426,7 @@ class MultiplexForm extends Component {
                         </div>
                         <div class="col-lg-8">
                             <div class="ml-5 row">
-                                <div class="col-2"> <label class="col-lg-15 control-label"><strong>Row Count</strong></label>
+                                <div class="col-2"> <label class="col-lg-15 control-label"><h5>Row Count</h5></label>
                                 </div>
                                 <div class="col-3"> <input class="form-control" type="number" name="row_count"
                                     placeholder="Row Count" required="" value={this.state.row_count} onChange={this.handleUserInput} />
@@ -414,6 +435,8 @@ class MultiplexForm extends Component {
                                     value="Add Screen" required="" onClick={this.handleAddScreen.bind(this)} />
 
                             </div>
+                            <div class="ml-5 row">
+                            
                             <div class="mt-2 col-lg-8">
 
                                 <table class="table">
@@ -428,10 +451,11 @@ class MultiplexForm extends Component {
                                     <tbody>
                                         {this.renderScreenRows()}
                                     </tbody></table></div>
-                        </div>
+                        </div></div>
                     </div>
+                    
                     <div class="form-group">
-                        <label class="col-lg-3 control-label"><strong>Multiplex Logo</strong></label>
+                        <label class="col-lg-3 control-label"><h5>Multiplex Logo</h5></label>
                         <div class="col-lg-5">
                             <input type="file" class="form-control" onChange={this._handleChangeFile.bind(this)} />
                         </div>
