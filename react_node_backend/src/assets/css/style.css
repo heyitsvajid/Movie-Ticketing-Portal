@@ -1,0 +1,20 @@
+
+.multiplexadmin {
+    background-color: #555555;
+}
+
+.multiplexadminheader {
+    font-size: 25px;
+}
+
+.form-multiplexadmin {
+    width: 100%;
+    max-width: 450px;
+    padding: 15px;
+    margin: 0 auto;
+}
+
+.multiplexadmincreatebutton {
+    width: 150px;
+    margin-left: 110px;
+}

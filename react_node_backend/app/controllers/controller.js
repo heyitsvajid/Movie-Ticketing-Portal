@@ -36,7 +36,55 @@ exports.createMultiplexAdmin =  ( req, res ) => {
     })
 };
 
+//Finding all multiplex admins
+exports.findAllMultiplexAdmins =  ( req, res ) => {
+    console.log("In Node Backend, finding all multiplex admin", req.body);
+    let data = { data: req.body, request_code: 3};
+    kafka.make_request('multiplexadmin_request', data, (err, result) => {
+        console.log(result);
+        var resultObject = {
+            successMsg: '',
+            errorMsg: '',
+            data: {}
+        };
+        if(err) {
+            console.log(err);
+            resultObject.errorMsg = 'Error in finding all Multiplex Admins';
+            res.json(resultObject);
+            return;
+        }
+        else {
+            console.log(result);
+            res.json(result);
+            return;
+        }
+    })
+};
 
+//Finding multiplex admin by ID
+exports.findMultiplexAdminbyId =  ( req, res ) => {
+    console.log("In Node Backend, finding multiplex admin by ID", req.body);
+    let data = { data: req.body, request_code: 2 };
+    kafka.make_request('multiplexadmin_request', data, (err, result) => {
+        console.log(result);
+        var resultObject = {
+            successMsg: '',
+            errorMsg: '',
+            data: {}
+        };
+        if(err) {
+            console.log(err);
+            resultObject.errorMsg = 'Error in finding Multiplex Admin by ID';
+            res.json(resultObject);
+            return;
+        }
+        else {
+            console.log(result);
+            res.json(result);
+            return;
+        }
+    })
+};
 
 //Multiplex Operations
 exports.addShowTimings = function (req, res) {

@@ -334,7 +334,6 @@ showtiming_consumer.on('message', function (message) {
 
 });
 
-
 //Multiplex Admin
 multiplexadmin_consumer.on('message', function (message) {
     console.log('message received');
@@ -343,7 +342,6 @@ multiplexadmin_consumer.on('message', function (message) {
     console.log('Data after parsing', request_data);
     var finalrequest_body = request_data.data;
     var request_code = request_data.data.request_code;
-    var data;
     console.log("Final Data...", finalrequest_body, request_code );
     //request_code = 1, create a multiplex admin
     if(request_code === 1) {
@@ -372,24 +370,55 @@ multiplexadmin_consumer.on('message', function (message) {
             return;
         });
     }
+
     //request_code = 2, find multiplex admin by id
     else if(request_code === 2) {
-
+        console.log('Data after parsing priting data only', finalrequest_body);
+        UserModal.findMultiplexAdminbyId( finalrequest_body, function(err,res) {
+            console.log('after handle', res);
+            var resultObject = {
+                successMsg: '',
+                errorMsg: '',
+                data: {}
+            };
+            if(err){
+                resultObject.successMsg= '';
+                resultObject.errorMsg= 'Error in finding Multiplex Admin';
+            }else{
+                resultObject.successMsg= 'Successfully found Multiplex Admin by id';
+                resultObject.errorMsg= '';
+                resultObject.data = res ;
+            }
+            let payloads = utility.createPayload(request_data, resultObject);
+            console.log(payloads);
+            console.log('is producer ready : ' + producer.ready);
+            producer.send(payloads, function (err, data) {
+                utility.log(data, err);
+            });
+            return;
+        });
     }
+
     //request_code = 3, find all multiplex admins
     else if(request_code === 3) {
         console.log('Data after parsing priting data only', finalrequest_body);
-        findallmultiplexadmins.handle_request(finalrequest_body, function(err,res) {
+        UserModal.findAllMultiplexAdmins( finalrequest_body, function(err,res) {
             console.log('after handle', res);
-            var payloads = [
-                { topic: request_data.replyTo,
-                    messages:JSON.stringify({
-                        correlationId:request_data.correlationId,
-                        data : res
-                    }),
-                    partition : 0
-                }
-            ];
+            var resultObject = {
+                successMsg: '',
+                errorMsg: '',
+                data: {}
+            };
+            if(err){
+                resultObject.successMsg= '';
+                resultObject.errorMsg= 'Error in finding Multiplex Admin';
+            }else{
+                resultObject.successMsg= 'Successfully found all Multiplex Admins';
+                resultObject.errorMsg= '';
+                resultObject.data = res ;
+            }
+            let payloads = utility.createPayload(request_data, resultObject);
+            console.log(payloads);
             console.log('is producer ready : ' + producer.ready);
             producer.send(payloads, function (err, data) {
                 utility.log(data, err);

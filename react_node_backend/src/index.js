@@ -15,6 +15,7 @@ import './assets/css/bootstrap-responsive.min.css'
 import { createStore } from 'redux';
 import allReducers from './Reducers';
 import { Provider } from 'react-redux';
+import MultiplexAdmin from "./Components/MultiplexAdmin";
 
 const store = createStore(allReducers);
 
@@ -28,6 +29,7 @@ ReactDOM.render(
         <Route exact path="/movies" component={MovieShowTimings} />
         <Route exact path="/login" component={LogIn} />
         <Route exact path="/signup" component={SignUp} />
+          <Route exact path="/multiplexadmin" component = {MultiplexAdmin} />
       </div>
     </Router>
   </Provider>,
