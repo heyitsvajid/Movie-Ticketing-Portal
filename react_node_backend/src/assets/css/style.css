@@ -18,3 +18,11 @@
     width: 150px;
     margin-left: 110px;
 }
+
+.errormessage {
+    width: auto;
+}
+
+.form-control {
+    margin-top: 1em;
+}

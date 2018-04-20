@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import LatestMovies from './LatestMovies';
 import MovieSlider from './MovieSlider';
 
-import '../assets/css/ticketbooking.css'
+// import '../assets/css/ticketbooking.css'
 
 
 class TicketBooking extends Component {

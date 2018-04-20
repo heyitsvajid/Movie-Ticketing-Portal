@@ -6,6 +6,7 @@ var utility = require('./util/util.js');
 var MultiplexModel = require('./model/MultiplexModel');
 var MovieModel = require('./model/MovieModal');
 var UserModal = require('./model/UserModal');
+
 //Kafka Topics
 var user_topic = 'user_request';
 var response_topic = 'response_topic';
@@ -106,7 +107,7 @@ multiplex_consumer.on('message', function (message) {
             }else{
                 resultObject.successMsg= 'Fetching all Multiplexes';
                 resultObject.errorMsg= '';
-                resultObject.data=res;         
+                resultObject.data=res;
             }
             let payloads = utility.createPayload(request_data, resultObject);
             console.log('is producer ready : ' + producer.ready);
@@ -409,10 +410,16 @@ multiplexadmin_consumer.on('message', function (message) {
             if(err){
                 resultObject.successMsg= '';
                 resultObject.errorMsg= 'Error creating Multiplex Admin';
-            }else{
-                resultObject.successMsg= 'Successfully created Multiplex Admin';
-                resultObject.errorMsg= '';
-                resultObject.data=res;
+            }
+            else{
+                if( res.code === 1) {
+                    resultObject.successMsg = '';
+                    resultObject.errorMsg = res.message;
+                }
+                else if (  res.code === 2 ) {
+                    resultObject.successMsg= res.message;
+                    resultObject.errorMsg= '';
+                }
             }
             let payloads = utility.createPayload(request_data, resultObject);
             console.log(payloads);
@@ -504,7 +511,7 @@ review_consumer.on('message', function (message) {
             }else{
                 resultObject.successMsg= 'Review added successfully';
                 resultObject.errorMsg= '';
-                resultObject.data=res;         
+                resultObject.data=res;
             }
             let payloads = utility.createPayload(request_data, resultObject);
             console.log('is producer ready : ' + producer.ready);
@@ -524,7 +531,7 @@ process.on("SIGINT", function () {
     });
     multiplex_consumer.close(true, function () {
         process.exit();
-    });    
+    });
     movie_consumer.close(true, function () {
         process.exit();
     });

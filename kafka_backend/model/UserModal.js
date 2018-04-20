@@ -11,39 +11,61 @@ function errHandler(err) {
 function createMultiplexAdmin( msg, callback) {
 
     console.log("In handle request:"+ JSON.stringify(msg));
+
+    let fname = msg.data.first_name;
+    let lname = msg.data.last_name;
+    let email =  msg.data.email;
+    let pwd = msg.data.password;
+    let add = msg.data.address;
+    let pimagepath = msg.data.profile_image_path;
+    let city = msg.data.city;
+    let state = msg.data.state;
+    let zip = msg.data.zipcode;
+    let phn = msg.data.phone_number;
+    let disable = msg.data.disable;
+    let role = msg.data.role_number;
+
     pool.connect((err, db) => {
         if(err) {
             console.log("Failed connection to mysql");
-            callback(err,"Error connecting to database");
+            errHandler(err);
         }
-        else {
-            //console.log("Connected to MySQL");
-            let sql = 'insert into user ( first_name, last_name, email, password, address, profile_image_path, city, state, zipcode, phone_number, disable , role_number ) values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ';
-            let fname = msg.data.first_name;
-            let lname = msg.data.last_name;
-            let email =  msg.data.email;
-            let pwd = msg.data.password;
-            let add = msg.data.address;
-            let pimagepath = msg.data.profile_image_path;
-            let city = msg.data.city;
-            let state = msg.data.state;
-            let zip = msg.data.zipcode;
-            let phn = msg.data.phone_number;
-            let disable = msg.data.disable;
-            let role = msg.data.role_number;
-
-            db.query( sql ,  [ fname, lname, email, pwd, add, pimagepath, city, state, zip, phn, disable, role ] , (err, result) => {
-                db.release();
-                if(err) {
-                    console.log("Error in inserting user in mysql in creating multiplex admin");
-                    callback(null, 'Error in inserting user in mysql in creating multiplex admin');
+        let sql1 = 'select * from user where email = ? and role_number = ? ';
+        db.query( sql1 , [ email, role ], (err, result) => {
+            if(err) {
+                console.log("Error in checking existing email");
+                errHandler(err);
+            }
+            else {
+                console.log(result);
+                if( result.length > 0 ) {
+                    console.log("Admin with same email already exists", result);
+                    var multiplexAdminObject = {
+                        code : 1,
+                        message : "Admin with same email already exists"
+                    };
+                    callback( null, multiplexAdminObject );
                 }
                 else {
-                    console.log('Created Multiplex Admin', result );
-                    callback(null, 'Multiplex admin created successfully');
+                    let sql2 = 'insert into user ( first_name, last_name, email, password, address, profile_image_path, city, state, zipcode, phone_number, disable , role_number ) values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ';
+                    db.query( sql2 ,  [ fname, lname, email, pwd, add, pimagepath, city, state, zip, phn, disable, role ] , (err, result) => {
+                        db.release();
+                        if(err) {
+                            console.log("Error in inserting user in mysql in creating multiplex admin");
+                            callback(null, 'Error in inserting user in mysql in creating multiplex admin');
+                        }
+                        else {
+                            console.log('Created Multiplex Admin', result );
+                            multiplexAdminObject = {
+                                code : 2 ,
+                                message : "Multiplex admin created successfully"
+                            };
+                            callback(null, multiplexAdminObject );
+                        }
+                    })
                 }
-            })
-        }
+            }
+        })
     })
 
     // pool.getConnection( (err, db) => {

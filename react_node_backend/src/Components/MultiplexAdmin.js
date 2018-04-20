@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import {withRouter} from 'react-router-dom';
 import axios from 'axios';
 import { envURL, reactURL } from '../config/environment';
@@ -22,7 +21,8 @@ class MultiplexAdmin extends Component {
             phone_number : '',
             disable : 0 ,
             role_number : 2,
-            multiplexAdminList:[]
+            multiplexAdminList:[],
+            error : ''
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleCreateUser = this.handleCreateUser.bind(this);
@@ -34,7 +34,8 @@ class MultiplexAdmin extends Component {
     handleChange = (e) => {
         e.preventDefault();
         this.setState({
-                [e.target.name] : e.target.value
+                [e.target.name] : e.target.value,
+                error : ''
             }, () => {
                 console.log(this.state)
             }
@@ -60,10 +61,19 @@ class MultiplexAdmin extends Component {
         };
         axios.post(url, admin, {withCredentials : true} )
             .then( (response) => {
-                console.log(response.data);
-                alert("Multiplex Admin Added Successfully");
-         
-            } )
+                console.log("response from Kafka", response.data );
+                if( response.data.errorMsg !== '' ) {
+                    this.setState({
+                        error : "Email is already used for Multiplex Admin"
+                    })
+                }
+                else if( response.data.successMsg !== '' ) {
+                    console.log(response.data);
+                    alert("Multiplex Admin Added Successfully");
+                    window.location.reload(true);
+                }
+            } );
+
             var that = this;
             setTimeout(function () {
                 that.handleFindAllAdmins()
@@ -139,13 +149,19 @@ class MultiplexAdmin extends Component {
 
                         <form className='form-multiplexadmin' onSubmit={this.handleCreateUser} >
                             <div className='well well-lg'>
+                                <div className='errormessage text-center alert-danger'>
+                                    { this.state.error }
+                                </div>
+                                <br/>
                                 <div className="form-group">
                                     <h5>First Name :</h5>
-                                    <input type="text" onChange={this.handleChange} className="form-control" id="first_name" name='first_name' required />
+                                    <input type="text" onChange={this.handleChange} className="form-control" id="first_name" name='first_name'
+                                           pattern='[A-Za-z]*' title='Please enter valid name' required />
                                 </div>
                                 <div className="form-group">
                                     <h5>Last Name :</h5>
-                                    <input type="text" onChange={this.handleChange} className="form-control" id="last_name" name='last_name' required />
+                                    <input type="text" onChange={this.handleChange} className="form-control" id="last_name" name='last_name'
+                                           pattern='[A-Za-z]*' title='Please enter valid name' required />
                                 </div>
                                 <div className="form-group">
                                     <h5>Email :</h5>
@@ -161,19 +177,23 @@ class MultiplexAdmin extends Component {
                                 </div>
                                 <div className="form-group">
                                     <h5>City :</h5>
-                                    <input type="text" className="form-control" onChange={this.handleChange} id="city" name='city' required />
+                                    <input type="text" className="form-control" onChange={this.handleChange} id="city" name='city'
+                                           pattern='[A-Za-z]*' title='Please enter valid city' required />
                                 </div>
                                 <div className="form-group">
                                     <h5>State :</h5>
-                                    <input type="text" className="form-control" onChange={this.handleChange} id="state" name='state' required />
+                                    <input type="text" className="form-control" onChange={this.handleChange} id="state" name='state'
+                                           pattern='[A-Za-z]*' title='Please enter valid state' required />
                                 </div>
                                 <div className="form-group">
                                     <h5>Zipcode :</h5>
-                                    <input type="number" className="form-control" onChange={this.handleChange} id="zipcode" name='zipcode' required />
+                                    <input type="text" className="form-control" onChange={this.handleChange} id="zipcode" name='zipcode'
+                                           pattern='[0-9]{5}' title='Please enter 5 Digit Zipcode' required />
                                 </div>
                                 <div className="form-group">
                                     <h5>Phone Number :</h5>
-                                    <input type="number" className="form-control" onChange={this.handleChange} id="phone_number" name='phone_number' required />
+                                    <input type="text" className="form-control" onChange={this.handleChange} id="phone_number" name='phone_number'
+                                           pattern='[0-9]{10}' title='Please enter 10 Digit Phone Number' required />
                                 </div>
                             <br/>
                             <button className='btn btn-primary'> Create </button>
