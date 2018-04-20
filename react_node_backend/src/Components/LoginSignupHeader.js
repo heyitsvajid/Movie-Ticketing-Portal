@@ -1,16 +1,40 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import {envURL} from "../config/environment";
 
 class LoginSignupHeader extends Component {
   constructor(props) {
     super(props);
+      this.state = {
+          isLoggedIn: false
+      }
   }
   
   componentWillMount(){
-  
+      axios.get(envURL + 'isLoggedIn', {withCredentials: true})
+          .then((response) => {
+              console.log("After checking the session", response.data);
+              if(response.data.session === 'valid') {
+                  this.setState({
+                      isLoggedIn: true
+                  })
+              }
+          })
   }
 
   render() {
+
+      var changeButtons = null;
+      if(this.props.page === "login") {
+          changeButtons = (
+              <a href="/signup" class = "form-btn">SignUp</a>
+          );
+      } else {
+          changeButtons = (
+              <a href="/login" class = "form-btn">SignIn</a>
+          );
+      }
+
     return (
     <div>
       <div id="header-wrap">
@@ -29,8 +53,9 @@ class LoginSignupHeader extends Component {
           </div>
           <div class="col-md-6">
             <div class=" right">
-              <a href="/fandango-gift-cards" class = "form-btn">SignUp</a> |
-              <a href="/freemovietickets" class = "form-btn">SignIn</a> |
+              {/*<a href="/fandango-gift-cards" class = "form-btn">SignUp</a> |*/}
+              {/*<a href="/freemovietickets" class = "form-btn">SignIn</a> |*/}
+                { changeButtons }
             </div>
           </div>
             

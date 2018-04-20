@@ -7,7 +7,7 @@ import MultiplexForm from './MultiplexForm'
 import MovieForm from './MovieForm'
 import ShowTimingsForm from './ShowTimingsForm'
 import MultiplexAdminForm from './MultiplexAdmin'
-
+import {envURL} from "../config/environment";
 
 
 
@@ -23,25 +23,28 @@ class AdminDashboard extends Component {
             addMultiplexAdmin: false,
             addDashboard: true,
             addUserTracking: false,
-            showTimings: false
+            showTimings: false,
+            isLoggedIn: false,
+            adminEmail: '',
+            adminId: ''
         };
     }
 
     componentWillMount() {
-        let url = 'http://localhost:3001/api/idLoggedIn';
-        axios.get(url, { withCredentials: true })
-            .then(res => {
-                if (res.data.responseCode === 1) {
-                    this.props.history.push('/dashboard')
-                }
-                else {
-                    this.props.history.push('/')
+        axios.get(envURL + 'isLoggedIn', {withCredentials: true})
+            .then((response) => {
+                console.log("After checking the session", response.data);
+                if(response.data.session === 'valid') {
+                    this.setState({
+                        isLoggedIn: true,
+                        adminEmail: response.data.result.email,
+                        adminId: response.data.result.id
+                    }, () => {
+                        console.log("Admin Email:", this.state.adminEmail);
+                        console.log("Admin ID:", this.state.adminId);
+                    })
                 }
             })
-            .catch(err => {
-                console.error(err);
-            });
-
     }
 
     handleLinkClick = (e) => {

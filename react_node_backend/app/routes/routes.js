@@ -8,6 +8,9 @@ module.exports = function (app) {
   //SignUp
   app.post('/signup', api_controller.signup);
 
+  //logout
+  app.post('/logout', api_controller.logout);
+
   //Check Login
   app.get('/isLoggedIn', api_controller.isLoggedIn);
 

@@ -522,21 +522,22 @@ exports.login = function (req, res, next) {
             resultObject.successMsg = user.successMsg;
             resultObject.errorMsg = user.errorMsg;
             resultObject.data = user.data;
+            console.log("In passport authenticate...after forming the resultobject", resultObject);
+            req.session.email = resultObject.data.email;
+            req.session.userid = resultObject.data.id;
+            req.session.first_name = resultObject.data.first_name;
+            req.session.last_name = resultObject.data.last_name;
+            req.session.address = resultObject.data.address;
+            req.session.profile_image_path = resultObject.data.profile_image_path;
+            req.session.city = resultObject.data.city;
+            req.session.state = resultObject.data.state;
+            req.session.zipcode = resultObject.data.zipcode;
+            req.session.phone_number = resultObject.data.phone_number;
+            req.session.disable = resultObject.data.disable;
+            req.session.role_number = resultObject.data.role_number;
+            console.log("Session Started...", req.session);
         }
-        console.log("In passport authenticate...after forming the resultobject", resultObject);
-        req.session.email = resultObject.data.email;
-        req.session.id = resultObject.data.id;
-        req.session.first_name = resultObject.data.first_name;
-        req.session.last_name = resultObject.data.last_name;
-        req.session.address = resultObject.data.address;
-        req.session.profile_image_path = resultObject.data.profile_image_path;
-        req.session.city = resultObject.data.city;
-        req.session.state = resultObject.data.state;
-        req.session.zipcode = resultObject.data.zipcode;
-        req.session.phone_number = resultObject.data.phone_number;
-        req.session.disable = resultObject.data.disable;
-        req.session.role_number = resultObject.data.role_number;
-        console.log("Session Started...", req.session);
+
         res.json(resultObject);
 
 
@@ -572,7 +573,7 @@ exports.isLoggedIn = function (req, res) {
     if(req.session.email) {
         console.log("Session is still valid", req.session);
         var data = {
-            id: req.session.id,
+            id: req.session.userid,
             email: req.session.email,
             first_name: req.session.first_name,
             last_name: req.session.last_name,
@@ -585,11 +586,11 @@ exports.isLoggedIn = function (req, res) {
             disable: req.session.disable,
             role_number: req.session.role_number
         }
-        res.json(data);
+        res.json({"session": "valid" , "result": data});
     }
     else {
         console.log("Session is invalid");
-        res.json("Session Invalid...Please Login Again");
+        res.json({"session": "invalid" , "result": []});
     }
 
     // if (req.isAuthenticated()) {
@@ -622,9 +623,9 @@ exports.isLoggedIn = function (req, res) {
 exports.logout = function (req, res) {
     console.log('Destroying Session');
     console.log('Session Destroyed');
-    req.logout();
+    //req.logout();
     req.session.destroy();
-    res.send('Logout');
+    res.json({"session":"logged out"});
     return;
 };
 

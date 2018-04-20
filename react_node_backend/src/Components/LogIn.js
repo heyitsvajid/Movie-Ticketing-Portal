@@ -14,7 +14,8 @@ class SignIn extends Component {
         this.state = {
             username: '',
             password: '',
-            isLoggedIn: false
+            isLoggedIn: false,
+            errorMsg: ''
         }
         this.handleUsernameChange = this.handleUsernameChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
@@ -25,53 +26,85 @@ class SignIn extends Component {
         axios.get(envURL + 'isLoggedIn', {withCredentials: true})
             .then((response) => {
                 console.log("After checking the session", response.data);
+                if(response.data.session === 'valid') {
+                    this.props.history.push('/');
+                }
             })
     }
 
     handleUsernameChange(e) {
         e.preventDefault();
         this.setState({
-            username: e.target.value
+            username: e.target.value,
+            errorMsg: ''
         })
     }
 
     handlePasswordChange(e) {
         e.preventDefault();
         this.setState({
-            password: e.target.value
+            password: e.target.value,
+            errorMsg: ''
         })
     }
 
     handleLogin(e) {
         e.preventDefault();
-        console.log("In Login" + this.state.username + this.state.password);
-        var user = {
-            username: this.state.username,
-            password: this.state.password
-        }
-        axios.post(envURL + 'login', user, { withCredentials: true})
-            .then((response) => {
-                console.log("In Login Component handleLogin",response.data);
-                if(response.data.errorMsg === '') {
-                    alert("User logging in...");
-                    this.setState({
-                        username: response.data.email,
-                        isLoggedIn: true
-                    }) //redirect to userhome from here
-                } else {
-                    alert("Correct your username and password");
-                }
 
+        //validation of email
+        var patt = new RegExp('[a-zA-Z0-9]+[@][a-zA-Z0-9]+[.][a-zA-Z]+');
+        var res = patt.test(this.state.username);
+        if(res && this.state.password.length > 0) {
+            //alert("Valid Email");
+            console.log("In Login" + this.state.username + this.state.password);
+            var user = {
+                username: this.state.username,
+                password: this.state.password
+            }
+            axios.post(envURL + 'login', user, { withCredentials: true})
+                .then((response) => {
+                    console.log("In Login Component handleLogin",response.data);
+                    if(response.data.errorMsg === '') {
+                        //alert("User logging in...");
+                        this.setState({
+                            username: response.data.email,
+                            role_number: response.data.role_number,
+                            isLoggedIn: true,
+                            errorMsg: 'Login SuccessFull'
+                        }, () => {
+                            if(this.state.role_number === 1) {
+                                this.props.history.push('/');
+                            } else {
+                                this.props.history.push('/adminDashboard');
+                            }
+
+                        }) //redirect to userhome from here
+                    } else {
+                        //alert("Correct your username and password");
+                        this.setState({
+                            errorMsg: 'Invalid Username Or Password'
+                        })
+                    }
+
+                })
+        } else {
+            //alert("Invalid Email or Password length is < 8");
+            this.setState({
+                errorMsg: 'Invalid Email or password'
             })
+        }
+
+
     }
 
     renderRows() {
 
     }
     render() {
+
         return (
             <div>
-            <LoginSignupHeader/>
+            <LoginSignupHeader page="login"/>
             <div id="partner-band"></div>
             <div class="site-wrap signin vipsignin">
                 <form method="post" action="/account/signin?from=%2F" id="Form1">
@@ -94,10 +127,13 @@ class SignIn extends Component {
                                         <div class="sub-panel">
                                             <p class="join-header">FANDANGO<span class="page-header-emphasis">VIP</span>
                                             </p>
-                                            
-                                            <div id="ErrorMessageWrapper" class=" hide">
-                                                <div id="signin-error" class="error-msg"></div>
-                                            </div>
+                                            <br />
+
+                                            {/*<div id="ErrorMessageWrapper" class=" hide">*/}
+                                                <div id="signin-error" class="error-msg">
+                                                    { this.state.errorMsg }
+                                                </div>
+                                            {/*</div>*/}
                                             <label for="UsernameBox">Email Address</label>
                                             <input name="ctl00$GlobalBody$SignOnControl$UsernameBox" onChange={ this.handleUsernameChange } type="text" id="UsernameBox" />
                                             <label for="PasswordBox">Password</label>

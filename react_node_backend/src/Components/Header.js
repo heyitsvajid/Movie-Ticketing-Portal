@@ -1,16 +1,59 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import {envURL} from "../config/environment";
+import { withRouter } from 'react-router-dom';
 
 class Header extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+        isLoggedIn: false
+    }
+
+      this.handleLogout = this.handleLogout.bind(this);
   }
   
   componentWillMount(){
-  
+      axios.get(envURL + 'isLoggedIn', {withCredentials: true})
+          .then((response) => {
+              console.log("After checking the session", response.data);
+              if(response.data.session === 'valid') {
+                  this.setState({
+                      isLoggedIn: true
+                  })
+              }
+          })
   }
 
+  handleLogout() {
+      //alert("In handleLogout");
+      axios.post(envURL + 'logout', null, { withCredentials: true })
+          .then((response) => {
+              console.log(response.data);
+              if(response.data.session === 'logged out') {
+                  this.setState({
+                      isLoggedIn: false
+                  }, () => {
+                      this.props.history.push('/');
+                  })
+              }
+          })
+  }
+
+
   render() {
+
+    var changeButtons = null;
+    if(this.state.isLoggedIn === false) {
+        changeButtons = (
+            <a href="/login" className="hide-logged-in">Sign In</a>
+        );
+    } else {
+        changeButtons = (
+            <a href="/" onClick={ this.handleLogout } className="hide-logged-in">Sign Out</a>
+        );
+    }
+
     return (
     <div>
       <div id="brand-bar" class="hide-on-mobile">
@@ -19,8 +62,9 @@ class Header extends Component {
             <a href="/fandango-gift-cards">Gift Cards</a> |
             <a href="/freemovietickets">Offers</a> |
             {/*<a href="https://www.fandango.com/account/signin?from=%2F" class="hide-logged-in">Sign In</a>*/}
-            <a href="/login" class="hide-logged-in">Sign In</a>
-            <a href="/signout" class="show-logged-in">Sign Out</a>
+            {/*<a href="/login" class="hide-logged-in">Sign In</a>*/}
+            {/*<a href="/signout" class="show-logged-in">Sign Out</a>*/}
+              { changeButtons }
           </div>
         </div>
       </div>
@@ -485,5 +529,5 @@ class Header extends Component {
   }
 }
 
-export default Header;
+export default withRouter(Header);
 
