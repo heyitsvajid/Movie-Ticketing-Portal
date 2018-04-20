@@ -27,7 +27,7 @@ class ShowTimingsForm extends Component {
             movie_id: '',
             adult: 0,
             child: 0,
-            disabled: 0 ,
+            disabled: 0,
             update_id: 0,
         }
     }
@@ -45,7 +45,7 @@ class ShowTimingsForm extends Component {
                     //also change in loadSHowTimings
                     this.setState({
                         multiplex: res.data.data[0],
-                        showTimingList:res.data.data[0].show_timings
+                        showTimingList: res.data.data[0].show_timings
                     })
                 } else {
                     console.error('Error Fetching all multiplex');
@@ -102,11 +102,11 @@ class ShowTimingsForm extends Component {
         });
         this.state.movieList.forEach(element => {
             if (element._id == this.state.movie_id) {
-                var movie={
-                    title:element.title,
-                    _id:element._id,
-                    release_date:element.release_date,
-                    movie_logo:element.movie_logo
+                var movie = {
+                    title: element.title,
+                    _id: element._id,
+                    release_date: element.release_date,
+                    movie_logo: element.movie_logo
                 }
                 show_timings.movie = movie;
             }
@@ -117,7 +117,7 @@ class ShowTimingsForm extends Component {
             }
         });
         debugger
-        var apiPayload = {show: show_timings, _id: this.state.multiplex._id};
+        var apiPayload = { show: show_timings, _id: this.state.multiplex._id };
         axios.post(addShowTimingsAPI, apiPayload)
             .then(res => {
                 if (res.data.errorMsg != '') {
@@ -132,7 +132,7 @@ class ShowTimingsForm extends Component {
                         title: 'Add Show',
                         text: res.data.successMsg,
                     })
-                }    
+                }
             })
             .catch(err => {
                 console.error(err);
@@ -160,16 +160,16 @@ class ShowTimingsForm extends Component {
                     console.log(res.data.data);
                     this.setState({
                         multiplex: res.data.data[0],
-                        showTimingList:res.data.data[0].show_timings
+                        showTimingList: res.data.data[0].show_timings
                     })
-               } else {
+                } else {
                     console.error('Error Fetching all show timings');
                 }
             })
             .catch(err => {
                 console.error(err);
             });
-  }
+    }
 
 
     handleUserInput = (e) => {
@@ -189,7 +189,8 @@ class ShowTimingsForm extends Component {
                     <td>{item.seats_left}</td>
                     <td><input type="button" class="btn-link"
                         value="Update" required="" id={item._id} onClick={this.handleShowTimingsUpdate.bind(this)} />
-                     
+                        <input type="button" class="btn-link"
+                            value="add review" required="" onClick={this.addReview.bind(this)} />
 
                     </td>
                 </tr>
@@ -226,7 +227,8 @@ class ShowTimingsForm extends Component {
         let updateShowTimingsAPI = envURL + 'updateShowTimings';
 
         let show_timings =
-            {   _id:this.state.update_id,
+            {
+                _id: this.state.update_id,
                 screen_number: this.state.screen_number,
                 date_time: this.state.date_time.format('LLLL'),
                 sort_field: (new Date(this.state.date_time._d)).getTime(),
@@ -241,11 +243,11 @@ class ShowTimingsForm extends Component {
         });
         this.state.movieList.forEach(element => {
             if (element._id == this.state.movie_id) {
-                var movie={
-                    title:element.title,
-                    _id:element._id,
-                    release_date:element.release_date,
-                    movie_logo:element.movie_logo
+                var movie = {
+                    title: element.title,
+                    _id: element._id,
+                    release_date: element.release_date,
+                    movie_logo: element.movie_logo
                 }
                 show_timings.movie = movie;
             }
@@ -255,7 +257,7 @@ class ShowTimingsForm extends Component {
                 show_timings.seats_left = element.seat_count;
             }
         });
-        var apiPayload = {show: show_timings, _id: this.state.multiplex._id};
+        var apiPayload = { show: show_timings, _id: this.state.multiplex._id };
         axios.post(updateShowTimingsAPI, apiPayload)
             .then(res => {
                 if (res.data.errorMsg != '') {
@@ -270,7 +272,7 @@ class ShowTimingsForm extends Component {
                         title: 'Update Show Time',
                         text: res.data.successMsg,
                     })
-                }    
+                }
             })
             .catch(err => {
                 console.error(err);
@@ -290,7 +292,7 @@ class ShowTimingsForm extends Component {
 
     }
     handleShowTimingsUpdate(e) {
-        e ? e.preventDefault() : ''        
+        e ? e.preventDefault() : ''
         this.state.showTimingList.forEach(element => {
             if (element._id == e.target.id) {
                 this.setState({
@@ -323,7 +325,7 @@ class ShowTimingsForm extends Component {
                     <div class="form-group">
                         <label class="col-lg-3 control-label"><h5>Multiplex : </h5></label>
                         <div class="col-lg-5">
-                        {this.state.multiplex.name}
+                            {this.state.multiplex.name}
                         </div>
                     </div>
                     <div class="form-group">
@@ -415,6 +417,38 @@ class ShowTimingsForm extends Component {
         });
     }
 
+    addReview() {
+        var review = {
+            rating: 4,
+            review: "sdjbsdljvbsjkdvb",
+            user_id: 12,
+            user_name: "Vajid"
+        }
+
+        var apiPayload = { review: review, movie_id: 2 };
+        let addShowTimingsAPI = envURL + 'addMovieReview';
+
+        axios.post(addShowTimingsAPI, apiPayload)
+            .then(res => {
+                if (res.data.errorMsg != '') {
+                    swal({
+                        type: 'error',
+                        title: 'Add Show Time',
+                        text: res.data.errorMsg,
+                    })
+                } else if (res.data.successMsg != '') {
+                    swal({
+                        type: 'success',
+                        title: 'Add Show',
+                        text: res.data.successMsg,
+                    })
+                }
+            })
+            .catch(err => {
+                console.error(err);
+            });
+
+    }
 
 }
 
