@@ -12,7 +12,7 @@ var response_topic = 'response_topic';
 var multiplex_topic = 'multiplex_request'
 var movie_topic = 'movie_request'
 var showtiming_topic = 'showtiming_request';
-
+var review_topic = 'review_request';
 
 
 //Producer
@@ -28,6 +28,8 @@ var multiplex_consumer = connection.getConsumer(multiplex_topic);
 var movie_consumer = connection.getConsumer(movie_topic);
 var showtiming_consumer = connection.getConsumer(showtiming_topic);
 var multiplexadmin_consumer = connection.getConsumer('multiplexadmin_request');
+var review_consumer = connection.getConsumer(review_topic);
+
 
 //Login Consumer
 user_consumer.on('message', function (message) {
@@ -430,6 +432,40 @@ multiplexadmin_consumer.on('message', function (message) {
 
 });
 
+
+//Movie Reviews Consumer
+review_consumer.on('message', function (message) {
+    console.log('Kafka Server review_consumer : message received');
+    var request_data = JSON.parse(message.value);
+    console.log(request_data);
+    if (request_data.data.request_code == 1) {
+        MovieModel.addMovieReview(request_data.data,function (err, res) {
+            var resultObject = {
+                successMsg: '',
+                errorMsg: '',
+                data: {}
+            }
+            console.log('Kafka Server : after handle');
+            console.log(res);
+            if(err){
+                resultObject.successMsg= '';
+                resultObject.errorMsg= 'Error adding review';
+            }else{
+                resultObject.successMsg= 'Review added successfully';
+                resultObject.errorMsg= '';
+                resultObject.data=res;         
+            }
+            let payloads = utility.createPayload(request_data, resultObject);
+            console.log('is producer ready : ' + producer.ready);
+            producer.send(payloads, function (err, data) {
+                utility.log(data, err);
+            });
+            return;
+        });
+    }
+});
+
+
 console.log('server is running');
 process.on("SIGINT", function () {
     multiplexadmin_consumer.close(true, function () {
@@ -439,6 +475,15 @@ process.on("SIGINT", function () {
         process.exit();
     });    
     movie_consumer.close(true, function () {
+        process.exit();
+    });
+    review_consumer.close(true, function () {
+        process.exit();
+    });
+    showtiming_consumer.close(true, function () {
+        process.exit();
+    });
+    user_consumer.close(true, function () {
         process.exit();
     });
 

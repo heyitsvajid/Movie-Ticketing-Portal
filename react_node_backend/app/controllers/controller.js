@@ -86,6 +86,27 @@ exports.findMultiplexAdminbyId =  ( req, res ) => {
     })
 };
 
+//Movie Reviews
+exports.addMovieReview= function (req, res) {
+    console.log("addMovieReview_request : node backend");
+    let data = { data: req.body, request_code: 1 };
+    console.log(data);
+    kafka.make_request('review_request', data, function (err, results) {
+        console.log('Kafka Response:');
+        console.log(results);
+        if (err) {
+            console.log('Controller : Error Occurred : ');
+            console.log(err);
+            res.json(results);
+        }
+        else {
+            res.json(results);
+            return;
+        }
+    });
+}
+
+
 //Multiplex Operations
 exports.addShowTimings = function (req, res) {
     console.log("addShowTimings_request : node backend");
@@ -442,11 +463,7 @@ exports.login = function (req, res, next) {
             errorMsg: 'Error Signing user in',
             data: {}
         }
-        if(err) {
-            resultObject.successMsg = '';
-            resultObject.errorMsg = 'Error Signing user in';
-        }
-        else if(user == false) {
+        if(err || user == false) {
             resultObject.successMsg = '';
             resultObject.errorMsg = 'Error Signing user in';
         }
@@ -496,25 +513,7 @@ exports.signup = function (req, res) {
     });
 }
 
-exports.getprofile = function (req, res) {
-    console.log("getprofile_request : node backend");
 
-    let data = req.body;
-    console.log(data);
-    kafka.make_request('getprofile_request', data, function (err, results) {
-        console.log('Kafka Response:');
-        console.log(results);
-        if (err) {
-            console.log('Controller : Error Occurred : ');
-            console.log(err);
-            res.json(results);
-        }
-        else {
-            res.json(results);
-            return;
-        }
-    });
-}
 
 //method converted
 exports.isLoggedIn = function (req, res) {

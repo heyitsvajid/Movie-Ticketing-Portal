@@ -41,17 +41,17 @@ module.exports = function (app) {
   //update Show Timings  
   app.post('/updateShowTimings', api_controller.updateShowTimings);
 
-    //Creating Multiplex Admin
-    app.post('/createmultiplexadmin', api_controller.createMultiplexAdmin);
+  //Creating Multiplex Admin
+  app.post('/createmultiplexadmin', api_controller.createMultiplexAdmin);
 
-    //Finding All Multiplex Admins
-    app.get('/findallmultiplexadmin', api_controller.findAllMultiplexAdmins);
+  //Finding All Multiplex Admins
+  app.get('/findallmultiplexadmin', api_controller.findAllMultiplexAdmins);
 
-    //Finding All Multiplex Admins by ID
-    app.post('/findmultiplexadminbyid', api_controller.findMultiplexAdminbyId);
+  //Finding All Multiplex Admins by ID
+  app.post('/findmultiplexadminbyid', api_controller.findMultiplexAdminbyId);
 
   //Add Movie Review
-  //app.post('/addMovieReview', api_controller.addMovieReview);
+  app.post('/addMovieReview', api_controller.addMovieReview);
 
 
 }
