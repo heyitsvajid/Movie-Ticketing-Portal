@@ -536,3 +536,71 @@ a.dark{
   width: 40px !important;
   margin-left: 5px;
 }
+
+.header-ul{
+  margin-top: 1% !important;
+}
+
+ul#global-menu {
+  margin-top: 1.2% !important;
+}
+
+div.header-class {
+    background-color: rgba(51,51,51,.95) !important;
+}
+
+#search-form{
+  background-color: rgba(51,51,51,.95);
+}
+
+.section-header{
+  font-weight: bolder;
+}
+
+.tickets-h2{
+  font-size: 18px !important;
+  font-weight: bolder;
+}
+
+.input_txt {
+  max-width: 40px;
+  text-align: center;
+  font-size: 16px !important;
+}
+
+.sub{
+  border-style: none !important;
+}
+
+.buttonContainer {
+  border-top: 1px solid #ccc;
+  padding-top: 25px;
+  margin-top: 20px;
+}
+
+section.offers {
+  margin-top: 25px;
+  padding-top: 25px;
+  border-top: 1px solid #ccc;
+}
+
+.offerHeading{
+  font-size: 18px !important;
+  font-weight: bolder;
+}
+
+h3#movieTitle {
+  font-size: 16px !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-weight: bolder !important;
+  margin: 0;
+  line-height: 23px;
+}
+
+input.sub {
+  margin-top: -1px !important;
+}
+
+.page.registration.authentication-form {
+  background-color: black !important;
+}

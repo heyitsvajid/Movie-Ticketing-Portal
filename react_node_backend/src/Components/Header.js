@@ -68,7 +68,7 @@ class Header extends Component {
           </div>
         </div>
       </div>
-      <div id="header-wrap">
+      <div id="header-wrap" class= "header-class">
         <header id="global-header" role="banner">
           <nav class="row" role="navigation">
             <i class="left icon grip"></i>
@@ -80,7 +80,7 @@ class Header extends Component {
                 <a class="icon left fandango-logo" href="/">Fandango</a>
               </li>
               <li id="global-search">
-                <form action="/search" autocomplete="off" role="search" novalidate>
+              <form id = "search-form" action="/search" autocomplete="off" role="search" novalidate>
                   <div class="fan-autocomplete">
                     <div class="fan-autocomplete-results"></div>
                     <input class="fan-input style-search" type="text" name="q" placeholder="Enter City + State, ZIP Code, or Movie" />
@@ -91,7 +91,7 @@ class Header extends Component {
                 </form>
               </li>
             </ul>
-            <ul id="global-menu" class="inline-items tablet-width-100 right nonstandard-width">
+            <ul id="global-menu" class="inline-items tablet-width-100 right nonstandard-width header-ul">
               <li id="movies-tab" class="tablet-width-20 nonstandard-width">
                 <section class="has-dropdown">
                   <h3><a href="/moviesintheaters">Movies</a></h3>
