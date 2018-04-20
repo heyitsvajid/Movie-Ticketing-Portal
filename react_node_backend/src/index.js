@@ -1,10 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import LogIn from './Components/LogIn';
-import SignUp from './Components/SignUp';
 import Layout from './Components/Layout';
 import Index from './Components/Index';
-import AdminLogin from './Components/AdminLogin';
 import AdminDashboard from './Components/AdminDashboard';
 import MovieShowTimings from './Components/MovieShowTimings';
 
@@ -24,11 +22,9 @@ ReactDOM.render(
     <Router>
       <div>
       <Route exact path="/adminDashboard" component={AdminDashboard} />
-      <Route exact path="/adminlogin" component={AdminLogin} />
         <Route exact path="/" component={Index} />
         <Route exact path="/movies" component={MovieShowTimings} />
         <Route exact path="/login" component={LogIn} />
-        <Route exact path="/signup" component={SignUp} />
           <Route exact path="/multiplexadmin" component = {MultiplexAdmin} />
       </div>
     </Router>
