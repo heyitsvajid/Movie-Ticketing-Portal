@@ -62,6 +62,17 @@ class MovieForm extends Component {
     }
 
     handleSubmit(e) {
+
+
+        if(localStorage.getItem('roleId')!='3'){
+            swal({
+                type: 'error',
+                title: 'Add Multiplex',
+                text: 'Access Denied.',
+            })
+        }
+        else{
+
         e ? e.preventDefault() : ''
         var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
         var regex = new RegExp(expression);
@@ -134,7 +145,7 @@ class MovieForm extends Component {
         var that = this;
         setTimeout(function () {
             that.loadMovies()
-        }, 2000);
+        }, 2000);}
     }
 
     loadMovies() {

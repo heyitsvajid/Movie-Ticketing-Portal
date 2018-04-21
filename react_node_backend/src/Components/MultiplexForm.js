@@ -64,91 +64,99 @@ class MultiplexForm extends Component {
 
     handleSubmit(e) {
         e ? e.preventDefault() : ''
-        if (!this.state.name || !this.state.address || !this.state.state_name || !this.state.city || !this.state.zipcode
-            || !this.state.multiplex_owner_id || !this.state.amenities || !this.state.screens.length > 0 || !this.state.file) {
+        if(localStorage.getItem('roleId')!='3'){
             swal({
                 type: 'error',
                 title: 'Add Multiplex',
-                text: 'Provide all fields.',
+                text: 'Access Denied.',
             })
-            return;
         }
-        if (!this.state.zipcode.match(/(^\d{5}$)|(^\d{5}-\d{4}$)/i)) {
-            swal({
-                type: 'error',
-                title: 'Add Multiplex',
-                text: 'Invalid Zipcode',
-            })
-            return;
-        }
-        if (!(this.state.contact_number.length == 10)) {
-            swal({
-                type: 'error',
-                title: 'Add Multiplex',
-                text: 'Invalid Contact Number',
-            })
-            return;
-        }
-        let createNewMultiplexAPI = envURL + 'createNewMultiplex';
-        var multiplex = {
-            name: this.state.name,
-            address: this.state.address,
-            city: this.state.city,
-            state: this.state.state_name,
-            zipcode: this.state.zipcode,
-            contact_number: this.state.contact_number,
-            multiplex_owner_id: this.state.multiplex_owner_id,
-            amenities: this.state.amenities,
-            screen: JSON.stringify(this.state.screens),
-        }
-
-        const formData = new FormData();
-        formData.append('file', this.state.file);
-        for (var key in multiplex) {
-            formData.append(key, multiplex[key]);
-        }
-        const config = {
-            headers: {
-                'content-type': 'multipart/form-data'
-            }
-        }
-        post(createNewMultiplexAPI, formData, config).then(function (res) {
-            if (res.data.errorMsg != '') {
+        else{
+            if (!this.state.name || !this.state.address || !this.state.state_name || !this.state.city || !this.state.zipcode
+                || !this.state.multiplex_owner_id || !this.state.amenities || !this.state.screens.length > 0 || !this.state.file) {
                 swal({
                     type: 'error',
                     title: 'Add Multiplex',
-                    text: res.data.errorMsg,
+                    text: 'Provide all fields.',
                 })
-            } else if (res.data.successMsg != '') {
-                swal({
-                    type: 'success',
-                    title: 'Add Multiplex',
-                    text: res.data.successMsg,
-                })
+                return;
             }
-        });
-        this.setState({
-            update: false,
-            file: '',
-            name: '',
-            address: '',
-            city: '',
-            state_name: '',
-            zipcode: '',
-            contact_number: '',
-            multiplex_owner_id: '',
-            amenities: '',
-            seat_count: '',
-            row_count: '',
-            screens: [],
-            multiplexList: [],
-            update_id: 0
-        });
-        var that = this;
-        setTimeout(function () {
-        }, 2000);
-
-
+            if (!this.state.zipcode.match(/(^\d{5}$)|(^\d{5}-\d{4}$)/i)) {
+                swal({
+                    type: 'error',
+                    title: 'Add Multiplex',
+                    text: 'Invalid Zipcode',
+                })
+                return;
+            }
+            if (!(this.state.contact_number.length == 10)) {
+                swal({
+                    type: 'error',
+                    title: 'Add Multiplex',
+                    text: 'Invalid Contact Number',
+                })
+                return;
+            }
+            let createNewMultiplexAPI = envURL + 'createNewMultiplex';
+            var multiplex = {
+                name: this.state.name,
+                address: this.state.address,
+                city: this.state.city,
+                state: this.state.state_name,
+                zipcode: this.state.zipcode,
+                contact_number: this.state.contact_number,
+                multiplex_owner_id: this.state.multiplex_owner_id,
+                amenities: this.state.amenities,
+                screen: JSON.stringify(this.state.screens),
+            }
+    
+            const formData = new FormData();
+            formData.append('file', this.state.file);
+            for (var key in multiplex) {
+                formData.append(key, multiplex[key]);
+            }
+            const config = {
+                headers: {
+                    'content-type': 'multipart/form-data'
+                }
+            }
+            post(createNewMultiplexAPI, formData, config).then(function (res) {
+                if (res.data.errorMsg != '') {
+                    swal({
+                        type: 'error',
+                        title: 'Add Multiplex',
+                        text: res.data.errorMsg,
+                    })
+                } else if (res.data.successMsg != '') {
+                    swal({
+                        type: 'success',
+                        title: 'Add Multiplex',
+                        text: res.data.successMsg,
+                    })
+                }
+            });
+            this.setState({
+                update: false,
+                file: '',
+                name: '',
+                address: '',
+                city: '',
+                state_name: '',
+                zipcode: '',
+                contact_number: '',
+                multiplex_owner_id: '',
+                amenities: '',
+                seat_count: '',
+                row_count: '',
+                screens: [],
+                multiplexList: [],
+                update_id: 0
+            });
+            var that = this;
+            setTimeout(function () {
+            }, 2000);
+    
+        }
     }
 
     loadMultiplex() {
@@ -186,7 +194,6 @@ class MultiplexForm extends Component {
         axios.get( url, {withCredentials : true} )
             .then( (response) => {
                 console.log(response.data);
-
                 this.setState({
                     multiplexAdminList:response.data.data?response.data.data:[]
                 })
@@ -400,7 +407,7 @@ class MultiplexForm extends Component {
                                 {
                                     this.state.multiplexAdminList.map(function (admin) {
                                         return <option key={admin.id}
-                                            value={admin._id}>{admin.first_name} : {admin.email}</option>;
+                                            value={admin.id}>{admin.first_name} : {admin.email}</option>;
                                     })
                                 }
                                       </select>

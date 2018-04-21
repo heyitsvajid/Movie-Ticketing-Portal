@@ -7,7 +7,7 @@ import MultiplexForm from './MultiplexForm'
 import MovieForm from './MovieForm'
 import ShowTimingsForm from './ShowTimingsForm'
 import MultiplexAdminForm from './MultiplexAdmin'
-import {envURL} from "../config/environment";
+import { envURL } from "../config/environment";
 
 
 
@@ -16,7 +16,6 @@ class AdminDashboard extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: localStorage.getItem('adminEmail') ? localStorage.getItem('adminEmail') : '',
             password: '',
             addMovie: false,
             addMultiplex: false,
@@ -26,22 +25,45 @@ class AdminDashboard extends Component {
             showTimings: false,
             isLoggedIn: false,
             adminEmail: '',
-            adminId: ''
+            adminId: '',
+            roleId: ''
         };
+        this.handleLogout = this.handleLogout.bind(this);
+
     }
 
     componentWillMount() {
-        axios.get(envURL + 'isLoggedIn', {withCredentials: true})
+        axios.get(envURL + 'isLoggedIn', { withCredentials: true })
             .then((response) => {
                 console.log("After checking the session", response.data);
-                if(response.data.session === 'valid') {
+                if (response.data.session === 'valid') {
                     this.setState({
                         isLoggedIn: true,
                         adminEmail: response.data.result.email,
-                        adminId: response.data.result.id
+                        adminId: response.data.result.id,
+                        roleId: response.data.result.role_number
                     }, () => {
                         console.log("Admin Email:", this.state.adminEmail);
                         console.log("Admin ID:", this.state.adminId);
+                        if(this.state.roleId==3){
+                            localStorage.setItem('admin_name','Fandango Admin')
+                        }
+                        else{
+                            localStorage.setItem('admin_name','Admin')     
+                        }
+                        //From Vajid : Never remove this setState from here 
+                        this.setState({
+                            admin_name:localStorage.getItem('admin_name')
+                        })
+                        localStorage.setItem('roleId',this.state.roleId)
+                        localStorage.setItem('adminId',this.state.adminId)
+                    })
+                }
+                else{
+                    this.setState({
+                        isLoggedIn: false
+                    }, () => {
+                        this.props.history.push('/');
                     })
                 }
             })
@@ -56,7 +78,7 @@ class AdminDashboard extends Component {
             addMultiplex: e.currentTarget.value == 4,
             addMultiplexAdmin: e.currentTarget.value == 5,
             showTimings: e.currentTarget.value == 6,
-            
+
         })
         console.log(this.state);
     }
@@ -89,63 +111,68 @@ class AdminDashboard extends Component {
         let addMultiplex = 4;
         let addMultiplexAdmin = 5;
         let showTimings = 6;
-        var abc = require('../images/fandango_logo.png' + '')
         return (
             <body class="sticky-footer bg-dark fixed-nav" id="page-top">
                 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
                     <a class="navbar-brand" href="index.html">
                         {/* <img className='logo mb-5' src={abc} alt='IMG' width='auto' height='45px' /> */}
-                        Fandango Admin
+                        {localStorage.getItem('admin_name')}
                     </a>
                     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarResponsive">
                         <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+                        {localStorage.getItem('roleId')==3?
                             <li class="nav-item" value={addDashboard} onClick={this.handleLinkClick.bind(this)} data-toggle="tooltip" data-placement="right" title="" data-original-title="Dashboard">
                                 <a class="nav-link" href="index.html">
                                     <i class="fa fa-fw fa-dashboard"></i>
-                                    <span class="nav-link-text">Dashboard</span>
+                                    <span class="nav-link-text">Analytics Dashboard</span>
                                 </a>
-                            </li>
+                            </li>:''}
+                            {localStorage.getItem('roleId')==3?
                             <li class="nav-item" data-toggle="tooltip" data-placement="right" title="" data-original-title="Charts">
                                 <a class="nav-link" href="charts.html">
                                     <i class="fa fa-fw fa-area-chart"></i>
-                                    <span class="nav-link-text">User Tracking</span>
+                                    <span class="nav-link-text">User Tracking Dashboard</span>
                                 </a>
-                            </li>
+                            </li>:''}
+                            {localStorage.getItem('roleId')==3?
                             <li class="nav-item" value={addMultiplexAdmin} onClick={this.handleLinkClick.bind(this)} data-toggle="tooltip" data-placement="right" title="" data-original-title="Link">
                                 <a class="nav-link" href="#" >
                                     <i class="fa fa-fw fa-link"></i>
-                                    <span class="nav-link-text">Add Multiplex Admin</span>
+                                    <span class="nav-link-text">Multiplex Admin Dashboard</span>
                                 </a>
-                            </li>
+                            </li>:''}                          
+                            {localStorage.getItem('roleId')==3?
                             <li class="nav-item" value={addMultiplex} onClick={this.handleLinkClick.bind(this)} data-toggle="tooltip" data-placement="right" title="" data-original-title="Link">
                                 <a class="nav-link" href="#" >
                                     <i class="fa fa-fw fa-link"></i>
-                                    <span class="nav-link-text">Add Multiplex</span>
+                                    <span class="nav-link-text">Multiplex Dashboard</span>
                                 </a>
-                            </li>
+                            </li>:''}
                             <li class="nav-item" value={addMovie} onClick={this.handleLinkClick.bind(this)} data-toggle="tooltip" data-placement="right" title="" data-original-title="Link">
                                 <a class="nav-link" href="#">
                                     <i class="fa fa-fw fa-link"></i>
-                                    <span class="nav-link-text">Add Movie</span>
-                                </a>
-                            </li>
-                            <li class="nav-item" value={showTimings} onClick={this.handleLinkClick.bind(this)} data-toggle="tooltip" data-placement="right" title="" data-original-title="Link">
-                                <a class="nav-link" href="#">
-                                    <i class="fa fa-fw fa-link"></i>
-                                    <span class="nav-link-text">Add Show Timing</span>
+                                    <span class="nav-link-text">Movie Dashboard</span>
                                 </a>
                             </li>
 
+                            {localStorage.getItem('roleId') == '2' ?
+                                <li class="nav-item" value={showTimings} onClick={this.handleLinkClick.bind(this)} data-toggle="tooltip" data-placement="right" title="" data-original-title="Link">
+                                    <a class="nav-link" href="#">
+                                        <i class="fa fa-fw fa-link"></i>
+                                        <span class="nav-link-text">Show Timing Dashboard</span>
+                                    </a>
+                                </li>
+                                : ''}
+
                         </ul>
-                        
+
                         <ul class="navbar-nav ml-auto">
 
                             <li class="nav-item">
-                                <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
-                                    <i class="fa fa-fw fa-sign-out"></i>Logout</a>
+                                <a href="/" onClick={ this.handleLogout } className="hide-logged-in">Sign Out</a>
                             </li>
                         </ul>
                     </div>
@@ -190,10 +217,9 @@ class AdminDashboard extends Component {
             <div class="content-wrapper">
                 <div class="container-fluid">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a href="#">Dashboard</a>
+                        <li >
+                            <a href="#">Movie Dashboard</a>
                         </li>
-                        <li class="breadcrumb-item active">Movie</li>
                     </ol>
                     <MovieForm />
                 </div>
@@ -201,15 +227,14 @@ class AdminDashboard extends Component {
             </div>
         )
     }
-    returnShowTimings(){
+    returnShowTimings() {
         return (
             <div class="content-wrapper">
                 <div class="container-fluid">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a href="#">Dashboard</a>
+                        <li >
+                            <a href="#">Show Timings Dashboard</a>
                         </li>
-                        <li class="breadcrumb-item active">Movie</li>
                     </ol>
                     <ShowTimingsForm />
                 </div>
@@ -224,14 +249,13 @@ class AdminDashboard extends Component {
                 <div class="container-fluid">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item">
-                            <a href="#">Dashboard</a>
+                            <a href="#">Multiplex Admin Dashboard</a>
                         </li>
-                        <li class="breadcrumb-item active">Multiplex Admin</li>
                     </ol>
                     <MultiplexAdminForm />
                 </div>
 
-            </div>        )
+            </div>)
     }
 
 
@@ -241,9 +265,8 @@ class AdminDashboard extends Component {
                 <div class="container-fluid">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item">
-                            <a href="#">Dashboard</a>
+                            <a href="#">Multiplex Dashboard</a>
                         </li>
-                        <li class="breadcrumb-item active">Multiplex</li>
                     </ol>
                     <MultiplexForm />
                 </div>
@@ -251,6 +274,23 @@ class AdminDashboard extends Component {
             </div>
         )
     }
+
+    handleLogout() {
+        //alert("In handleLogout");
+        axios.post(envURL + 'logout', null, { withCredentials: true })
+            .then((response) => {
+                console.log(response.data);
+                if(response.data.session === 'logged out') {
+                    this.setState({
+                        isLoggedIn: false
+                    }, () => {
+                        localStorage.clear();
+                        this.props.history.push('/');
+                    })
+                }
+            })
+    }
+  
 
 }
 

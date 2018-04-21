@@ -28,33 +28,14 @@ class ShowTimingsForm extends Component {
             adult: 0,
             child: 0,
             disabled: 0,
+            student:0,
             update_id: 0,
         }
     }
 
     componentWillMount() {
-        let findAllMultiplexAPI = envURL + 'findAllMultiplex';
-        axios.get(findAllMultiplexAPI)
-            .then(res => {
-                if (res.data.successMsg != '') {
-                    console.log('Fetching all multiplex');
-                    console.log(res.data.data);
 
-                    //To Do
-                    //Get user id from local storage and get that user ids corresponding multiplex
-                    //also change in loadSHowTimings
-                    this.setState({
-                        multiplex: res.data.data[0],
-                        showTimingList: res.data.data[0].show_timings
-                    })
-                } else {
-                    console.error('Error Fetching all multiplex');
-                }
-            })
-            .catch(err => {
-                console.error(err);
-            });
-
+        this.loadShowTimings();
 
         let findAllMovieAPI = envURL + 'findAllMovie';
         axios.get(findAllMovieAPI)
@@ -93,7 +74,7 @@ class ShowTimingsForm extends Component {
                 sort_field: (new Date(this.state.date_time._d)).getTime(),
                 seats_left: { type: Number },
                 movie: { type: Object },//(for now, if we get data from cache/ add   whole movie obj), 
-                price: { adult: this.state.adult, child: this.state.child, disabled: this.state.disabled }
+                price: { adult: this.state.adult, child: this.state.child, disabled: this.state.disabled, student:this.state.student }
             }
         this.state.movieList.forEach(element => {
             if (element._id == this.state.movie_id) {
@@ -102,13 +83,8 @@ class ShowTimingsForm extends Component {
         });
         this.state.movieList.forEach(element => {
             if (element._id == this.state.movie_id) {
-                var movie = {
-                    title: element.title,
-                    _id: element._id,
-                    release_date: element.release_date,
-                    movie_logo: element.movie_logo
-                }
-                show_timings.movie = movie;
+                show_timings.movie = element;
+                return;
             }
         });
         this.state.multiplex.screens.forEach(element => {
@@ -142,8 +118,11 @@ class ShowTimingsForm extends Component {
             screen_number: '',
             date_time: '',
             movie_id: '',
-            price: { adult: 0, child: 0, disabled: 0 },
             update_id: 0,
+            adult: 0,
+            child: 0,
+            disabled: 0,
+            student:0,            
         });
         var that = this;
         setTimeout(function () {
@@ -158,10 +137,16 @@ class ShowTimingsForm extends Component {
                 if (res.data.successMsg != '') {
                     console.log('Fetching all multiplex show timings');
                     console.log(res.data.data);
-                    this.setState({
-                        multiplex: res.data.data[0],
-                        showTimingList: res.data.data[0].show_timings
-                    })
+                    var adminId = localStorage.getItem('adminId');
+                    res.data.data.forEach(element => {
+                        if (adminId == element.multiplex_owner_id) {
+                            this.setState({
+                                multiplex: element,
+                                showTimingList: element.show_timings
+                            })
+                            return;
+                        }
+                    });
                 } else {
                     console.error('Error Fetching all show timings');
                 }
@@ -234,22 +219,12 @@ class ShowTimingsForm extends Component {
                 sort_field: (new Date(this.state.date_time._d)).getTime(),
                 seats_left: { type: Number },
                 movie: { type: Object },//(for now, if we get data from cache/ add   whole movie obj), 
-                price: { adult: this.state.adult, child: this.state.child, disabled: this.state.disabled }
+                price: { adult: this.state.adult, child: this.state.child, disabled: this.state.disabled,student:this.state.student }
             }
         this.state.movieList.forEach(element => {
             if (element._id == this.state.movie_id) {
                 show_timings.movie = element;
-            }
-        });
-        this.state.movieList.forEach(element => {
-            if (element._id == this.state.movie_id) {
-                var movie = {
-                    title: element.title,
-                    _id: element._id,
-                    release_date: element.release_date,
-                    movie_logo: element.movie_logo
-                }
-                show_timings.movie = movie;
+                return;
             }
         });
         this.state.multiplex.screens.forEach(element => {
@@ -282,8 +257,11 @@ class ShowTimingsForm extends Component {
             screen_number: '',
             date_time: '',
             movie_id: '',
-            price: { adult: 0, child: 0, disabled: 0 },
             update_id: 0,
+            adult: 0,
+            child: 0,
+            disabled: 0,
+            student:0,
         });
         var that = this;
         setTimeout(function () {
@@ -304,6 +282,7 @@ class ShowTimingsForm extends Component {
                     adult: element.price.adult,
                     child: element.price.child,
                     disabled: element.price.disabled,
+                    student:element.price.student                    
                 })
                 return;
             }
@@ -384,10 +363,13 @@ class ShowTimingsForm extends Component {
                         <div class="col-lg-5">
                             <input class="form-control" type="number" name="adult"
                                 placeholder="Adult Price" required="" value={this.state.adult} onChange={this.handleUserInput} />
-                            <input class="form-control" type="text" name="child"
+                            <input class="form-control" type="number" name="child"
                                 placeholder="Child Price" required="" value={this.state.child} onChange={this.handleUserInput} />
                             <input class="form-control" type="number" name="disabled"
                                 placeholder="Disabled Price" required="" value={this.state.disabled} onChange={this.handleUserInput} />
+                            <input class="form-control" type="number" name="student"
+                                placeholder="Student Price" required="" value={this.state.student} onChange={this.handleUserInput} />
+
                         </div>
                     </div>
 
