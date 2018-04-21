@@ -54,13 +54,13 @@ class SignIn extends Component {
         //validation of email
         var patt = new RegExp('[a-zA-Z0-9]+[@][a-zA-Z0-9]+[.][a-zA-Z]+');
         var res = patt.test(this.state.username);
-        if(res && this.state.password.length > 0) {
+        if(res && this.state.password.length > 0 ) {
             //alert("Valid Email");
             console.log("In Login" + this.state.username + this.state.password);
             var user = {
                 username: this.state.username,
                 password: this.state.password
-            }
+            };
             axios.post(envURL + 'login', user, { withCredentials: true})
                 .then((response) => {
                     console.log("In Login Component handleLogin",response.data);
@@ -93,8 +93,6 @@ class SignIn extends Component {
                 errorMsg: 'Invalid Email or password'
             })
         }
-
-
     }
 
     renderRows() {
@@ -120,7 +118,7 @@ class SignIn extends Component {
                                 <div class="panel-group row">
                                     <div class="panel main-panel intercept-container large-6 medium-6 small-12 columns">
                                         <div class="action-details small-12 columns">
-                                            <img src={require('../assets/static_images/signup.png')} alt="text" />
+                                            <img src={require('../assets/static_images/signup1.png')} alt="text" />
                                         </div>
                                     </div>
                                     <div class="panel main-panel sign-up-form large-6 medium-6 small-12 columns">

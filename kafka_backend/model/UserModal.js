@@ -243,6 +243,54 @@ function login_request( msg, callback ) {
 
 }
 
+function signup_request( msg, callback ) {
+    console.log("In signup_request of user modal", msg );
+    let fname = msg.first_name;
+    let email = msg.email;
+    let pwd = msg.password;
+    let role = msg.role_number;
+    pool.connect( (err, db) => {
+        if(err) {
+            console.log("Error in UserModal signup_request while connecting to DB");
+            errHandler(err);
+        }
+        else {
+            console.log("Connected to MYSQL in signup_request in usermodal");
+            // validation for existing email
+            let sql1 = 'select * from user where email = ? ' ;
+            db.query( sql1, email ,(err, result) => {
+                if( result.length > 0  ) {
+                    console.log( "Admin with same email already exists", result );
+                    var userObject = {
+                        code : 1,
+                        message : "User with same email already exists"
+                    };
+                    callback( null, userObject );
+                }
+                else {
+                    let sql2 = 'insert into user ( first_name, email, password, role_number ) values ( ?, ?, ?, ? ) ';
+                    db.query( sql2 ,  [ fname, email, pwd, role ] , (err, result) => {
+                        db.release();
+                        if(err) {
+                            console.log("Error in inserting user in mysql in creating user");
+                            callback( null, 'Error in inserting user in mysql in creating user');
+                        }
+                        else {
+                            console.log( 'Created User', result );
+                            userObject = {
+                                code : 2 ,
+                                message : "User created successfully"
+                            };
+                            callback( null, userObject );
+                        }
+                    })
+                }
+            })
+        }
+    })
+
+}
+
 //==============================================================================
 /**
 * Export module
@@ -252,6 +300,7 @@ module.exports = {
     findAllMultiplexAdmins : findAllMultiplexAdmins,
     findMultiplexAdminbyId :findMultiplexAdminbyId,
     login_request: login_request,
+    signup_request : signup_request,
     errHandler: errHandler
     //  deleteUser: deleteUser
   };

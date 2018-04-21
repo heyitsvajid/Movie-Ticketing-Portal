@@ -15,6 +15,7 @@ import allReducers from './Reducers';
 import { Provider } from 'react-redux';
 import MultiplexAdmin from "./Components/MultiplexAdmin";
 import TicketBooking from './Components/TicketBooking';
+import SignUp from "./Components/SignUp";
 
 const store = createStore(allReducers);
 
@@ -27,7 +28,8 @@ ReactDOM.render(
         <Route exact path="/movies" component={MovieShowTimings} />
         <Route exact path="/login" component={LogIn} />
         <Route exact path="/multiplexadmin" component = {MultiplexAdmin} />
-	<Route exact path="/tickets" component={TicketBooking} />
+        <Route exact path="/tickets" component={TicketBooking} />
+        <Route exact path="/signup" component={SignUp} />
       </div>
     </Router>
   </Provider>,

@@ -32,12 +32,12 @@ var multiplexadmin_consumer = connection.getConsumer('multiplexadmin_request');
 var review_consumer = connection.getConsumer(review_topic);
 
 
-//Login Consumer
+//User Consumer
 user_consumer.on('message', function (message) {
     console.log('Kafka Server login_consumer : message received');
     console.log(JSON.stringify(message.value));
     var data = JSON.parse(message.value);
-    console.log("Data after parsing in user_consumer for login...", data);
+    console.log("Data after parsing in user_consumer ", data );
     if(data.data.request_code === 1) {
         UserModal.login_request(data.data, function (err, res) {
             console.log('Kafka Server : after handle in login');
@@ -67,11 +67,42 @@ user_consumer.on('message', function (message) {
             return;
         });
     }
-
+    else if(data.data.request_code === 2 ) {
+        console.log("Inside request code number 2 ", data.data)
+        UserModal.signup_request(data.data, function ( err, res) {
+            console.log('Kafka Server : after handle in SignUp');
+            var resultObject = {
+                successMsg: '',
+                errorMsg: '',
+                data: {}
+            };
+            if(err){
+                resultObject.successMsg= '';
+                resultObject.errorMsg= 'Error creating User';
+            }
+            else{
+                if( res.code === 1) {
+                    resultObject.successMsg = '';
+                    resultObject.errorMsg = res.message;
+                }
+                else if (  res.code === 2 ) {
+                    resultObject.successMsg= res.message;
+                    resultObject.errorMsg= '';
+                }
+            }
+            console.log("After formation of resultobject in signup_request in serverjs", resultObject);
+            var payloads = utility.createPayload(data, resultObject);
+            console.log('is producer ready : ' + producer.ready);
+            producer.send(payloads, function (err, data) {
+                utility.log(data, err);
+            });
+            return;
+        });
+    }
 });
 
 
-//Signup Consumer
+// Signup Consumer
 // user_consumer.on('message', function (message) {
 //     console.log('Kafka Server signup_consumer : message received');
 //     console.log(JSON.stringify(message.value));
@@ -406,7 +437,7 @@ multiplexadmin_consumer.on('message', function (message) {
                 successMsg: '',
                 errorMsg: '',
                 data: {}
-            }
+            };
             if(err){
                 resultObject.successMsg= '';
                 resultObject.errorMsg= 'Error creating Multiplex Admin';

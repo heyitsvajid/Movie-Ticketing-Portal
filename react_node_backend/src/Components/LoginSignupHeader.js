@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import {envURL} from "../config/environment";
+import '../assets/css/style.css'
 
 class LoginSignupHeader extends Component {
   constructor(props) {
@@ -27,11 +28,11 @@ class LoginSignupHeader extends Component {
       var changeButtons = null;
       if(this.props.page === "login") {
           changeButtons = (
-              <a href="/signup" class = "form-btn">SignUp</a>
+              <a href="/signup" class = "form-btn btn-sm"> Don't have a Fandango VIP Account?  <strong> JOIN NOW FOR FREE </strong></a>
           );
-      } else {
+      } else if (this.props.page === "signup") {
           changeButtons = (
-              <a href="/login" class = "form-btn">SignIn</a>
+              <a href="/login" class = "form-btn btn-sm"> Already have a Fandango VIP Account? <strong> SIGN IN </strong> </a>
           );
       }
 

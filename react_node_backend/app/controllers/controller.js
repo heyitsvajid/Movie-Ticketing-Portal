@@ -548,13 +548,20 @@ exports.login = function (req, res, next) {
 exports.signup = function (req, res) {
     console.log("signup_request : node backend");
 
-    let data = req.body;
+    var data={
+        first_name : req.body.first_name,
+        email : req.body.username,
+        password : req.body.password,
+        role_number : req.body.role_number,
+        request_code : 2 //signup_request
+    };
     console.log(data);
-    kafka.make_request('user_request', data, function (err, results) {
+
+    kafka.make_request( 'user_request', data , function (err, results) {
         console.log('Kafka Response:');
         console.log(results);
         if (err) {
-            console.log('Controller : Error Occurred : ');
+            console.log( 'Controller : Error Occurred : ');
             console.log(err);
             res.json(results);
         }
@@ -563,7 +570,7 @@ exports.signup = function (req, res) {
             return;
         }
     });
-}
+};
 
 
 //method converted
