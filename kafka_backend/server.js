@@ -6,6 +6,7 @@ var utility = require('./util/util.js');
 var MultiplexModel = require('./model/MultiplexModel');
 var MovieModel = require('./model/MovieModal');
 var UserModal = require('./model/UserModal');
+var PaymentModel = require('./model/PaymentModel');
 
 //Kafka Topics
 var user_topic = 'user_request';
@@ -14,6 +15,8 @@ var multiplex_topic = 'multiplex_request'
 var movie_topic = 'movie_request'
 var showtiming_topic = 'showtiming_request';
 var review_topic = 'review_request';
+var complete_payment = 'completePayment';
+var fetchBillingDetails = 'fetchBillingDetails';
 
 
 //Producer
@@ -30,6 +33,8 @@ var movie_consumer = connection.getConsumer(movie_topic);
 var showtiming_consumer = connection.getConsumer(showtiming_topic);
 var multiplexadmin_consumer = connection.getConsumer('multiplexadmin_request');
 var review_consumer = connection.getConsumer(review_topic);
+var completePayment = connection.getConsumer(complete_payment);
+var fetchBillingDetails = connection.getConsumer(fetchBillingDetails);
 
 
 //User Consumer
@@ -552,6 +557,64 @@ review_consumer.on('message', function (message) {
             return;
         });
     }
+});
+
+completePayment.on('message', function (message) {
+    console.log('Kafka Server Complete Payment: Card Information Received');
+    var payment_data = JSON.parse(message.value);
+    console.log("Hello")
+    console.log(payment_data);
+        PaymentModel.complete_Payment(payment_data,function (err, res) {
+            var resultObject = {
+                successMsg: '',
+                errorMsg: '',
+                data: {}
+            }
+            console.log('Kafka Server : after handle');
+            console.log(res);
+            if(err){
+                resultObject.successMsg= '';
+                resultObject.errorMsg= 'Error completing payment';
+            }else{
+                resultObject.successMsg= 'Payment successfully done.';
+                resultObject.errorMsg= '';
+                resultObject.data=res;         
+            }
+            let payloads = utility.createPayload(payment_data, resultObject);
+            console.log('is producer ready : ' + producer.ready);
+            producer.send(payloads, function (err, data) {
+                utility.log(data, err);
+            });
+            return;
+        });
+});
+
+fetchBillingDetails.on('message', function (message) {
+    console.log('Kafka Server Complete Payment: Card Information Received');
+    var billing_id = JSON.parse(message.value);
+        PaymentModel.fetchBillingDetails(billing_id,function (err, res) {
+            var resultObject = {
+                successMsg: '',
+                errorMsg: '',
+                data: {}
+            }
+            console.log('Kafka Server : after handle');
+            console.log(res);
+            if(err){
+                resultObject.successMsg= '';
+                resultObject.errorMsg= 'Error completing payment';
+            }else{
+                resultObject.successMsg= 'Payment successfully done.';
+                resultObject.errorMsg= '';
+                resultObject.data=res;         
+            }
+            let payloads = utility.createPayload(billing_id, resultObject);
+            console.log('is producer ready : ' + producer.ready);
+            producer.send(payloads, function (err, data) {
+                utility.log(data, err);
+            });
+            return;
+        });
 });
 
 

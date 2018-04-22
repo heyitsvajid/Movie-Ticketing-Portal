@@ -626,6 +626,47 @@ exports.isLoggedIn = function (req, res) {
 
 };
 
+
+//Complete the transaction and book tickets
+exports.completePayment = function (req, res) {
+    console.log("completePayment : node backend");
+    let data = req.body;
+    console.log(data+ "Hello");
+    kafka.make_request('completePayment', data, function (err, results) {
+        console.log('Kafka Response:');
+        console.log(results);
+        if (err) {
+            console.log('Controller : Error Occurred : ');
+            console.log(err);
+            res.json(results);
+        }
+        else {
+            res.json({results: results});
+            return;
+        }
+    });
+}
+
+//fetch billing details
+exports.fetchBillingDetails = function (req, res) {
+    console.log("Fetching Bill : node backend");
+    let data = req.body;
+    console.log(data+ "Hello");
+    kafka.make_request('fetchBillingDetails', data, function (err, results) {
+        console.log('Kafka Response:');
+        console.log(results);
+        if (err) {
+            console.log('Controller : Error Occurred : ');
+            console.log(err);
+            res.json(results);
+        }
+        else {
+            res.json({results: results});
+            return;
+        }
+    });
+}
+
 //method converted
 exports.logout = function (req, res) {
     console.log('Destroying Session');

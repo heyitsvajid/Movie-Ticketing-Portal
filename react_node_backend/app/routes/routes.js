@@ -59,6 +59,9 @@ module.exports = function (app) {
   //Add Movie Review
   app.post('/addMovieReview', api_controller.addMovieReview);
 
+  app.post('/completePayment', api_controller.completePayment);
+
+
 
 }
 

@@ -6,6 +6,7 @@ import Index from './Components/Index';
 import AdminDashboard from './Components/AdminDashboard';
 import MovieShowTimings from './Components/MovieShowTimings';
 import MovieDetails from './Components/MovieDetails';
+import Checkout from './Components/Checkout';
 
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import './assets/css/bootstrap.min.css'
@@ -32,6 +33,7 @@ ReactDOM.render(
         <Route exact path="/tickets" component={TicketBooking} />
         <Route exact path="/signup" component={SignUp} />
         <Route exact path="/movie_details" component={MovieDetails} />
+        <Route exact path="/checkout" component={Checkout} />
       </div>
     </Router>
   </Provider>,
