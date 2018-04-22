@@ -4,9 +4,9 @@ import axios from 'axios';
 import {withRouter} from 'react-router-dom'
 import { envURL, reactURL } from '../config/environment';
 
-import '../assets/css/foundation.css'
-import '../assets/css/checkout.css'
-import '../assets/css/style.css'
+// import '../assets/css/foundation.css'
+// import '../assets/css/checkout.css'
+// import '../assets/css/style.css'
 
 class Checkout extends Component {
 
