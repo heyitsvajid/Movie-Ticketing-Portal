@@ -11,8 +11,8 @@ var PaymentModel = require('./model/PaymentModel');
 //Kafka Topics
 var user_topic = 'user_request';
 var response_topic = 'response_topic';
-var multiplex_topic = 'multiplex_request'
-var movie_topic = 'movie_request'
+var multiplex_topic = 'multiplex_request';
+var movie_topic = 'movie_request';
 var showtiming_topic = 'showtiming_request';
 var review_topic = 'review_request';
 var complete_payment = 'completePayment';
@@ -50,8 +50,7 @@ user_consumer.on('message', function (message) {
                 successMsg: '',
                 errorMsg: '',
                 data: {}
-            }
-
+            };
             if(res !== null) {
                 resultObject.successMsg = 'User Found';
                 resultObject.errorMsg = '';
@@ -61,8 +60,6 @@ user_consumer.on('message', function (message) {
                 resultObject.errorMsg = 'User not found';
                 resultObject.data =  {};
             }
-
-
             console.log("After formation of resultobject in login_request in serverjs",resultObject);
             var payloads = utility.createPayload(data, resultObject);
             console.log('is producer ready : ' + producer.ready);
@@ -101,6 +98,88 @@ user_consumer.on('message', function (message) {
             producer.send(payloads, function (err, data) {
                 utility.log(data, err);
             });
+            return;
+        });
+    }
+    else if(data.data.request_code === 3) {
+        console.log("Inside request code 3 : Get Profile details", data.data);
+        UserModal.get_profile_request( data.data, function (err, res) {
+            console.log('Kafka Server : after handle in Get Profile Details');
+            var resultObject = {
+                successMsg: '',
+                errorMsg: '',
+                data: {}
+            };
+            if(res !== null) {
+                resultObject.successMsg = 'Got User Profile Successfully';
+                resultObject.errorMsg = '';
+                resultObject.data = res
+            }
+            else {
+                resultObject.successMsg = '';
+                resultObject.errorMsg = 'User not found';
+                resultObject.data =  {};
+            }
+            console.log("After formation of resultobject in get_profile_request in serverjs",resultObject);
+            var payloads = utility.createPayload(data, resultObject);
+            console.log('is producer ready : ' + producer.ready);
+            producer.send(payloads, function (err, data) {
+                utility.log(data, err);
+            });
+            return;
+        });
+    }
+    else if(data.data.request_code === 4) {
+        console.log("In Request Code 4 : Update Basic Info" , data.data);
+        UserModal.update_basic_information_profile_request( data.data, function (err, res) {
+            console.log('Kafka Server : after handle in update_basic_information_profile_request');
+            var resultObject = {
+                successMsg: '',
+                errorMsg: '',
+                data: {}
+            };
+            if( res !== null) {
+                resultObject.successMsg = 'Updated Users Basic Profile Successfully';
+                resultObject.errorMsg = '';
+                resultObject.data = res
+            } else {
+                resultObject.successMsg = '';
+                resultObject.errorMsg = 'User not found or Error updating the profile';
+                resultObject.data =  {};
+            }
+            console.log("After formation of resultobject in update_basic_information_profile_request in serverjs",resultObject);
+            var payloads = utility.createPayload(data, resultObject);
+            console.log('is producer ready : ' + producer.ready);
+            producer.send(payloads, function (err, data) {
+                utility.log(data, err);
+            });
+            return;
+        });
+    }
+    else if(data.data.request_code === 5) {
+        console.log("In Request Code 5 : Update Email " , data.data );
+        UserModal.update_email_profile_request(data.data, function (err, res) {
+            console.log('Kafka Server : after handle in update_email_profile_request');
+            var resultObject = {
+                successMsg: '',
+                errorMsg: '',
+                data: {}
+            };
+            if(res !== null) {
+                resultObject.successMsg = 'Updated Users email Successfully';
+                resultObject.errorMsg = '';
+                resultObject.data = res
+            } else {
+                resultObject.successMsg = '';
+                resultObject.errorMsg = 'User not found or Error updating email';
+                resultObject.data =  {};
+            }
+            console.log("After formation of resultobject in update_email_profile_request in serverjs",resultObject);
+            var payloads = utility.createPayload(data, resultObject);
+            console.log('is producer ready : ' + producer.ready);
+            producer.send(payloads, function (err, data) {
+                utility.log(data, err) ;
+            } );
             return;
         });
     }

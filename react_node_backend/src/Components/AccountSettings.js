@@ -5,24 +5,115 @@ import Header from './Header';
 import Footer from './Footer';
 // import SignIn from './SignIn';
 // import SignUp from './SignUp';
+import { envURL, reactURL } from '../config/environment';
 
 class AccountSettings extends Component {
   constructor(props) {
     super(props);
+    this.state = ({
+        FirstName : '',
+        LastName : '',
+        email : '',
+        newEmail : '',
+        CardNumber : '',
+        ExpirationMonth : '',
+        ExpirationYear : '',
+        ZipCode : '' ,
+        error: ''
+    });
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSaveBasicInfo = this.handleSaveBasicInfo.bind(this);
+    this.handleSaveEmail = this.handleSaveEmail.bind(this);
   }
 
-  handleBasicInfoClick(e){
-    var basic_info_element = document.getElementById("basic-info-form");
-    if(basic_info_element.style.display == "none" || basic_info_element.style.display == ""){
-      this.hideDivBoxesAndArrows();
-      basic_info_element.style.display = "block";
-      document.getElementsByClassName("basic-info-arrow")[0].classList.add("accordion-opened");
+  componentWillMount = () => {
+      let url = envURL + 'getprofiledetails';
+      let userid = localStorage.getItem('userid');
+      axios.post( url, { userid }, { withCredentials : true } )
+          .then( (response) => {
+              console.log("Response from DB in get profiledetails", response.data );
+              this.setState({
+                  FirstName : response.data.data.first_name,
+                  LastName : response.data.data.last_name,
+                  email : response.data.data.email
+              })
+          })
+  };
+
+    handleChange = (e) => {
+        e.preventDefault();
+        this.setState({
+                [e.target.id] : e.target.value,
+                error : ''
+            }, () => {
+                console.log(this.state)
+            }
+        )
+    };
+
+    handleSaveBasicInfo = (e) => {
+        e.preventDefault();
+        let profiledetails = {
+            id : localStorage.getItem('userid'),
+            first_name : this.state.FirstName,
+            last_name : this.state.LastName
+        };
+
+        let pattern1 = new RegExp("\\d");
+        let test1 = pattern1.test(this.state.FirstName);
+        let pattern2 = new RegExp("\\d");
+        let test2 = pattern2.test(this.state.LastName);
+
+        if( !test1 && !test2) {
+            console.log(" Regex Test Passed");
+            let url = envURL+'updateprofilebasicinfo';
+            axios.post( url, profiledetails, { withCredentials : true} )
+                .then( (response) => {
+                    console.log("Response from Db in Update Profile : ", response.data )
+                } )
+        }
+        else {
+            this.setState({
+                error : 'Please enter valid names'
+            })
+        }
+    };
+
+    handleSaveEmail(e) {
+      e.preventDefault();
+        var patt = new RegExp('[a-zA-Z0-9]+[@][a-zA-Z0-9]+[.][a-zA-Z]+');
+        var res = patt.test(this.state.newEmail);
+
+        if( res ) {
+            let profiledetails = {
+                id : localStorage.getItem('userid'),
+                email : this.state.newEmail,
+            };
+            let url = envURL+'updateprofileemail';
+            axios.post( url, profiledetails, { withCredentials : true} )
+                .then( (response) => {
+                    console.log("Response from Db in Update Profile : ", response.data )
+                } )
+        }
+        else {
+            this.setState({
+                error: 'Please enter valid Email '
+            })
+        }
     }
-    else{
-      basic_info_element.style.display = "none";
-      document.getElementsByClassName("basic-info-arrow")[0].classList.remove("accordion-opened");
+
+    handleBasicInfoClick(e){
+        var basic_info_element = document.getElementById("basic-info-form");
+        if(basic_info_element.style.display == "none" || basic_info_element.style.display == ""){
+            this.hideDivBoxesAndArrows();
+            basic_info_element.style.display = "block";
+            document.getElementsByClassName("basic-info-arrow")[0].classList.add("accordion-opened");
+        }
+        else {
+            basic_info_element.style.display = "none";
+            document.getElementsByClassName("basic-info-arrow")[0].classList.remove("accordion-opened");
+        }
     }
-  }
 
   handleEmailChangeClick(e){
     var email_element = document.getElementById("email-form");
@@ -88,30 +179,34 @@ class AccountSettings extends Component {
             <div class="large-9 columns">
               <div class="panel-group">
                   <div class="panel accordion-head" data-accordion-target="basic-info-form" onClick = {this.handleBasicInfoClick.bind(this)}>
-                    <h2 class="basic-info-header heading-style-1 heading-size-l profile-headers" >Basic Information</h2>
+                    <h2 class="basic-info-header heading-style-1 heading-size-l profile-headers" > Basic Information</h2>
                     <div class="basic-info-arrow accordion-arrow accordion-opened"></div>
                   </div>
                   <div class="panel form-box hidden-basic-form" id="basic-info-form">
+                      <div className='text-danger'>
+                          {this.state.error}
+                      </div>
+                      <br/>
                     <div class="row">
                         <div class="large-6 columns">
-                          <label class="" for="">First Name</label>
-                          <input name="ctl00$ctl00$GlobalBody$Body$FirstName" type="text" value="Murtaza" maxlength="80" id="FirstName" />
+                          <label >First Name</label>
+                          <input name="ctl00$ctl00$GlobalBody$Body$FirstName" type="text" onChange={this.handleChange}
+                                 value={this.state.FirstName} maxlength="80" id="FirstName" />
                         </div>
                         <div class="large-6 columns">
-                          <label class="" for="">Last Name</label>
-                          <input name="ctl00$ctl00$GlobalBody$Body$LastName" type="text" maxlength="80" id="LastName" />
+                          <label >Last Name</label>
+                          <input name="ctl00$ctl00$GlobalBody$Body$LastName" type="text" onChange={this.handleChange}
+                                 value={this.state.LastName} maxlength="80" id="LastName" />
                         </div>
                         <div class="large-5 columns">
-                          <label class="" for="">Display Name</label>
-                          <div class="special-note">This name will appear publicly when you rate and review movies.</div>
-                          <input name="ctl00$ctl00$GlobalBody$Body$DisplayName" type="text" value="murtazamanasawala110" maxlength="25" id="DisplayName" />
                         </div>
                         <div class="large-7 columns right-40">
-                          <a id="save-basic" class="btn save-button">Save</a>
+                          <a id="save-basic" class="btn save-button" onClick={this.handleSaveBasicInfo} >Save</a>
                         </div>
                     </div>
                   </div>
               </div>
+
               <div class="panel-group">
                   <div class="panel accordion-head" data-accordion-target="email-form" onClick={this.handleEmailChangeClick.bind(this)}>
                     <table>
@@ -128,13 +223,16 @@ class AccountSettings extends Component {
                   </div>
                   <div class="panel form-box accordion-body accordion-closed" id="email-form">
                     <div class="large-12 columns">
-                        
+                    </div>
+                      <div className='text-danger' >
+                          {this.state.error}
+                      </div>
+                      <br/>
+                    <div class="large-6 columns">
+                        <label> Current Email </label>
+                        <input type="text" id="email" value={this.state.email} disabled />
                     </div>
                     <div class="large-6 columns">
-                        <label class="" for="email">New Email<span id="new-email-asterisk">*</span></label>
-                        <input type="text" id="email" />
-                    </div>
-                    <div class="large-6 columns">
                         <br />
                         <br />
                         <br />
@@ -143,15 +241,16 @@ class AccountSettings extends Component {
                         <br />
                     </div>
                     <div class="large-6 columns">
-                        <label class="" for="userEmailConfirm">Confirm Email</label>
-                        <input type="text" id="confEmail" />
+                        <label > New Email </label>
+                        <input type="text" id="newEmail" onChange={this.handleChange} />
                     </div>
                     <div class="large-6 columns right-25">
-                        <a id="save-email" class="btn save-button">Save</a>
+                        <a id="save-email" class="btn save-button" onClick={this.handleSaveEmail} >Save</a>
                     </div>
                     
                   </div>
               </div>
+
               <div class="panel-group">
                   <div class="panel accordion-head" data-accordion-target="password-form" onClick={this.handlePasswordChangeClick.bind(this)}>
                     <table>
@@ -168,14 +267,14 @@ class AccountSettings extends Component {
                   </div>
                   <div class="panel form-box accordion-body accordion-closed" id="password-form">
                     <div class="large-12 columns">
-                        Use 8 or more characters with a letter and a number or symbol. No more than 3 of the same character in a row.
+                        Use 8 or more characters.
                         <br /><br />
-                        <label class="" for="oldPassword">Current Password</label>
-                        <input type="password" id="oldPassword" class="vip-password-field" />
+                        <label> Current Password </label>
+                        <input type="password" id="oldPassword" onChange={this.handleChange} class="vip-password-field" />
                     </div>
                     <div class="large-12 columns">
-                        <label class="" for="newPassword">New Password</label>
-                        <input type="password" id="newPassword" class="vip-password-field" />
+                        <label> New Password </label>
+                        <input type="password" id="newPassword" onChange={this.handleChange} class="vip-password-field" />
                     </div>
                     {/* <div class="large-9 columns">
                         <label class="" for="confPassword">Confirm Password</label>
@@ -214,12 +313,12 @@ class AccountSettings extends Component {
                     </div>
                     <div class="large-12 columns">
                         <label class="" for="">Card Number</label>
-                        <input name="ctl00$ctl00$GlobalBody$Body$CardNumber" type="text" maxlength="19" id="CardNumber" class="user-password" />
+                        <input name="ctl00$ctl00$GlobalBody$Body$CardNumber" type="text" maxlength="19" id="CardNumber" onChange={this.handleChange} class="user-password" />
                     </div>
                     <div class="large-12 columns">
                         <label class="" for="userExpDate">Expiration Date</label>
                         <br/>
-                        <select name="ctl00$ctl00$GlobalBody$Body$ExpirationMonth" id="ExpirationMonth" class="user-card-month">
+                        <select name="ctl00$ctl00$GlobalBody$Body$ExpirationMonth" id="ExpirationMonth" onChange={this.handleChange} class="user-card-month">
                           <option value="">Month</option>
                           <option value="1">January</option>
                           <option value="2">February</option>
@@ -234,7 +333,7 @@ class AccountSettings extends Component {
                           <option value="11">November</option>
                           <option value="12">December</option>
                         </select>
-                        <select name="ctl00$ctl00$GlobalBody$Body$ExpirationYear" id="ExpirationYear" class="user-card-year">
+                        <select name="ctl00$ctl00$GlobalBody$Body$ExpirationYear" id="ExpirationYear" onChange={this.handleChange} class="user-card-year">
                           <option value="">Year</option>
                           <option value="2018">2018</option>
                           <option value="2019">2019</option>
@@ -251,7 +350,7 @@ class AccountSettings extends Component {
                     </div>
                     <div class="large-6 payment-zip columns ">
                         <label class="" for="">Billing ZIP Code</label>
-                        <input name="ctl00$ctl00$GlobalBody$Body$ZipCode" type="text" maxlength="10" id="ZipCode" class="user-zip" />
+                        <input name="ctl00$ctl00$GlobalBody$Body$ZipCode" type="text" maxlength="10" id="ZipCode" onChange={this.handleChange} class="user-zip" />
                     </div>
                     <div class="large-6 columns right-25 payment-zip-columns">
                         <a id="save-cc" class="btn save-button">Save</a>
@@ -267,6 +366,7 @@ class AccountSettings extends Component {
                     </div>
                   </div>
               </div>
+
             </div>
             <div class="large-3 columns">
               

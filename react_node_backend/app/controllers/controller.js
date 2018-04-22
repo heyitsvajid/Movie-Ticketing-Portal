@@ -7,7 +7,6 @@ var passport = require('../config/passport.js');
 var kafka = require('../kafka/client');
 
 
-
 //Creating New Multiplex Admin
 exports.createMultiplexAdmin =  ( req, res ) => {
     console.log("In Node Backend, Creating new multiplex admin", req.body);
@@ -85,6 +84,82 @@ exports.findMultiplexAdminbyId =  ( req, res ) => {
         }
     })
 };
+
+// Get Profile Details
+exports.getProfileDetails = ( req, res ) => {
+    console.log("Node Backend : Get Profile Details " , req.body );
+    var data= {
+        id :  req.body.userid,
+        request_code : 3 // Get Profile Details
+    };
+    console.log(data);
+
+    kafka.make_request('user_request', data, (err, result) => {
+        console.log('Kafka Response in Get Profile :');
+        if (err) {
+            console.log( 'After Kafka response : User Profile Not found');
+            console.log(err);
+            res.json(result);
+        }
+        else {
+            console.log(result);
+            res.json(result);
+            return;
+        }
+    })
+};
+
+// Update Profile Details Basic Info
+exports.updateProfileDetailsBasicInfo = ( req, res ) => {
+    console.log("Node Backend : Update Profile Details " , req.body );
+    var data= {
+        id :  req.body.id,
+        first_name : req.body.first_name,
+        last_name : req.body.last_name,
+        request_code : 4 // Update Profile Details - Basic Info
+    };
+    console.log(data);
+
+    kafka.make_request('user_request', data, (err, result) => {
+        console.log('Kafka Response in Update Profile - Basic Info :' );
+        if (err) {
+            console.log( 'After Kafka response : User Profile Not Updated');
+            console.log(err);
+            res.json(result);
+        }
+        else {
+            console.log(result);
+            res.json(result);
+            return;
+        }
+    })
+};
+
+// Update Profile Details Email
+exports.updateProfileDetailsEmail = ( req, res ) => {
+    console.log("Node Backend : Update Profile Details Email " , req.body );
+    var data= {
+        id :  req.body.id,
+        email : req.body.email,
+        request_code : 5 // Update Profile Details - Basic Info
+    };
+    console.log(data);
+
+    kafka.make_request('user_request', data, (err, result) => {
+        console.log('Kafka Response in Update Profile - Email :' );
+        if (err) {
+            console.log( 'After Kafka response : User Profile Email Not Updated');
+            console.log(err);
+            res.json(result);
+        }
+        else {
+            console.log(result);
+            res.json(result);
+            return;
+        }
+    })
+};
+
 
 //Movie Reviews
 exports.addMovieReview= function (req, res) {
