@@ -75,9 +75,9 @@ class Header extends Component {
             <ul class="inline-items tablet-width-100 left nonstandard-width">
               <li>
                 <div class="ad" data-unit="homepagelogo" data-responsive="false" data-media="">
-                  
+
                 </div>
-                <a class="icon left fandango-logo" href="/">Fandango</a>
+                <a class="icon left fandango-logo header-logo" href="/">Fandango</a>
               </li>
               <li id="global-search">
               <form id = "search-form" action="/search" autocomplete="off" role="search" novalidate>
@@ -94,7 +94,7 @@ class Header extends Component {
             <ul id="global-menu" class="inline-items tablet-width-100 right nonstandard-width header-ul">
               <li id="movies-tab" class="tablet-width-20 nonstandard-width">
                 <section class="has-dropdown">
-                  <h3><a href="/moviesintheaters">Movies</a></h3>
+                  <h3><a class = "header-links" href="/moviesintheaters">Movies</a></h3>
                   <div class="mega-menu">
                     <div class="row">
                       <div class="width-25">
@@ -298,7 +298,7 @@ class Header extends Component {
               </li>
               <li id="theatersTab" class="tablet-width-30 nonstandard-width">
                 <section class="has-dropdown">
-                  <h3><a id="local-movies-link" href="/movietimes">Movie Times + Tickets</a></h3>
+                  <h3><a id="local-movies-link" class = "header-links" href="/movietimes">Movie Times + Tickets</a></h3>
                   <div class="mega-menu">
                     <div class="row">
                       <div id="theatersList" class="width-75 tablet-width-100">
@@ -396,7 +396,7 @@ class Header extends Component {
               </li>
               <li class="tablet-width-30 nonstandard-width">
                 <section class="has-dropdown">
-                  <h3><a href="/movie-news">Movie News</a></h3>
+                  <h3><a class = "header-links" href="/movie-news">Movie News</a></h3>
                   <div class="mega-menu">
                     <div class="row">
                       <div id="featured-movie-news" class="width-75 mobile-width-100 grid-parent">
@@ -468,7 +468,7 @@ class Header extends Component {
                 </section>
                 <section class="show-logged-out nav-account-wrapper has-dropdown">
                   <h3>
-                    <a href="https://www.fandango.com/fandangovip?source=web_globalnav_join"><span class="nav-description">Join Fandango<span class="page-header-emphasis">VIP</span></span></a>
+                    <a class = "header-links" href="https://www.fandango.com/fandangovip?source=web_globalnav_join"><span class="nav-description">Join Fandango<span class="page-header-emphasis">VIP</span></span></a>
                   </h3>
                   <div class="mega-menu">
                     <div class="row">
