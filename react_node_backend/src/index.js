@@ -7,7 +7,7 @@ import AdminDashboard from './Components/AdminDashboard';
 import MovieShowTimings from './Components/MovieShowTimings';
 import MovieDetails from './Components/MovieDetails';
 import Checkout from './Components/Checkout';
-
+import AccountSettings from "./Components/AccountSettings";
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import './assets/css/bootstrap.min.css'
 import './assets/css/bootstrap-responsive.min.css'
@@ -34,6 +34,7 @@ ReactDOM.render(
         <Route exact path="/signup" component={SignUp} />
         <Route exact path="/movie_details" component={MovieDetails} />
         <Route exact path="/checkout" component={Checkout} />
+        <Route exact path="/profile" component={AccountSettings} />
       </div>
     </Router>
   </Provider>,

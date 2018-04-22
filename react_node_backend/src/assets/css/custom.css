@@ -712,3 +712,96 @@ label.star:before {
   content: '\f006';
   font-family: FontAwesome;
 }
+
+/* 
+.hidden {
+  display: none !important;
+  -webkit-transition: height 0.5s linear;
+     -moz-transition: height 0.5s linear;
+      -ms-transition: height 0.5s linear;
+       -o-transition: height 0.5s linear;
+          transition: height 0.5s linear;
+} */
+/* 
+.hidden-basic-form{
+  height: 0px;
+  
+}
+
+.mystyle {
+  width: 100%;
+  height: 500px;
+ 
+  -webkit-transition:height, 0.5s linear !important;
+  -moz-transition: height, 0.5s linear  !important;
+  -ms-transition: height, 0.5s linear  !important;
+  -o-transition: height, 0.5s linear  !important;
+  transition: height, 0.5s linear  !important;
+  padding: 25px  !important ;
+
+  color: white  !important;
+  font-size: 25px  !important;
+  box-sizing: border-box  !important;
+} */
+
+.profile-headers {
+  font-weight: bolder;
+  letter-spacing: -2px;
+  font-size: 22px important;
+  font-size: 24px !important;
+}
+
+input[type=text], input[type=password], select {
+  background: white !important;
+}
+
+.save-button{
+  color: white !important;
+}
+
+.page.my-account{
+  background-color: #ebebeb !important;
+}
+
+.div-spacer{
+  height: 40px;
+  background-color: #ebebeb;
+}
+
+.accordion-body .vip-password-field {
+  display: block;
+}
+
+.password-save {
+  margin-top: -75px;
+}
+
+.panel-group .panel+.panel{
+  margin-top: 0px !important;
+}
+
+input[type="text"], input[type="password"], input[type="date"], input[type="datetime"], input[type="datetime-local"], input[type="month"], input[type="week"], input[type="email"], input[type="number"], input[type="search"], input[type="tel"], input[type="time"], input[type="url"], textarea{
+  border: 1px solid #ccc !important;
+}
+
+.user-email, .user-password, .user-rewards-card{
+  max-width: 50%;
+}
+
+.user-birth-month, .user-birth-day, .user-birth-year, .user-age, .user-card-month, .user-card-year, .user-card-type{
+  display: inline-block;
+  width: 130px;
+  margin-right: 10px;
+}
+
+.payment-zip{
+  margin-top: 3% !important;
+}
+
+.large-6.columns.right-25.payment-zip-columns {
+  margin-top: 2.5% !important;
+}
+
+#ExpirationMonth, ExpirationYear{
+  line-height: 24px !important;
+}
