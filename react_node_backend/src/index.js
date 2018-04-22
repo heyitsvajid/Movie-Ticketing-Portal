@@ -18,6 +18,7 @@ import { Provider } from 'react-redux';
 import MultiplexAdmin from "./Components/MultiplexAdmin";
 import TicketBooking from './Components/TicketBooking';
 import SignUp from "./Components/SignUp";
+import CheckoutTest from './Components/CheckoutTest'
 
 const store = createStore(allReducers);
 
@@ -35,6 +36,7 @@ ReactDOM.render(
         <Route exact path="/movie_details" component={MovieDetails} />
         <Route exact path="/checkout" component={Checkout} />
         <Route exact path="/profile" component={AccountSettings} />
+        <Route exact path="/co" component={CheckoutTest} />
       </div>
     </Router>
   </Provider>,

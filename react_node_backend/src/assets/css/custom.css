@@ -805,3 +805,47 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 #ExpirationMonth, ExpirationYear{
   line-height: 24px !important;
 }
+
+#siteContainer{
+  background-color: #EBEBEB !important;
+}
+
+h2.header-secondary.payment-header {
+  font-size: 22px;
+  font-weight: bolder;
+  letter-spacing: -1px;
+}
+
+h3.payment-subheader {
+  font-size: 18px !important;
+  letter-spacing: 0px;
+}
+
+input#creditCardPaymentRadioBtn {
+  float: left !important;
+  margin-top: 10px !important;
+}
+
+fieldset ul #creditcard{
+  padding: 0 0 0px 15px !important;
+}
+
+.cvvDetail.card.fieldContainer.display {
+  margin-top: 20px;
+}
+
+.card{
+  border: 1px solid white !important;
+}
+
+.expiry-latest{
+  border: 1px solid rgba(0,0,0,.125) !important;
+}
+
+.purchase-button{
+  border: none;
+}
+
+.exp-card{
+  display: inherit !important;
+}
