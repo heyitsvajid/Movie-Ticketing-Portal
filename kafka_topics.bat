@@ -12,4 +12,9 @@ C:\kafka_2.11-1.0.1\bin\windows\kafka-topics.bat --create --zookeeper localhost:
 
 C:\kafka_2.11-1.0.1\bin\windows\kafka-topics.bat --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic  showtiming_request
 
+C:\kafka_2.11-1.0.1\bin\windows\kafka-topics.bat --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic  completePayment
+
+C:\kafka_2.11-1.0.1\bin\windows\kafka-topics.bat --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic  fetchBillingDetails
+
+
 C:\kafka_2.11-1.0.1\bin\windows\kafka-topics.bat --list --zookeeper localhost:2181

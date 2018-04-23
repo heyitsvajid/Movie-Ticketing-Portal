@@ -6,14 +6,17 @@ var utility = require('./util/util.js');
 var MultiplexModel = require('./model/MultiplexModel');
 var MovieModel = require('./model/MovieModal');
 var UserModal = require('./model/UserModal');
+var PaymentModel = require('./model/PaymentModel');
 
 //Kafka Topics
 var user_topic = 'user_request';
 var response_topic = 'response_topic';
-var multiplex_topic = 'multiplex_request'
-var movie_topic = 'movie_request'
+var multiplex_topic = 'multiplex_request';
+var movie_topic = 'movie_request';
 var showtiming_topic = 'showtiming_request';
 var review_topic = 'review_request';
+var complete_payment = 'completePayment';
+var fetchBillingDetails = 'fetchBillingDetails';
 
 
 //Producer
@@ -30,6 +33,8 @@ var movie_consumer = connection.getConsumer(movie_topic);
 var showtiming_consumer = connection.getConsumer(showtiming_topic);
 var multiplexadmin_consumer = connection.getConsumer('multiplexadmin_request');
 var review_consumer = connection.getConsumer(review_topic);
+var completePayment = connection.getConsumer(complete_payment);
+var fetchBillingDetails = connection.getConsumer(fetchBillingDetails);
 
 
 //User Consumer
@@ -45,19 +50,16 @@ user_consumer.on('message', function (message) {
                 successMsg: '',
                 errorMsg: '',
                 data: {}
-            }
-
+            };
             if(res !== null) {
                 resultObject.successMsg = 'User Found';
                 resultObject.errorMsg = '';
                 resultObject.data = res
             } else {
                 resultObject.successMsg = '';
-                resultObject.errorMsg = 'User not found';
+                resultObject.errorMsg = 'User not found or Password mismatch';
                 resultObject.data =  {};
             }
-
-
             console.log("After formation of resultobject in login_request in serverjs",resultObject);
             var payloads = utility.createPayload(data, resultObject);
             console.log('is producer ready : ' + producer.ready);
@@ -96,6 +98,88 @@ user_consumer.on('message', function (message) {
             producer.send(payloads, function (err, data) {
                 utility.log(data, err);
             });
+            return;
+        });
+    }
+    else if(data.data.request_code === 3) {
+        console.log("Inside request code 3 : Get Profile details", data.data);
+        UserModal.get_profile_request( data.data, function (err, res) {
+            console.log('Kafka Server : after handle in Get Profile Details');
+            var resultObject = {
+                successMsg: '',
+                errorMsg: '',
+                data: {}
+            };
+            if(res !== null) {
+                resultObject.successMsg = 'Got User Profile Successfully';
+                resultObject.errorMsg = '';
+                resultObject.data = res
+            }
+            else {
+                resultObject.successMsg = '';
+                resultObject.errorMsg = 'User not found';
+                resultObject.data =  {};
+            }
+            console.log("After formation of resultobject in get_profile_request in serverjs",resultObject);
+            var payloads = utility.createPayload(data, resultObject);
+            console.log('is producer ready : ' + producer.ready);
+            producer.send(payloads, function (err, data) {
+                utility.log(data, err);
+            });
+            return;
+        });
+    }
+    else if(data.data.request_code === 4) {
+        console.log("In Request Code 4 : Update Basic Info" , data.data);
+        UserModal.update_basic_information_profile_request( data.data, function (err, res) {
+            console.log('Kafka Server : after handle in update_basic_information_profile_request');
+            var resultObject = {
+                successMsg: '',
+                errorMsg: '',
+                data: {}
+            };
+            if( res !== null) {
+                resultObject.successMsg = 'Updated Users Basic Profile Successfully';
+                resultObject.errorMsg = '';
+                resultObject.data = res
+            } else {
+                resultObject.successMsg = '';
+                resultObject.errorMsg = 'User not found or Error updating the profile';
+                resultObject.data =  {};
+            }
+            console.log("After formation of resultobject in update_basic_information_profile_request in serverjs",resultObject);
+            var payloads = utility.createPayload(data, resultObject);
+            console.log('is producer ready : ' + producer.ready);
+            producer.send(payloads, function (err, data) {
+                utility.log(data, err);
+            });
+            return;
+        });
+    }
+    else if(data.data.request_code === 5) {
+        console.log("In Request Code 5 : Update Email " , data.data );
+        UserModal.update_email_profile_request(data.data, function (err, res) {
+            console.log('Kafka Server : after handle in update_email_profile_request');
+            var resultObject = {
+                successMsg: '',
+                errorMsg: '',
+                data: {}
+            };
+            if(res !== null) {
+                resultObject.successMsg = 'Updated Users email Successfully';
+                resultObject.errorMsg = '';
+                resultObject.data = res
+            } else {
+                resultObject.successMsg = '';
+                resultObject.errorMsg = 'User not found or Error updating email';
+                resultObject.data =  {};
+            }
+            console.log("After formation of resultobject in update_email_profile_request in serverjs",resultObject);
+            var payloads = utility.createPayload(data, resultObject);
+            console.log('is producer ready : ' + producer.ready);
+            producer.send(payloads, function (err, data) {
+                utility.log(data, err) ;
+            } );
             return;
         });
     }
@@ -552,6 +636,64 @@ review_consumer.on('message', function (message) {
             return;
         });
     }
+});
+
+completePayment.on('message', function (message) {
+    console.log('Kafka Server Complete Payment: Card Information Received');
+    var payment_data = JSON.parse(message.value);
+    console.log("Hello")
+    console.log(payment_data);
+        PaymentModel.complete_Payment(payment_data,function (err, res) {
+            var resultObject = {
+                successMsg: '',
+                errorMsg: '',
+                data: {}
+            }
+            console.log('Kafka Server : after handle');
+            console.log(res);
+            if(err){
+                resultObject.successMsg= '';
+                resultObject.errorMsg= 'Error completing payment';
+            }else{
+                resultObject.successMsg= 'Payment successfully done.';
+                resultObject.errorMsg= '';
+                resultObject.data=res;         
+            }
+            let payloads = utility.createPayload(payment_data, resultObject);
+            console.log('is producer ready : ' + producer.ready);
+            producer.send(payloads, function (err, data) {
+                utility.log(data, err);
+            });
+            return;
+        });
+});
+
+fetchBillingDetails.on('message', function (message) {
+    console.log('Kafka Server Complete Payment: Card Information Received');
+    var billing_id = JSON.parse(message.value);
+        PaymentModel.fetchBillingDetails(billing_id,function (err, res) {
+            var resultObject = {
+                successMsg: '',
+                errorMsg: '',
+                data: {}
+            }
+            console.log('Kafka Server : after handle');
+            console.log(res);
+            if(err){
+                resultObject.successMsg= '';
+                resultObject.errorMsg= 'Error completing payment';
+            }else{
+                resultObject.successMsg= 'Payment successfully done.';
+                resultObject.errorMsg= '';
+                resultObject.data=res;         
+            }
+            let payloads = utility.createPayload(billing_id, resultObject);
+            console.log('is producer ready : ' + producer.ready);
+            producer.send(payloads, function (err, data) {
+                utility.log(data, err);
+            });
+            return;
+        });
 });
 
 

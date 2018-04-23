@@ -1,5 +1,7 @@
 var mysql = require('mysql');
 var pool = require('../services/mysql')
+var bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 function errHandler(err) {
     console.error('There was an error performing the operation');
@@ -221,16 +223,35 @@ function login_request( msg, callback ) {
             errHandler(err);
         } else {
             console.log("Connected to MYSQL in login_request in usermodal");
-            var sql = 'select * from user where email = ' + mysql.escape(email) + 'and password = ' + mysql.escape(password);
+            var sql = 'select * from user where email = ' + mysql.escape(email);
             db.query(sql, (err, result) => {
-                db.release();
+
                 if(err) {
                     console.log("Error in UserModal login_request while retrieving user from MySQLDB");
                     errHandler(err);
                 } else {
                     if(result.length > 0) {
-                        console.log(result);
-                        callback(null, result[0]);
+                        console.log("Result after getting the user..", result);
+                        var hash = result[0].password;
+
+                        bcrypt.compare(password, hash, (err, doesMatch) => {
+                            console.log(doesMatch);
+                            if(doesMatch) {
+                                var sqlUpdateDisability = 'update user set disable = 0 where email = ' + mysql.escape(email);
+                                db.query(sqlUpdateDisability, (err, result1) => {
+                                    db.release();
+                                    if(err) console.log("Error updating the user's disability...");
+                                    else {
+                                        console.log("Successfully activated the user");
+                                    }
+                                });
+                                callback(null, result[0]);
+                            } else {
+                                console.log("Password Mismatch");
+                                callback(null, null);
+                            }
+                        })
+
                     } else {
                         console.log("User not found");
                         callback(null, null);
@@ -268,20 +289,27 @@ function signup_request( msg, callback ) {
                     callback( null, userObject );
                 }
                 else {
-                    let sql2 = 'insert into user ( first_name, email, password, role_number ) values ( ?, ?, ?, ? ) ';
-                    db.query( sql2 ,  [ fname, email, pwd, role ] , (err, result) => {
-                        db.release();
+                    bcrypt.hash(pwd, saltRounds, (err, hash) => {
                         if(err) {
-                            console.log("Error in inserting user in mysql in creating user");
-                            callback( null, 'Error in inserting user in mysql in creating user');
-                        }
-                        else {
-                            console.log( 'Created User', result );
-                            userObject = {
-                                code : 2 ,
-                                message : "User created successfully"
-                            };
-                            callback( null, userObject );
+                            console.log("Error hasing the password");
+                        } else {
+                            console.log("Hashed the password", hash);
+                            let sql2 = 'insert into user ( first_name, email, password, role_number ) values ( ?, ?, ?, ? ) ';
+                            db.query( sql2 ,  [ fname, email, hash, role ] , (err, result) => {
+                                db.release();
+                                if(err) {
+                                    console.log("Error in inserting user in mysql in creating user");
+                                    callback( null, 'Error in inserting user in mysql in creating user');
+                                }
+                                else {
+                                    console.log( 'Created User', result );
+                                    userObject = {
+                                        code : 2 ,
+                                        message : "User created successfully"
+                                    };
+                                    callback( null, userObject );
+                                }
+                            })
                         }
                     })
                 }
@@ -291,6 +319,93 @@ function signup_request( msg, callback ) {
 
 }
 
+//UserModal getprofile
+function get_profile_request( msg, callback) {
+    console.log("Inside get profile in kafkabackend UserModal", msg);
+    var id = msg.id;
+
+    pool.connect((err, db) => {
+        if(err) {
+            console.log("Error in UserModal get_profile_request while connecting to DB");
+            errHandler(err);
+        } else {
+            console.log("Connected to MYSQL in get_profile_request in usermodal");
+            var sql = "select * from user where id = " + mysql.escape(id);
+            db.query(sql, (err, result) => {
+                if(err) {
+                    console.log("Error in UserModal get_profile_request while update query to DB");
+                    errHandler(err);
+                }
+                else if (result.length > 0) {
+                    console.log("Result after getting profile details from DB..", result);
+                    callback(null, result[0]);
+                }
+                else {
+                    console.log("User not found");
+                    callback(null, null);
+                }
+            });
+        }
+    });
+};
+
+//UserModal update_basic_information_profile
+function update_basic_information_profile_request(msg, callback) {
+    console.log("Inside update_basic_information_profile_request in kafkabackend UserModal", msg);
+    var id = msg.id;
+    var first_name = msg.first_name;
+    var last_name = msg.last_name;
+
+    pool.connect((err, db) => {
+        if(err) {
+            console.log("Error in UserModal update_basic_information_profile_request while connecting to DB");
+            errHandler(err);
+        } else {
+            console.log("Connected to MYSQL in update_basic_information_profile_request in usermodal");
+            var sql = "update user set first_name = " + mysql.escape(first_name) + ", last_name = " +
+                mysql.escape(last_name) + " where id = " + mysql.escape(id);
+            db.query(sql, (err, result) => {
+                if(err) {
+                    console.log("Error in UserModal update_basic_information_profile_request while update query to DB");
+                    errHandler(err);
+                }
+                else{
+                    console.log("Result after updating the user..", result);
+                    callback(null, result);
+                }
+            });
+        }
+    });
+}
+
+//UserModal update_email_information_profile
+function update_email_profile_request(msg, callback) {
+    console.log("Inside update_email_profile_request in kafkabackend UserModal", msg);
+    var id = msg.id;
+    var email = msg.email;
+
+    pool.connect((err, db) => {
+        if(err) {
+            console.log("Error in UserModal update_email_profile_request while connecting to DB");
+            errHandler(err);
+        } else {
+            console.log("Connected to MYSQL in update_email_profile_request in usermodal");
+            var sql = "update user set email = " + mysql.escape(email) + " where id = " + mysql.escape(id);
+            db.query(sql, (err, result) => {
+                if(err) {
+                    console.log("Error in UserModal update_email_profile_request while update query to DB");
+                    errHandler(err);
+                }
+                else{
+                    console.log("Result after updating email of the user..", result);
+                    callback(null, result);
+                }
+            });
+        }
+    });
+}
+
+
 //==============================================================================
 /**
 * Export module
@@ -298,9 +413,12 @@ function signup_request( msg, callback ) {
 module.exports = {
     createMultiplexAdmin: createMultiplexAdmin,
     findAllMultiplexAdmins : findAllMultiplexAdmins,
-    findMultiplexAdminbyId :findMultiplexAdminbyId,
+    findMultiplexAdminbyId : findMultiplexAdminbyId,
     login_request: login_request,
     signup_request : signup_request,
+    get_profile_request : get_profile_request ,
+    update_basic_information_profile_request : update_basic_information_profile_request,
+    update_email_profile_request : update_email_profile_request,
     errHandler: errHandler
     //  deleteUser: deleteUser
   };

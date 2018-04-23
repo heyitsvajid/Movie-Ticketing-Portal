@@ -604,3 +604,248 @@ input.sub {
 .page.registration.authentication-form {
   background-color: black !important;
 }
+
+.h1-seo{
+  line-height: 0px;
+}
+
+.header-links {
+  color: white !important;
+}
+
+.fan-btn-style-go{
+  vertical-align: unset;
+  margin-top: 8px;
+}
+
+.header-logo{
+  margin-top: -10px;
+}
+
+.movie-detail-header{
+  margin-top: 4.2%;
+  color: white !important;
+  font-size: 32px !important;
+  letter-spacing: 12px;
+}
+
+.media-player__placeholder:after{
+  margin-left: -100%;
+}
+
+.below-header-link{
+  font-size: 13px !important;
+}
+
+.release-date{
+  font-size: 15px;
+}
+
+.icon.icon-rottom-rotten {
+  width: 32px!important;
+  height: 32px !important;
+  background-position: center;
+}
+
+.message-title{
+  font-size: 20px !important;
+}
+
+.contact-info{
+  line-height: 18px !important;
+}
+
+.review-heading{
+  font-weight: bolder !important;
+}
+
+.checked {
+  color: 	#F94305;
+}
+
+.user-review-heading {
+  font-size: 18px !important;
+  font-weight: bolder;
+}
+
+.modal-dialog {
+  margin-top: 12% !important;
+}
+
+.write-review-form__heading{
+  font-size: 20px !important;
+}
+
+
+
+div.stars {
+  width: 270px;
+  display: inline-block;
+}
+
+input.star { display: none; }
+
+label.star {
+  float: right;
+  padding: 10px;
+  font-size: 36px;
+  color: #444;
+  transition: all .2s;
+}
+
+input.star:checked ~ label.star:before {
+  content: '\f005';
+  color: #FD4;
+  transition: all .25s;
+}
+
+input.star-5:checked ~ label.star:before {
+  color: #FE7;
+  text-shadow: 0 0 20px #952;
+}
+
+input.star-1:checked ~ label.star:before { color: #F62; }
+
+label.star:hover { transform: rotate(-15deg) scale(1.3); }
+
+label.star:before {
+  content: '\f006';
+  font-family: FontAwesome;
+}
+
+/* 
+.hidden {
+  display: none !important;
+  -webkit-transition: height 0.5s linear;
+     -moz-transition: height 0.5s linear;
+      -ms-transition: height 0.5s linear;
+       -o-transition: height 0.5s linear;
+          transition: height 0.5s linear;
+} */
+/* 
+.hidden-basic-form{
+  height: 0px;
+  
+}
+
+.mystyle {
+  width: 100%;
+  height: 500px;
+ 
+  -webkit-transition:height, 0.5s linear !important;
+  -moz-transition: height, 0.5s linear  !important;
+  -ms-transition: height, 0.5s linear  !important;
+  -o-transition: height, 0.5s linear  !important;
+  transition: height, 0.5s linear  !important;
+  padding: 25px  !important ;
+
+  color: white  !important;
+  font-size: 25px  !important;
+  box-sizing: border-box  !important;
+} */
+
+.profile-headers {
+  font-weight: bolder;
+  letter-spacing: -2px;
+  font-size: 22px important;
+  font-size: 24px !important;
+}
+
+input[type=text], input[type=password], select {
+  background: white !important;
+}
+
+.save-button{
+  color: white !important;
+}
+
+.page.my-account{
+  background-color: #ebebeb !important;
+}
+
+.div-spacer{
+  height: 40px;
+  background-color: #ebebeb;
+}
+
+.accordion-body .vip-password-field {
+  display: block;
+}
+
+.password-save {
+  margin-top: -75px;
+}
+
+.panel-group .panel+.panel{
+  margin-top: 0px !important;
+}
+
+input[type="text"], input[type="password"], input[type="date"], input[type="datetime"], input[type="datetime-local"], input[type="month"], input[type="week"], input[type="email"], input[type="number"], input[type="search"], input[type="tel"], input[type="time"], input[type="url"], textarea{
+  border: 1px solid #ccc !important;
+}
+
+.user-email, .user-password, .user-rewards-card{
+  max-width: 50%;
+}
+
+.user-birth-month, .user-birth-day, .user-birth-year, .user-age, .user-card-month, .user-card-year, .user-card-type{
+  display: inline-block;
+  width: 130px;
+  margin-right: 10px;
+}
+
+.payment-zip{
+  margin-top: 3% !important;
+}
+
+.large-6.columns.right-25.payment-zip-columns {
+  margin-top: 2.5% !important;
+}
+
+#ExpirationMonth, ExpirationYear{
+  line-height: 24px !important;
+}
+
+#siteContainer{
+  background-color: #EBEBEB !important;
+}
+
+h2.header-secondary.payment-header {
+  font-size: 22px;
+  font-weight: bolder;
+  letter-spacing: -1px;
+}
+
+h3.payment-subheader {
+  font-size: 18px !important;
+  letter-spacing: 0px;
+}
+
+input#creditCardPaymentRadioBtn {
+  float: left !important;
+  margin-top: 10px !important;
+}
+
+fieldset ul #creditcard{
+  padding: 0 0 0px 15px !important;
+}
+
+.cvvDetail.card.fieldContainer.display {
+  margin-top: 20px;
+}
+
+.card{
+  border: 1px solid white !important;
+}
+
+.expiry-latest{
+  border: 1px solid rgba(0,0,0,.125) !important;
+}
+
+.purchase-button{
+  border: none;
+}
+
+.exp-card{
+  display: inherit !important;
+}

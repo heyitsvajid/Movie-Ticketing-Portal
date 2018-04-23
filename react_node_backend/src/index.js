@@ -5,7 +5,9 @@ import Layout from './Components/Layout';
 import Index from './Components/Index';
 import AdminDashboard from './Components/AdminDashboard';
 import MovieShowTimings from './Components/MovieShowTimings';
-
+import MovieDetails from './Components/MovieDetails';
+import Checkout from './Components/Checkout';
+import AccountSettings from "./Components/AccountSettings";
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import './assets/css/bootstrap.min.css'
 import './assets/css/bootstrap-responsive.min.css'
@@ -16,6 +18,7 @@ import { Provider } from 'react-redux';
 import MultiplexAdmin from "./Components/MultiplexAdmin";
 import TicketBooking from './Components/TicketBooking';
 import SignUp from "./Components/SignUp";
+import CheckoutTest from './Components/CheckoutTest'
 
 const store = createStore(allReducers);
 
@@ -30,6 +33,10 @@ ReactDOM.render(
         <Route exact path="/multiplexadmin" component = {MultiplexAdmin} />
         <Route exact path="/tickets" component={TicketBooking} />
         <Route exact path="/signup" component={SignUp} />
+        <Route exact path="/movie_details" component={MovieDetails} />
+        <Route exact path="/checkout" component={Checkout} />
+        <Route exact path="/profile" component={AccountSettings} />
+        <Route exact path="/co" component={CheckoutTest} />
       </div>
     </Router>
   </Provider>,

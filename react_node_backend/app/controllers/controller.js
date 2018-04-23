@@ -7,7 +7,6 @@ var passport = require('../config/passport.js');
 var kafka = require('../kafka/client');
 
 
-
 //Creating New Multiplex Admin
 exports.createMultiplexAdmin =  ( req, res ) => {
     console.log("In Node Backend, Creating new multiplex admin", req.body);
@@ -85,6 +84,82 @@ exports.findMultiplexAdminbyId =  ( req, res ) => {
         }
     })
 };
+
+// Get Profile Details
+exports.getProfileDetails = ( req, res ) => {
+    console.log("Node Backend : Get Profile Details " , req.body );
+    var data= {
+        id :  req.body.userid,
+        request_code : 3 // Get Profile Details
+    };
+    console.log(data);
+
+    kafka.make_request('user_request', data, (err, result) => {
+        console.log('Kafka Response in Get Profile :');
+        if (err) {
+            console.log( 'After Kafka response : User Profile Not found');
+            console.log(err);
+            res.json(result);
+        }
+        else {
+            console.log(result);
+            res.json(result);
+            return;
+        }
+    })
+};
+
+// Update Profile Details Basic Info
+exports.updateProfileDetailsBasicInfo = ( req, res ) => {
+    console.log("Node Backend : Update Profile Details " , req.body );
+    var data= {
+        id :  req.body.id,
+        first_name : req.body.first_name,
+        last_name : req.body.last_name,
+        request_code : 4 // Update Profile Details - Basic Info
+    };
+    console.log(data);
+
+    kafka.make_request('user_request', data, (err, result) => {
+        console.log('Kafka Response in Update Profile - Basic Info :' );
+        if (err) {
+            console.log( 'After Kafka response : User Profile Not Updated');
+            console.log(err);
+            res.json(result);
+        }
+        else {
+            console.log(result);
+            res.json(result);
+            return;
+        }
+    })
+};
+
+// Update Profile Details Email
+exports.updateProfileDetailsEmail = ( req, res ) => {
+    console.log("Node Backend : Update Profile Details Email " , req.body );
+    var data= {
+        id :  req.body.id,
+        email : req.body.email,
+        request_code : 5 // Update Profile Details - Basic Info
+    };
+    console.log(data);
+
+    kafka.make_request('user_request', data, (err, result) => {
+        console.log('Kafka Response in Update Profile - Email :' );
+        if (err) {
+            console.log( 'After Kafka response : User Profile Email Not Updated');
+            console.log(err);
+            res.json(result);
+        }
+        else {
+            console.log(result);
+            res.json(result);
+            return;
+        }
+    })
+};
+
 
 //Movie Reviews
 exports.addMovieReview= function (req, res) {
@@ -523,6 +598,14 @@ exports.login = function (req, res, next) {
             resultObject.errorMsg = user.errorMsg;
             resultObject.data = user.data;
             console.log("In passport authenticate...after forming the resultobject", resultObject);
+
+            //setting passport session starts
+            //    req.login(resultObject.data, (err) => {
+            //        console.log("Session Started with new Passport method");
+            //    })
+            //ends
+
+
             req.session.email = resultObject.data.email;
             req.session.userid = resultObject.data.id;
             req.session.first_name = resultObject.data.first_name;
@@ -600,31 +683,57 @@ exports.isLoggedIn = function (req, res) {
         res.json({"session": "invalid" , "result": []});
     }
 
-    // if (req.isAuthenticated()) {
-    //
-    //     console.log(req.user);
-    //     console.log('is logged in');
-    //     let responsePayload = {
-    //         responseCode: 0,
-    //         responseMsg: 'Allready Logged In',
-    //         name: req.session.name,
-    //         email: req.session.email,
-    //         id: req.session.passport.user
-    //     }
-    //     res.json(responsePayload);
-    //     return;
+    //passport authentication by venky starts
+    // if(req.isAuthenticated()) {
+    //     console.log("In is logged in ...session is valid", req.user);
     // } else {
-    //     console.log('Not logged in');
-    //     let responsePayload = {
-    //         responseCode: 1,
-    //         responseMsg: 'Log In Required',
-    //     }
-    //     res.json(responsePayload);
-    //     return;
+    //     console.log("In is logged in ...session is invalid");
     // }
+    //passport authentication by venky ends
 
 
 };
+
+
+//Complete the transaction and book tickets
+exports.completePayment = function (req, res) {
+    console.log("completePayment : node backend");
+    let data = req.body;
+    console.log(data+ "Hello");
+    kafka.make_request('completePayment', data, function (err, results) {
+        console.log('Kafka Response:');
+        console.log(results);
+        if (err) {
+            console.log('Controller : Error Occurred : ');
+            console.log(err);
+            res.json(results);
+        }
+        else {
+            res.json({results: results});
+            return;
+        }
+    });
+}
+
+//fetch billing details
+exports.fetchBillingDetails = function (req, res) {
+    console.log("Fetching Bill : node backend");
+    let data = req.body;
+    console.log(data+ "Hello");
+    kafka.make_request('fetchBillingDetails', data, function (err, results) {
+        console.log('Kafka Response:');
+        console.log(results);
+        if (err) {
+            console.log('Controller : Error Occurred : ');
+            console.log(err);
+            res.json(results);
+        }
+        else {
+            res.json({results: results});
+            return;
+        }
+    });
+}
 
 //method converted
 exports.logout = function (req, res) {
@@ -632,6 +741,7 @@ exports.logout = function (req, res) {
     console.log('Session Destroyed');
     //req.logout();
     req.session.destroy();
+
     res.json({"session":"logged out"});
     return;
 };

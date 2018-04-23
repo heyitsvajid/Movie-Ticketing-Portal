@@ -14,6 +14,15 @@ module.exports = function (app) {
   //Check Login
   app.get('/isLoggedIn', api_controller.isLoggedIn);
 
+  //Get Profile Details
+  app.post('/getprofiledetails', api_controller.getProfileDetails );
+
+  //Update Profile Details Basic Info
+  app.post('/updateprofilebasicinfo', api_controller.updateProfileDetailsBasicInfo );
+
+  //Update Profile Details Email
+  app.post('/updateprofileemail', api_controller.updateProfileDetailsEmail );
+
   //Find All Multiplex
   app.get('/findAllMultiplex', api_controller.findAllMultiplex);
 
@@ -58,6 +67,9 @@ module.exports = function (app) {
 
   //Add Movie Review
   app.post('/addMovieReview', api_controller.addMovieReview);
+
+  app.post('/completePayment', api_controller.completePayment);
+
 
 
 }

@@ -16,7 +16,7 @@ class SignIn extends Component {
             password: '',
             isLoggedIn: false,
             errorMsg: ''
-        }
+        };
         this.handleUsernameChange = this.handleUsernameChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
         this.handleLogin = this.handleLogin.bind(this);
@@ -27,7 +27,11 @@ class SignIn extends Component {
             .then((response) => {
                 console.log("After checking the session", response.data);
                 if(response.data.session === 'valid') {
-                    this.props.history.push('/');
+                    if(response.data.result.role_number === 1)
+                        this.props.history.push('/');
+                    else {
+                        this.props.history.push('/adminDashboard');
+                    }
                 }
             })
     }
@@ -66,9 +70,11 @@ class SignIn extends Component {
                     console.log("In Login Component handleLogin",response.data);
                     if(response.data.errorMsg === '') {
                         //alert("User logging in...");
+                        localStorage.setItem('userid', response.data.data.id );
+                        console.log( 'Userid from localStorage : ', localStorage.getItem('userid'));
                         this.setState({
-                            username: response.data.email,
-                            role_number: response.data.role_number,
+                            username: response.data.data.email,
+                            role_number: response.data.data.role_number,
                             isLoggedIn: true,
                             errorMsg: 'Login SuccessFull'
                         }, () => {
