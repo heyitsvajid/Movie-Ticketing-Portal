@@ -123,13 +123,12 @@ class AdminDashboard extends Component {
                     </button>
                     <div class="collapse navbar-collapse" id="navbarResponsive">
                         <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
-                        {localStorage.getItem('roleId')==3?
                             <li class="nav-item" value={addDashboard} onClick={this.handleLinkClick.bind(this)} data-toggle="tooltip" data-placement="right" title="" data-original-title="Dashboard">
                                 <a class="nav-link" href="index.html">
                                     <i class="fa fa-fw fa-dashboard"></i>
                                     <span class="nav-link-text">Analytics Dashboard</span>
                                 </a>
-                            </li>:''}
+                            </li>
                             {localStorage.getItem('roleId')==3?
                             <li class="nav-item" data-toggle="tooltip" data-placement="right" title="" data-original-title="Charts">
                                 <a class="nav-link" href="charts.html">

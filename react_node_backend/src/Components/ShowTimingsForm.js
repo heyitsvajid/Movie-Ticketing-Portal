@@ -275,7 +275,7 @@ class ShowTimingsForm extends Component {
             if (element._id == e.target.id) {
                 this.setState({
                     update_id: e.target.id,
-                    update: !this.state.update,
+                    update: true,
                     screen_number: element.screen_number,
                     date_time: moment(element.date_time),
                     movie_id: element.movie._id,
@@ -377,7 +377,8 @@ class ShowTimingsForm extends Component {
                         <label class="col-md-3 control-label"></label>
                         <div class="col-md-8">
                             {this.state.update ? <input type="submit" class="btn btn-primary"
-                                value="Update Show Timing" required="" onClick={this.updateShowTiming.bind(this)} /> : <input type="submit" class="btn btn-primary"
+                                value="Update Show Timing" required="" onClick={this.updateShowTiming.bind(this)} /> : 
+                                <input type="submit" class="btn btn-primary"
                                     value="Add Show Timing" required="" onClick={this.handleSubmit.bind(this)} />}
 
                             <span></span>

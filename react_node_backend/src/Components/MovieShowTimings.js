@@ -80,7 +80,7 @@ class Layout extends Component {
                                     for (var groupName in groups) {
                                     let sortedShows = groups[groupName];
                                     sortedShows.sort(function(a, b){
-                                        return a.sort_field == b.sort_field ? 0 : +(a.sort_field < b.sort_field) || -1;
+                                        return a.sort_field == b.sort_field ? 0 : +(a.sort_field > b.sort_field) || -1;
                                       });
                                       myArray.push({movie_id: groupName, shows:sortedShows});
                                     }
@@ -329,12 +329,10 @@ renderMultiplexShowTimings(){
                 movie =show.movie;
                 imageSource = require('../images/' + movie.movie_logo)? require('../images/' + movie.movie_logo):''
                 return(
-                    <ol class="fd-movie__btn-list">
                     <li class="fd-movie__btn-list-item" >
                       <a class="btn showtime-btn showtime-btn--available"
                       id={show._id+','+multiplex._id} onClick={this.onShowTimeClick.bind(this)} >{new Date(show.sort_field).getHours()+':'+new Date(show.sort_field).getMinutes()}</a>
                     </li>
-                </ol>
                     )
             });
             if(movie_shows.shows.length>0){
@@ -383,7 +381,9 @@ renderMultiplexShowTimings(){
                                 <a href="#" class=" fd-movie__amenity-icon js-amenity" data-amenity-desc="This film is presented in Telugu." data-amenity-name="Telugu">Telugu</a>
                               </li>
                           </ul>
-            {timeNodes}
+                          <ol class="fd-movie__btn-list">
+              
+            {timeNodes}</ol>
                         </li>
                     </ul>           </li>             )
             }else{
@@ -441,7 +441,14 @@ renderMultiplexShowTimings(){
     }
                    
     onShowTimeClick(e){
-        alert(e.target.id);
+        e.preventDefault();
+        //alert(e.target.id)
+        var arr = e.target.id.split(',');
+        if(arr.length==2){
+            localStorage.setItem('bookShowId',arr[0]);
+            localStorage.setItem('bookMultiplexId',arr[1]);
+            this.props.history.push('/tickets');    
+        }
     }
 
 }

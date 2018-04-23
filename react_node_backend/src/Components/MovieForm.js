@@ -62,8 +62,7 @@ class MovieForm extends Component {
     }
 
     handleSubmit(e) {
-
-
+e.preventDefault();
         if(localStorage.getItem('roleId')!='3'){
             swal({
                 type: 'error',
