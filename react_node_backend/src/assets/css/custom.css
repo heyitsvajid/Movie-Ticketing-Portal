@@ -849,3 +849,43 @@ fieldset ul #creditcard{
 .exp-card{
   display: inherit !important;
 }
+
+.confirm-box {
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 20px;
+  padding: 10px 0 20px;
+}
+
+.confirm-list {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.abcd{
+  border: 1px solid black;
+}
+
+.main.billing_summary{
+  width: 100% !important;
+}
+
+#purchase-header {
+  margin-left: -25% !important;
+}
+
+#purchase-header, .summary-header{
+  font-weight: bolder !important;
+  font-size: 22px !important;
+}
+
+.panel-body.billing-body{
+  line-height: 23px;
+}
+
+button#NewCustomerCheckoutButton {
+  margin-right: 7%;
+}
+
+.box-heading{
+  font-weight: bolder;
+}

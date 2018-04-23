@@ -19,6 +19,7 @@ import MultiplexAdmin from "./Components/MultiplexAdmin";
 import TicketBooking from './Components/TicketBooking';
 import SignUp from "./Components/SignUp";
 import CheckoutTest from './Components/CheckoutTest'
+import TicketConfirmation from './Components/TicketConfirmation'
 
 const store = createStore(allReducers);
 
@@ -37,6 +38,7 @@ ReactDOM.render(
         <Route exact path="/checkout" component={Checkout} />
         <Route exact path="/profile" component={AccountSettings} />
         <Route exact path="/co" component={CheckoutTest} />
+        <Route exact path="/confirmation" component={TicketConfirmation} />
       </div>
     </Router>
   </Provider>,
