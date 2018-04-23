@@ -3,23 +3,253 @@ import axios from 'axios';
 import Index from './Index';
 import Header from './Header';
 import Footer from './Footer';
+import { envURL, reactURL } from '../config/environment';
 // import SignIn from './SignIn';
 // import SignUp from './SignUp';
 
 class CheckoutTest extends Component {
-  constructor(props) {
-    super(props);
-  }
+    constructor(props) {
+        super(props);
+        this.state = {
+            name: null, 
+            email: null, 
+            ticketType : null,
+            ticketPrice : null,
+            totalTickets : null,
+            total : null,
+            tax : 0,
+            movie_id : null,
+            movieName : null,
+            movieRating : null,
+            movieDayDate : null,
+            movieTime : null,
+            multiplex_id : null,
+            multiplexName : null, 
+            multiplexAddress : null,
+            multiplexCity : null,
+            multiplexState : null,
+            multiplexZipCode : null,
+            cardNumber : null,
+            expiryMonth : null,
+            expiryYear : null,
+            firstName : null,
+            lastName : null,
+            cardZipCode : null,
+            adult_tickets : 0,
+            child_tickets : 0,
+            disabled_tickets : 0,
+            student_tickets : 0,
+            paymentSuccess : false,
+            cardDetails : null,
+            save_card : false
+            // cvv : null
+        }
+        this.getUserDetails = this.getUserDetails.bind(this)
+        this.getMovieDetails = this.getMovieDetails.bind(this)
+        this.getMultiplexDetails = this.getMultiplexDetails.bind(this)
+        this.getTicketDetails = this.getTicketDetails.bind(this)
+        this.handleCardNumber = this.handleCardNumber.bind(this)
+        this.handleFirstName = this.handleFirstName.bind(this)
+        this.handleLastName = this.handleLastName.bind(this)
+        this.handleCardZipCode = this.handleCardZipCode.bind(this)
+        this.handleExpiryMonth = this.handleExpiryMonth.bind(this)
+        this.handleExpiryYear = this.handleExpiryYear.bind(this)
+        this.completePayment = this.completePayment.bind(this)
+    }
   
-  componentWillMount(){
-  
-  }
+    componentWillMount(){
+        this.getUserDetails()
+        this.getMovieDetails()
+        this.getMultiplexDetails()
+        this.getTicketDetails()
+        this.getTicketDetails()
+        this.getCardDetails()
+    }
+
+    getUserDetails(){
+        this.setState({
+            name : localStorage.getItem("name"),
+            email : localStorage.getItem("email")
+        })
+    }
+
+      /*   Show Timings and Screen No Fetching has to be done  */
+
+
+    getTicketDetails(){
+        this.setState({
+            adult_tickets : localStorage.getItem("adult_tickets"),
+            child_tickets : localStorage.getItem("child_tickets"),
+            disabled_tickets : localStorage.getItem("disabled_tickets"),
+            student_tickets : localStorage.getItem("student_tickets"),
+            ticketType : localStorage.getItem("ticketType"),
+            totalTickets : localStorage.getItem("totalTickets"),
+            ticketPrice : localStorage.getItem("ticketPrice"),
+            total : this.state.ticketPrice * this.state.totalTickets
+        })
+        localStorage.clear()
+    }
+
+    getMovieDetails(){
+        debugger
+        let findMovieById = envURL + 'findMovieById';
+        var movie_id = 1;
+        // localStorage.getItem("movie_id")
+        console.log(movie_id)
+        debugger
+        axios.get(findMovieById, movie_id)
+            .then(res => {
+                debugger
+                    console.log('Fetching Movie Details');
+                    console.log(res.data.data);
+                    this.setState({
+                        movie_id : res.data.data.movie_id,
+                        movieName: res.data.movieName,
+                        movieRating : res.data.mpaa_ratings,
+                        movieTime : res.data.data.time
+                    })
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    }
+    getMultiplexDetails(){
+        let getMultiplexById = envURL + 'getMultiplexById';
+        axios.get(getMultiplexById)
+            .then(res => {
+                    console.log('Fetching Multiplex Details');
+                    console.log(res.data.data);
+                    this.setState({
+                        multiplex_id : res.data.data.multiplex_id,
+                        multiplexName: res.data.data.name,
+                        multiplexAddress : res.data.data.address,
+                        multiplexCity : res.data.data.city,
+                        multiplexState : res.data.data.state,
+                        multiplexZipCode : res.data.data.zipcode
+                    })
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    }
+    getCardDetails(){
+        let getCardDetails = envURL + 'getCardDetails';
+        axios.get(getCardDetails)
+            .then(res => {
+                    console.log('Fetching Movie Details');
+                    console.log(res.data.data);
+                    this.setState({
+                        cardDetails : res.data.data
+                    })
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    }
+    handleCardNumber(e){
+        e.preventDefault()
+        this.setState({
+            cardNumber : e.target.value
+        })
+    }
+    handleExpiryMonth(e){
+        e.preventDefault()
+        this.setState({
+            expiryMonth : e.target.value
+        })
+    }
+    handleExpiryYear(e){
+        e.preventDefault()
+        this.setState({
+            expiryYear : e.target.value
+        })
+    }
+    handleFirstName(e){
+        e.preventDefault()
+        this.setState({
+            firstName : e.target.value
+        })
+    }
+    handleLastName(e){
+        e.preventDefault()
+        this.setState({
+            lastName : e.target.value
+        })
+    }
+    // handleCvv(e){
+    //     e.preventDefault()
+    //     this.setState({
+    //         cvv : e.target.value
+    //     })
+    // }
+    handleCardZipCode(e){
+        e.preventDefault()
+        this.setState({
+            cardZipCode : e.target.value
+        })
+    }
+    handleCardSave(e){
+        e.preventDefault()
+        this.state({
+
+        })
+    }
+
+    completePayment(e){
+        debugger
+        e.preventDefault();
+        let completePayment = envURL + 'completePayment';
+        var cardInformation  = {    
+                                    user_email : this.state.email,
+                                    cardNumber : this.state.cardNumber, 
+                                    expiryMonth : this.state.expiryMonth,  
+                                    expiryYear : this.state.expiryYear,
+                                    nameOnCard : this.state.firstName + " " + this.state.lastName, 
+                                    card_zipcode : this.state.cardZipCode
+                                    // cvv : this.state.cvv,
+                                }
+        var billingInformation = {  user_email : this.state.email,
+                                    user_name : this.state.name,
+                                    amount : this.state.total,
+                                    tax : this.state.tax,
+                                    movie_id : this.state.movie_id,
+                                    movie_name : this.state.movieName,
+                                    multiplex_id : this.state.multiplex_id,
+                                    multiplex_name : this.state.multiplexName,
+                                    multiplex_address : this.state.multiplexAddress,
+                                    multiplex_city : this.state.multiplexCity,
+                                    multiplex_zipcode : this.state.multiplexZipCode,
+                                    adult_tickets : this.state.adult_tickets,
+                                    child_tickets : this.state.child_tickets,
+                                    disabled_tickets : this.state.disabled_tickets,
+                                    student_tickets : this.state.student_tickets
+        }
+        var payment_details = {
+                                    card_details : cardInformation,
+                                    billing_details : billingInformation
+        }
+        axios.post(completePayment, payment_details)
+            .then(res => {
+                    debugger
+                    console.log('Payment Completed');
+                    console.log(res.data.results);
+                    this.setState({
+                        paymentSuccess : res.data.results.data.payment_successfull
+                    })
+                    localStorage.setItem("billing_id", res.data.results.data.id)
+                    if(this.state.paymentSuccess){ window.location.href = reactURL + "confirmation" }
+                    else { alert("Complete the payment to confirm your bookings.") }
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    }
 
   render() {
     debugger
     return (
     <div>
-      <form method="post" action="https://tickets.fandango.com/transaction/ticketing/express/Checkout.aspx" id="form1">
+      <form  id="form1">
         <div class="aspNetHidden">
           <input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="" />
           <input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="" />
@@ -84,7 +314,7 @@ class CheckoutTest extends Component {
                                     <div class="errorText card remove" id="ccError"></div>
                                     <div class="cvvDetail card fieldContainer display">
                                         <label for="creditCardNoInput" class="card display">Card number</label>
-                                        <input name="ExpressWebCheckout$PaymentView$creditCardNoInput" type="text" id="creditCardNoInput" class="input card display" min="20" maxlength="19" title="Card number" />
+                                        <input name="ExpressWebCheckout$PaymentView$creditCardNoInput" type="text" id="creditCardNoInput" class="input card display" min="20" maxlength="19" onChange = {this.handleCardNumber} title="Card number" />
                                     </div>
                                     <div class="errorText card remove" id="yearError"></div>
                                     <div class="errorText card remove" id="monthError"></div>
@@ -92,7 +322,7 @@ class CheckoutTest extends Component {
                                     <div class="card fieldContainer display exp-card">
                                         <label id="expLabel" class="card display" for="expMonthDropdown">Expiration date</label>  
                                         <div class="expiry-latest expMonthDropdown">
-                                          <select name="ExpressWebCheckout$PaymentView$expMonthDropdown" id="expMonthDropdown" size="1" class="card inline">
+                                          <select name="ExpressWebCheckout$PaymentView$expMonthDropdown" id="expMonthDropdown" size="1" onChange = {this.handleExpiryMonth} class="card inline">
                                               <option selected="selected" value="0">Month</option>
                                               <option value="1">01 - January</option>
                                               <option value="2">02 - February</option>
@@ -109,7 +339,7 @@ class CheckoutTest extends Component {
                                           </select>
                                         </div>
                                         <div class="expiry-latest expYearDropdown">
-                                          <select name="ExpressWebCheckout$PaymentView$expYearDropdown" id="expYearDropdown" class="card inline">
+                                          <select name="ExpressWebCheckout$PaymentView$expYearDropdown" id="expYearDropdown" onChange = {this.handleExpiryYear} class="card inline">
                                               <option selected="selected" value="Year">Year</option>
                                               <option value="2018">18</option>
                                               <option value="2019">19</option>
@@ -129,18 +359,18 @@ class CheckoutTest extends Component {
                                         <div class="fieldContainer  card display">
                                           <div class="errorText remove" id="firstNameError"></div>
                                           <label id="firstNameLabel" class="card name display" for="firstNameInput">First name</label>
-                                          <input name="ExpressWebCheckout$PaymentView$firstNameInput" type="text" id="firstNameInput" class="input card name display" maxlength="50" title="First Name" />
+                                          <input name="ExpressWebCheckout$PaymentView$firstNameInput" type="text" id="firstNameInput" onChange = {this.handleFirstName} class="input card name display" maxlength="50" title="First Name" />
                                         </div>
                                         <div class="fieldContainer  card display">
                                           <div class="errorText remove" id="lastNameError"></div>
                                           <label id="lastNameLabel" class="card name display" for="lastNameInput">Last name</label>
-                                          <input name="ExpressWebCheckout$PaymentView$lastNameInput" type="text" id="lastNameInput" class="input card name display" maxlength="50" title="Last Name" />
+                                          <input name="ExpressWebCheckout$PaymentView$lastNameInput" type="text" id="lastNameInput" onChange = {this.handleLastName} class="input card name display" maxlength="50" title="Last Name" />
                                         </div>
                                     </div>
                                     <div class="fieldContainer card display">
                                         <div class="errorText remove" id="zipError"></div>
                                         <label id="zipLabel" class="card display" for="zipInput">Billing ZIP code</label>
-                                        <input name="ExpressWebCheckout$PaymentView$zipInput" type="text" id="zipInput" class="input card display" title="Last Name" maxlength="8" />
+                                        <input name="ExpressWebCheckout$PaymentView$zipInput" type="text" id="zipInput" onChange = {this.handleCardZipCode} class="input card display" title="Last Name" maxlength="8" />
                                         {/* <label for="saveCreditCardCheckBox" class="save card checkbox inline" id="saveCreditCardCheckBoxContainer">
                                         <input name="ExpressWebCheckout$PaymentView$saveCreditCardCheckBox" type="checkbox" id="saveCreditCardCheckBox" class="save card inline" />
                                         Save my credit card information
@@ -259,7 +489,9 @@ class CheckoutTest extends Component {
                                   <script type="text/javascript" src="https://MasterPass.com/lightbox/Switch/integration/MasterPass.client.js"></script>    
                                   
                                   <button id="applepayContinue" class="button remove">Continue To Apple Pay</button><button id="paypalonetouchContinue" class="button remove">Continue To PayPal</button>
-                                  <button onclick="javascript:return false; __doPostBack('ExpressWebCheckout$completePurchaseButton','')" id="completePurchaseButton" disabled="disabled" class="button">Complete My Purchase</button>
+                                  {/* <button onclick="javascript:return false; __doPostBack('ExpressWebCheckout$completePurchaseButton','')" id="completePurchaseButton" disabled="disabled" class="button">Complete My Purchase</button> */}
+                                  <button onClick={this.completePayment} id="completePurchaseButton" class="button">Complete My Purchase</button>
+                                  
                                   <span id="completePurchaseSpinner" class="spinner user remove"></span>
                                 </div>
                                 <p class="notes " id="standardNotes">
@@ -285,30 +517,43 @@ class CheckoutTest extends Component {
                             <div class="movieInfo">
                                 <ul class="movie-specs">
                                   <li class="title">
-                                      <h3 id="movieTitle">Mercury (2018)</h3>
+                                      <h3 id="movieTitle">Mercury (2018) {this.state.movieName} </h3>
                                   </li>
-                                  <li class="info"><span id="ratingInfo" class="emptyCheck"></span><span id="ratingSeparator" class="separator emptyCheck">, </span><span class="emptyCheck" id="runtimeInfo">1 hr 48 min</span></li>
+                                  <li class="info"><span id="ratingInfo" class="emptyCheck">PG-13 {this.state.movieRating}</span><span id="ratingSeparator" class="separator emptyCheck">, </span><span class="emptyCheck" id="runtimeInfo">1 hr 48 min</span></li>
                                 </ul>
                                 <ul class="movie-other-specs">
                                   <li>
-                                      <h2 id="movieDate">Monday, Apr 23 </h2>
+                                      <h2 id="movieDate">Monday, Apr 23 {this.state.movieDayDate}</h2>
                                   </li>
                                   <li>
-                                      <h2 id = "movieTime">5:00 PM</h2>
+                                      <h2 id = "movieTime">5:00 PM {this.state.movieTime} </h2>
                                       <span class=""></span>                
                                       <div class="emptyCheck" id="lateNightShowtimeMesg"></div>
                                       <p  class="newShowtime">
                                         <a href="ticketboxoffice.aspx?mid=210358&tid=AAFRF">Select new showtime</a>
                                       </p>
+                                      <div class="amenities">
+                                                                            
+        {/* Add Amenities if possible.*/} <a class="amenityPopup" id="0" title="" data-amenitypopupdata="Reserved Seating takes the guaranteed seat that Fandango promises on all orders a step further and ensures you have one of the best seats in the auditorium.">Reserved seating {this.state.amenities}</a>  
+                                                                                
+                                        | <a class="amenityPopup" id="1" title="" data-amenitypopupdata="Vouchers and coupons for free or discounted admission cannot be used for this showing. Refer to your pass for details.">No passes {this.state.amenities}</a>  
+                                                                                
+                                        | <a class="amenityPopup" id="2" title="" data-amenitypopupdata="<b>Closed caption</b></br>
+                                        Closed Captioning devices display a movie's dialogue and sound effects as text; captions are not shown on the main screen. Devices available by request.
+                                        </br></br>
+                                        <b>DV</b></br>
+                                        Descriptive Video devices provide audio descriptions of the movie to accommodate the needs of visually impaired guests. Devices available by request.">Accessibility devices available {this.state.amenities}</a>  
+                                                                                
+                                      </div>
                                   </li>
                                 </ul>
                                 <ul class="movie-other-specs">
                                   <li>
-                                      <h2 id="theaterName">Towne 3 Cinemas</h2>
+                                      <h2 id="theaterName">Towne 3 Cinemas {this.state.multiplexName}</h2>
                                   </li>
-                                  <li id="theaterAddress"><a id="maplink" href="http://www.fandango.com/maps/drivingdirections.aspx?category=ticketboxoffice_secure&label=Towne 3 Cinemas&icontitles=yes&streetaddress=&zip=&iconid=213&level=8&state=&height=295&country=CA&city=&tid=AAFRF&mouse_mode=center&width=400" target="_blank"  class="emptyCheck">1433 The Alameda<br />San Jose, CA 95126</a> </li>
+                                  <li id="theaterAddress"><a id="maplink" href="http://www.fandango.com/maps/drivingdirections.aspx?category=ticketboxoffice_secure&label=Towne 3 Cinemas&icontitles=yes&streetaddress=&zip=&iconid=213&level=8&state=&height=295&country=CA&city=&tid=AAFRF&mouse_mode=center&width=400" target="_blank"  class="emptyCheck">1433 The Alameda<br />San Jose, CA 95126 {this.state.multiplexAddress}</a> </li>
                                   <li class="auditorium">
-                                      <h2 id="auditoriumInfo" class="emptyCheck">Auditorium 2</h2>
+                                      <h2 id="auditoriumInfo" class="emptyCheck">Auditorium 2 {this.state.screenNumber} </h2>
                                   </li>
                                   <li class="theaterNotes">
                                       <h2 class="emptyCheck" id="notesHeader"></h2>
@@ -325,10 +570,10 @@ class CheckoutTest extends Component {
                                 <table>
                                   <tr class="ticketTypeRow pricing">
                                       <td class="type heading">
-                                        <span class="ticketTypeHeading">Adult                              </span>
+                                        <span class="ticketTypeHeading">Adult {this.state.ticketType} </span>
                                       </td>
-                                      <td class="price">1 x $10.00  = </td>
-                                      <td class="math">$10.00</td>
+                                      <td class="price">1 x $10.00  = {this.state.ticketDetails}</td>
+                                      <td class="math">$10.00 {this.state.ticketTotal}</td>
                                   </tr>
                                   <tr class="feesRow pricing">
                                       <td class="type heading" colspan="2">
@@ -342,15 +587,15 @@ class CheckoutTest extends Component {
                                                   <td colspan="4" class="heading">Convenience fee includes:</td>
                                               </tr>
                                               <tr class="feesRow pricing">
-                                                  <td class="type">Adult                              </td>
-                                                  <td class="amt">1 x </td>
-                                                  <td class="price">$1.50 = </td>
-                                                  <td class="math">$1.50</td>
+                                                  <td class="type">Adult  {this.state.ticketType}</td>
+                                                  <td class="amt">1 x {this.state.totalTickets}</td>
+                                                  <td class="price">$1.50 = {this.state.ticketPrice}</td>
+                                                  <td class="math">$1.50 {this.state.ticketPrice}</td>
                                               </tr>
                                             </table>
                                         </div>
                                       </td>
-                                      <td class="math">$1.50</td>
+                                      <td class="math">$1.50 {this.state.ticketPrice}</td>
                                   </tr>
                                   <tr class="feesRow pricing discountRow membersonly ">
                                       <td class="type heading"><a href="#" data-reveal-id="tc_287">150 VIP+ POINTS</a></td>
@@ -361,7 +606,7 @@ class CheckoutTest extends Component {
                                       <td class="paymentLogo"><span class=""></span></td>
                                       <td class="total-wrap">Total:</td>
                                       <td class="">
-                                        <span class="total" id="purchaseTotal">$11.50</span>
+                                        <span class="total" id="purchaseTotal">$11.50  {this.state.total} {/* or */} {this.state.totalTickets * this.state.ticketPrice}</span>
                                         <input name="ExpressWebCheckout$OrderSummaryView$purchaseTotalHidden" type="hidden" id="purchaseTotalHidden" value="11.50" />
                                       </td>
                                   </tr>
