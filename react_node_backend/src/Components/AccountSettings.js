@@ -3,6 +3,8 @@ import axios from 'axios';
 import Index from './Index';
 import Header from './Header';
 import Footer from './Footer';
+import swal from 'sweetalert';
+
 // import SignIn from './SignIn';
 // import SignUp from './SignUp';
 import { envURL, reactURL } from '../config/environment';
@@ -29,15 +31,22 @@ class AccountSettings extends Component {
   componentWillMount = () => {
       let url = envURL + 'getprofiledetails';
       let userid = localStorage.getItem('userid');
-      axios.post( url, { userid }, { withCredentials : true } )
-          .then( (response) => {
-              console.log("Response from DB in get profiledetails", response.data );
-              this.setState({
-                  FirstName : response.data.data.first_name,
-                  LastName : response.data.data.last_name,
-                  email : response.data.data.email
+      if(userid !== null) {
+          axios.post( url, { userid }, { withCredentials : true } )
+              .then( (response) => {
+                  console.log("Response from DB in get profiledetails", response.data );
+                  this.setState({
+                      FirstName : response.data.data.first_name,
+                      LastName : response.data.data.last_name,
+                      email : response.data.data.email
+                  })
               })
-          })
+      }
+      else {
+          swal("Please login first to view your profile", "", "warning");
+          this.props.history.push('/');
+      }
+
   };
 
     handleChange = (e) => {
@@ -69,7 +78,8 @@ class AccountSettings extends Component {
             let url = envURL+'updateprofilebasicinfo';
             axios.post( url, profiledetails, { withCredentials : true} )
                 .then( (response) => {
-                    console.log("Response from Db in Update Profile : ", response.data )
+                    console.log("Response from Db in Update Profile : ", response.data );
+                    swal("Updated Successfully!", "", "success");
                 } )
         }
         else {
@@ -93,6 +103,8 @@ class AccountSettings extends Component {
             axios.post( url, profiledetails, { withCredentials : true} )
                 .then( (response) => {
                     console.log("Response from Db in Update Profile : ", response.data )
+                    swal("Email Updated Successfully!", "", "success");
+                    window.location.reload(true);
                 } )
         }
         else {

@@ -36,28 +36,33 @@ class AdminDashboard extends Component {
         axios.get(envURL + 'isLoggedIn', { withCredentials: true })
             .then((response) => {
                 console.log("After checking the session", response.data);
+
                 if (response.data.session === 'valid') {
-                    this.setState({
-                        isLoggedIn: true,
-                        adminEmail: response.data.result.email,
-                        adminId: response.data.result.id,
-                        roleId: response.data.result.role_number
-                    }, () => {
-                        console.log("Admin Email:", this.state.adminEmail);
-                        console.log("Admin ID:", this.state.adminId);
-                        if(this.state.roleId==3){
-                            localStorage.setItem('admin_name','Fandango Admin')
-                        }
-                        else{
-                            localStorage.setItem('admin_name','Admin')     
-                        }
-                        //From Vajid : Never remove this setState from here 
+                    if(response.data.result.role_number === 1)
+                        this.props.history.push('/');
+                    else {
                         this.setState({
-                            admin_name:localStorage.getItem('admin_name')
+                            isLoggedIn: true,
+                            adminEmail: response.data.result.email,
+                            adminId: response.data.result.id,
+                            roleId: response.data.result.role_number
+                        }, () => {
+                            console.log("Admin Email:", this.state.adminEmail);
+                            console.log("Admin ID:", this.state.adminId);
+                            if(this.state.roleId==3){
+                                localStorage.setItem('admin_name','Fandango Admin')
+                            }
+                            else{
+                                localStorage.setItem('admin_name','Admin')
+                            }
+                            //From Vajid : Never remove this setState from here
+                            this.setState({
+                                admin_name:localStorage.getItem('admin_name')
+                            })
+                            localStorage.setItem('roleId',this.state.roleId)
+                            localStorage.setItem('adminId',this.state.adminId)
                         })
-                        localStorage.setItem('roleId',this.state.roleId)
-                        localStorage.setItem('adminId',this.state.adminId)
-                    })
+                    }
                 }
                 else{
                     this.setState({

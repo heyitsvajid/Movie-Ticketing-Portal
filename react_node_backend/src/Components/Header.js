@@ -27,6 +27,7 @@ class Header extends Component {
 
   handleLogout() {
       //alert("In handleLogout");
+      localStorage.removeItem('userid');
       axios.post(envURL + 'logout', null, { withCredentials: true })
           .then((response) => {
               console.log(response.data);
@@ -468,7 +469,7 @@ class Header extends Component {
                 </section>
                 <section class="show-logged-out nav-account-wrapper has-dropdown">
                   <h3>
-                    <a class = "header-links" href="https://www.fandango.com/fandangovip?source=web_globalnav_join"><span class="nav-description">Join Fandango<span class="page-header-emphasis">VIP</span></span></a>
+                    <a class = "header-links" href="/profile"><span class="nav-description">Profile<span class="page-header-emphasis"></span></span></a>
                   </h3>
                   <div class="mega-menu">
                     <div class="row">

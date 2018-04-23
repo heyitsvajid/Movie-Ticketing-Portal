@@ -1,5 +1,7 @@
 var mysql = require('mysql');
 var pool = require('../services/mysql')
+var bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 function errHandler(err) {
     console.error('There was an error performing the operation');
@@ -221,16 +223,35 @@ function login_request( msg, callback ) {
             errHandler(err);
         } else {
             console.log("Connected to MYSQL in login_request in usermodal");
-            var sql = 'select * from user where email = ' + mysql.escape(email) + 'and password = ' + mysql.escape(password);
+            var sql = 'select * from user where email = ' + mysql.escape(email);
             db.query(sql, (err, result) => {
-                db.release();
+
                 if(err) {
                     console.log("Error in UserModal login_request while retrieving user from MySQLDB");
                     errHandler(err);
                 } else {
                     if(result.length > 0) {
-                        console.log(result);
-                        callback(null, result[0]);
+                        console.log("Result after getting the user..", result);
+                        var hash = result[0].password;
+
+                        bcrypt.compare(password, hash, (err, doesMatch) => {
+                            console.log(doesMatch);
+                            if(doesMatch) {
+                                var sqlUpdateDisability = 'update user set disable = 0 where email = ' + mysql.escape(email);
+                                db.query(sqlUpdateDisability, (err, result1) => {
+                                    db.release();
+                                    if(err) console.log("Error updating the user's disability...");
+                                    else {
+                                        console.log("Successfully activated the user");
+                                    }
+                                });
+                                callback(null, result[0]);
+                            } else {
+                                console.log("Password Mismatch");
+                                callback(null, null);
+                            }
+                        })
+
                     } else {
                         console.log("User not found");
                         callback(null, null);
@@ -268,20 +289,27 @@ function signup_request( msg, callback ) {
                     callback( null, userObject );
                 }
                 else {
-                    let sql2 = 'insert into user ( first_name, email, password, role_number ) values ( ?, ?, ?, ? ) ';
-                    db.query( sql2 ,  [ fname, email, pwd, role ] , (err, result) => {
-                        db.release();
+                    bcrypt.hash(pwd, saltRounds, (err, hash) => {
                         if(err) {
-                            console.log("Error in inserting user in mysql in creating user");
-                            callback( null, 'Error in inserting user in mysql in creating user');
-                        }
-                        else {
-                            console.log( 'Created User', result );
-                            userObject = {
-                                code : 2 ,
-                                message : "User created successfully"
-                            };
-                            callback( null, userObject );
+                            console.log("Error hasing the password");
+                        } else {
+                            console.log("Hashed the password", hash);
+                            let sql2 = 'insert into user ( first_name, email, password, role_number ) values ( ?, ?, ?, ? ) ';
+                            db.query( sql2 ,  [ fname, email, hash, role ] , (err, result) => {
+                                db.release();
+                                if(err) {
+                                    console.log("Error in inserting user in mysql in creating user");
+                                    callback( null, 'Error in inserting user in mysql in creating user');
+                                }
+                                else {
+                                    console.log( 'Created User', result );
+                                    userObject = {
+                                        code : 2 ,
+                                        message : "User created successfully"
+                                    };
+                                    callback( null, userObject );
+                                }
+                            })
                         }
                     })
                 }

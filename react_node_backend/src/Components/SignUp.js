@@ -31,7 +31,11 @@ class SignUp extends Component {
             .then((response) => {
                 console.log("After checking the session", response.data);
                 if(response.data.session === 'valid') {
-                    this.props.history.push('/');
+                    if(response.data.result.role_number === 1)
+                        this.props.history.push('/');
+                    else {
+                        this.props.history.push('/adminDashboard');
+                    }
                 }
             }
         )

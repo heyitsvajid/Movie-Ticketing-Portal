@@ -57,7 +57,7 @@ user_consumer.on('message', function (message) {
                 resultObject.data = res
             } else {
                 resultObject.successMsg = '';
-                resultObject.errorMsg = 'User not found';
+                resultObject.errorMsg = 'User not found or Password mismatch';
                 resultObject.data =  {};
             }
             console.log("After formation of resultobject in login_request in serverjs",resultObject);

@@ -598,6 +598,14 @@ exports.login = function (req, res, next) {
             resultObject.errorMsg = user.errorMsg;
             resultObject.data = user.data;
             console.log("In passport authenticate...after forming the resultobject", resultObject);
+
+            //setting passport session starts
+            //    req.login(resultObject.data, (err) => {
+            //        console.log("Session Started with new Passport method");
+            //    })
+            //ends
+
+
             req.session.email = resultObject.data.email;
             req.session.userid = resultObject.data.id;
             req.session.first_name = resultObject.data.first_name;
@@ -675,28 +683,13 @@ exports.isLoggedIn = function (req, res) {
         res.json({"session": "invalid" , "result": []});
     }
 
-    // if (req.isAuthenticated()) {
-    //
-    //     console.log(req.user);
-    //     console.log('is logged in');
-    //     let responsePayload = {
-    //         responseCode: 0,
-    //         responseMsg: 'Allready Logged In',
-    //         name: req.session.name,
-    //         email: req.session.email,
-    //         id: req.session.passport.user
-    //     }
-    //     res.json(responsePayload);
-    //     return;
+    //passport authentication by venky starts
+    // if(req.isAuthenticated()) {
+    //     console.log("In is logged in ...session is valid", req.user);
     // } else {
-    //     console.log('Not logged in');
-    //     let responsePayload = {
-    //         responseCode: 1,
-    //         responseMsg: 'Log In Required',
-    //     }
-    //     res.json(responsePayload);
-    //     return;
+    //     console.log("In is logged in ...session is invalid");
     // }
+    //passport authentication by venky ends
 
 
 };
@@ -748,6 +741,7 @@ exports.logout = function (req, res) {
     console.log('Session Destroyed');
     //req.logout();
     req.session.destroy();
+
     res.json({"session":"logged out"});
     return;
 };
