@@ -769,11 +769,29 @@ exports.completePayment = function (req, res) {
 }
 
 //fetch billing details
-exports.fetchBillingDetails = function (req, res) {
-    console.log("Fetching Bill : node backend");
-    let data = req.body;
-    console.log(data+ "Hello");
-    kafka.make_request('fetchBillingDetails', data, function (err, results) {
+// exports.fetchBillingDetails = function (req, res) {
+//     console.log("Fetching Bill : node backend");
+//     let data = req.body;
+//     console.log(data+ "Hello");
+//     kafka.make_request('fetchBillingDetails', data, function (err, results) {
+//         console.log('Kafka Response:');
+//         console.log(results);
+//         if (err) {
+//             console.log('Controller : Error Occurred : ');
+//             console.log(err);
+//             res.json(results);
+//         }
+//         else {
+//             res.json({results: results});
+//             return;
+//         }
+//     });
+// }
+
+exports.getAllBillingDetails = function (req, res) {
+    console.log("Fetch Billing Details : node backend");
+    var request_id = {request_id : 1};
+    kafka.make_request('fetchBillingDetails', request_id, function (err, results) {
         console.log('Kafka Response:');
         console.log(results);
         if (err) {
@@ -787,6 +805,112 @@ exports.fetchBillingDetails = function (req, res) {
         }
     });
 }
+
+exports.getBillingDetailsPerUser = function (req, res) {
+    console.log("Fetch Billing Details per User : node backend");
+    console.log(req.body.user_email)
+    console.log("UserName:" + req.body);
+    var request_id = {request_id : 2, user_email : "Jay"};
+    kafka.make_request('fetchBillingDetails', request_id, function (err, results) {
+        console.log('Kafka Response:');
+        console.log(results);
+        if (err) {
+            console.log('Controller : Error Occurred : ');
+            console.log(err);
+            res.json(results);
+        }
+        else {
+            console.log(results)
+            res.json({results: results});
+            return;
+        }
+    });
+}
+
+exports.getCardDetailsPerUser = function (req, res) {
+    console.log("Fetch Billing Details per User : node backend");
+    console.log(req.body.user_email)
+    console.log("UserName:" + req.body);
+    var request_id = {request_id : 3, user_email : "Jay"};
+    kafka.make_request('fetchBillingDetails', request_id, function (err, results) {
+        console.log('Kafka Response:');
+        console.log(results);
+        if (err) {
+            console.log('Controller : Error Occurred : ');
+            console.log(err);
+            res.json(results);
+        }
+        else {
+            console.log(results)
+            res.json({results: results});
+            return;
+        }
+    });
+}
+
+exports.getMultiplexSoldTicketsPerMonth = function (req, res) {
+    console.log("Fetch Billing Details per User : node backend");
+    console.log(req.body.multiplex_id)
+    console.log("UserName:" + req.body);
+    var request_id = {request_id : 4, multiplex_id : "2"};
+    kafka.make_request('fetchBillingDetails', request_id, function (err, results) {
+        console.log('Kafka Response:');
+        console.log(results);
+        if (err) {
+            console.log('Controller : Error Occurred : ');
+            console.log(err);
+            res.json(results);
+        }
+        else {
+            console.log(results)
+            res.json({results: results});
+            return;
+        }
+    });
+}
+
+exports.getCityRevenuePerYear = function (req, res) {
+    console.log("Fetch Billing Details per User : node backend");
+    console.log(req.body.multiplex_id)
+    console.log("UserName:" + req.body);
+    var request_id = {request_id : 5, multiplex_id : "2"};
+    kafka.make_request('fetchBillingDetails', request_id, function (err, results) {
+        console.log('Kafka Response:');
+        console.log(results);
+        if (err) {
+            console.log('Controller : Error Occurred : ');
+            console.log(err);
+            res.json(results);
+        }
+        else {
+            console.log(results)
+            res.json({results: results});
+            return;
+        }
+    });
+}
+
+exports.getMovieRevenuePerYear = function (req, res) {
+    console.log("Fetch Billing Details per User : node backend");
+    console.log(req.body.multiplex_id)
+    console.log("UserName:" + req.body);
+    var request_id = {request_id : 6, multiplex_id : "2"};
+    kafka.make_request('fetchBillingDetails', request_id, function (err, results) {
+        console.log('Kafka Response:');
+        console.log(results);
+        if (err) {
+            console.log('Controller : Error Occurred : ');
+            console.log(err);
+            res.json(results);
+        }
+        else {
+            console.log(results)
+            res.json({results: results});
+            return;
+        }
+    });
+}
+
 
 //method converted
 exports.logout = function (req, res) {

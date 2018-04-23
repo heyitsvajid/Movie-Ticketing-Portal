@@ -52,20 +52,18 @@ function complete_Payment( msg, callback ) {
 
 }
 
+
 //Fetching Billing Details
 
 function fetchBillingDetails( msg, callback ) {
-    console.log("In Payment model", msg);
-
+    console.log("In Billing Fetching Model", msg);
     pool.connect((err, db) => {
         if(err) {
             console.log("Error in PaymentModel request while connecting to DB");
             errHandler(err);
         } else {
-            var billing_id = msg.data.billing_id;
-            console.log(card_details)
             console.log("Connected to MYSQL in request of PaymentModel");
-            var sql = 'select * from billing_information where id = "'+billing_id+'"';
+            var sql = 'select * from billing_information';
             db.query(sql, (err, result) => {
                 if(err) {
                     console.log("Error in PaymentModel while fetching billing data into MySQLDB");
@@ -81,11 +79,147 @@ function fetchBillingDetails( msg, callback ) {
 
         }
     })
+}
 
+function fetchBillingDetailsPerUser( msg, callback ) {
+    console.log("In Billing Fetching Model", msg);
+    pool.connect((err, db) => {
+        if(err) {
+            console.log("Error in PaymentModel request while connecting to DB");
+            errHandler(err);
+        } else {
+            console.log("Connected to MYSQL in request of PaymentModel");
+            var sql = 'select * from billing_information where user_email = "'+msg.data.user_email+'"';
+            console.log(sql)
+            db.query(sql, (err, result) => {
+                if(err) {
+                    console.log("Error in PaymentModel while fetching billing data into MySQLDB");
+                    errHandler(err);
+                    console.log("Transaction not found");
+                    callback(null, null);
+                } else {
+                    var billing_information = {billing_information : result}
+                    callback(null, billing_information);
+                    
+                }
+            })
+
+        }
+    })
+}
+
+function getCardDetailsPerUser( msg, callback ) {
+    console.log("In Billing Fetching Model", msg);
+    pool.connect((err, db) => {
+        if(err) {
+            console.log("Error in PaymentModel request while connecting to DB");
+            errHandler(err);
+        } else {
+            console.log("Connected to MYSQL in request of PaymentModel");
+            var sql = 'select * from user_cards_details where user_email = "'+msg.data.user_email+'"';
+            console.log(sql)
+            db.query(sql, (err, result) => {
+                if(err) {
+                    console.log("Error in PaymentModel while fetching billing data into MySQLDB");
+                    errHandler(err);
+                    console.log("Transaction not found");
+                    callback(null, null);
+                } else {
+                    var billing_information = {billing_information : result}
+                    callback(null, billing_information);
+                }
+            })
+
+        }
+    })
+}
+
+function getMultiplexSoldTicketsPerMonth( msg, callback ) {
+    console.log("In Multiplex tickets fetching per month", msg);
+    pool.connect((err, db) => {
+        if(err) {
+            console.log("Error in PaymentModel request while connecting to DB");
+            errHandler(err);
+        } else {
+            console.log("Connected to MYSQL in request of PaymentModel");
+            var sql = 'select month(booking_date), multiplex_id, sum(adult_tickets+child_tickets+student_tickets+disabled_tickets) from billing_information group by multiplex_id, month(booking_date);';
+            console.log(sql)
+            db.query(sql, (err, result) => {
+                if(err) {
+                    console.log("Error in PaymentModel while fetching billing data into MySQLDB");
+                    errHandler(err);
+                    console.log("Transaction not found");
+                    callback(null, null);
+                } else {
+                    var billing_information = {billing_information : result}
+                    callback(null, billing_information);
+                }
+            })
+
+        }
+    })
+}
+
+function getCityRevenuePerYear( msg, callback ) {
+    console.log("In fetching total revenue per city per year", msg);
+    pool.connect((err, db) => {
+        if(err) {
+            console.log("Error in PaymentModel request while connecting to DB");
+            errHandler(err);
+        } else {
+            console.log("Connected to MYSQL in request of PaymentModel");
+            var sql = 'select multiplex_city, sum(amount),year(booking_date) from billing_information group by multiplex_city,year(booking_date);';
+            console.log(sql)
+            db.query(sql, (err, result) => {
+                if(err) {
+                    console.log("Error in PaymentModel while fetching billing data into MySQLDB");
+                    errHandler(err);
+                    console.log("Transaction not found");
+                    callback(null, null);
+                } else {
+                    var billing_information = {billing_information : result}
+                    callback(null, billing_information);
+                }
+            })
+
+        }
+    })
+}
+
+function getMovieRevenuePerYear( msg, callback ) {
+    console.log("In fetching total revenue per city per year", msg);
+    pool.connect((err, db) => {
+        if(err) {
+            console.log("Error in PaymentModel request while connecting to DB");
+            errHandler(err);
+        } else {
+            console.log("Connected to MYSQL in request of PaymentModel");
+            var sql = 'select movie_id,movie_name, sum(amount),year(booking_date) from billing_information group by movie_id,year(booking_date);';
+            console.log(sql)
+            db.query(sql, (err, result) => {
+                if(err) {
+                    console.log("Error in PaymentModel while fetching billing data into MySQLDB");
+                    errHandler(err);
+                    console.log("Transaction not found");
+                    callback(null, null);
+                } else {
+                    var billing_information = {billing_information : result}
+                    callback(null, billing_information);
+                }
+            })
+
+        }
+    })
 }
 
 module.exports = {
     complete_Payment : complete_Payment,
+    fetchBillingDetails : fetchBillingDetails,
+    fetchBillingDetailsPerUser : fetchBillingDetailsPerUser,
+    getCardDetailsPerUser : getCardDetailsPerUser,
+    getMultiplexSoldTicketsPerMonth : getMultiplexSoldTicketsPerMonth,
+    getCityRevenuePerYear : getCityRevenuePerYear,
+    getMovieRevenuePerYear : getMovieRevenuePerYear,
     errHandler: errHandler
     //  deleteUser: deleteUser
   };

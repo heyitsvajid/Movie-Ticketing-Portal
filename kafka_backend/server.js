@@ -730,33 +730,183 @@ completePayment.on('message', function (message) {
         });
 });
 
+
 fetchBillingDetails.on('message', function (message) {
-    console.log('Kafka Server Complete Payment: Card Information Received');
-    var billing_id = JSON.parse(message.value);
-        PaymentModel.fetchBillingDetails(billing_id,function (err, res) {
-            var resultObject = {
-                successMsg: '',
-                errorMsg: '',
-                data: {}
-            }
-            console.log('Kafka Server : after handle');
-            console.log(res);
-            if(err){
-                resultObject.successMsg= '';
-                resultObject.errorMsg= 'Error completing payment';
-            }else{
-                resultObject.successMsg= 'Payment successfully done.';
-                resultObject.errorMsg= '';
-                resultObject.data=res;         
-            }
-            let payloads = utility.createPayload(billing_id, resultObject);
-            console.log('is producer ready : ' + producer.ready);
-            producer.send(payloads, function (err, data) {
-                utility.log(data, err);
+    // console.log('Kafka Server Complete Payment: Card Information Received');
+    var billing_data = JSON.parse(message.value);
+    console.log(billing_data)
+    console.log("Hello compare request id")
+    console.log(billing_data.data.request_id);
+    var request_id = billing_data.data.request_id;
+        if(request_id==1){
+            PaymentModel.fetchBillingDetails(billing_data,function (err, res) {
+                var resultObject = {
+                    successMsg: '',
+                    errorMsg: '',
+                    data: {}
+                }
+                console.log('Kafka Server : after handle');
+                console.log(res );
+                if(err){
+                    resultObject.successMsg= '';
+                    resultObject.errorMsg= 'Error completing payment';
+                }else{
+                    resultObject.successMsg= 'Data successfully fetched.';
+                    resultObject.errorMsg= '';
+                    resultObject.data=res;         
+                }
+
+                console.log(resultObject );
+                let payloads = utility.createPayload(billing_data,res,resultObject);
+                console.log('is producer ready : ' + producer.ready);
+                producer.send(payloads, function (err, data) {
+                    utility.log(data, err);
+                });
+                return;
             });
-            return;
-        });
+        }
+        else if(request_id==2){
+            console.log("request_id : "+ request_id)
+            PaymentModel.fetchBillingDetailsPerUser(billing_data,function (err, res) {
+                var resultObject = {
+                    successMsg: '',
+                    errorMsg: '',
+                    data: {}
+                }
+                console.log('Kafka Server : after handle');
+                console.log(res );
+                if(err){
+                    resultObject.successMsg= '';
+                    resultObject.errorMsg= 'Error completing payment';
+                }else{
+                    resultObject.successMsg= 'Data successfully fetched.';
+                    resultObject.errorMsg= '';
+                    resultObject.data=res;         
+                }
+
+                console.log(resultObject );
+                let payloads = utility.createPayload(billing_data,res,resultObject);
+                console.log('is producer ready : ' + producer.ready);
+                producer.send(payloads, function (err, data) {
+                    utility.log(data, err);
+                });
+                return;
+            });
+        }
+        else if(request_id==3){
+            console.log("request_id : "+ request_id)
+            PaymentModel.getCardDetailsPerUser(billing_data,function (err, res) {
+                var resultObject = {
+                    successMsg: '',
+                    errorMsg: '',
+                    data: {}
+                }
+                console.log('Kafka Server : after handle');
+                console.log(res );
+                if(err){
+                    resultObject.successMsg= '';
+                    resultObject.errorMsg= 'Error completing payment';
+                }else{
+                    resultObject.successMsg= 'Data successfully fetched.';
+                    resultObject.errorMsg= '';
+                    resultObject.data=res;         
+                }
+
+                console.log(resultObject );
+                let payloads = utility.createPayload(billing_data,res,resultObject);
+                console.log('is producer ready : ' + producer.ready);
+                producer.send(payloads, function (err, data) {
+                    utility.log(data, err);
+                });
+                return;
+            });
+        }
+        else if(request_id==4){
+            console.log("request_id : "+ request_id)
+            PaymentModel.getMultiplexSoldTicketsPerMonth(billing_data,function (err, res) {
+                var resultObject = {
+                    successMsg: '',
+                    errorMsg: '',
+                    data: {}
+                }
+                console.log('Kafka Server : after handle');
+                console.log(res );
+                if(err){
+                    resultObject.successMsg= '';
+                    resultObject.errorMsg= 'Error completing payment';
+                }else{
+                    resultObject.successMsg= 'Data successfully fetched.';
+                    resultObject.errorMsg= '';
+                    resultObject.data=res;         
+                }
+
+                console.log(resultObject );
+                let payloads = utility.createPayload(billing_data,res,resultObject);
+                console.log('is producer ready : ' + producer.ready);
+                producer.send(payloads, function (err, data) {
+                    utility.log(data, err);
+                });
+                return;
+            });
+        }
+        else if(request_id==5){
+            console.log("request_id : "+ request_id)
+            PaymentModel.getCityRevenuePerYear(billing_data,function (err, res) {
+                var resultObject = {
+                    successMsg: '',
+                    errorMsg: '',
+                    data: {}
+                }
+                console.log('Kafka Server : after handle');
+                console.log(res );
+                if(err){
+                    resultObject.successMsg= '';
+                    resultObject.errorMsg= 'Error completing payment';
+                }else{
+                    resultObject.successMsg= 'Data successfully fetched.';
+                    resultObject.errorMsg= '';
+                    resultObject.data=res;         
+                }
+
+                console.log(resultObject );
+                let payloads = utility.createPayload(billing_data,res,resultObject);
+                console.log('is producer ready : ' + producer.ready);
+                producer.send(payloads, function (err, data) {
+                    utility.log(data, err);
+                });
+                return;
+            });
+        }
+        else if(request_id==6){
+            console.log("request_id : "+ request_id)
+            PaymentModel.getMovieRevenuePerYear(billing_data,function (err, res) {
+                var resultObject = {
+                    successMsg: '',
+                    errorMsg: '',
+                    data: {}
+                }
+                console.log('Kafka Server : after handle');
+                console.log(res );
+                if(err){
+                    resultObject.successMsg= '';
+                    resultObject.errorMsg= 'Error completing payment';
+                }else{
+                    resultObject.successMsg= 'Data successfully fetched.';
+                    resultObject.errorMsg= '';
+                    resultObject.data=res;         
+                }
+
+                console.log(resultObject );
+                let payloads = utility.createPayload(billing_data,res,resultObject);
+                console.log('is producer ready : ' + producer.ready);
+                producer.send(payloads, function (err, data) {
+                    utility.log(data, err);
+                });
+                return;
+            });
+        }
 });
+
 
 
 console.log('server is running');
