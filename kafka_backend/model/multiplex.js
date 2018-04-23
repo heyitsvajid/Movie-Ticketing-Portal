@@ -27,7 +27,7 @@ var MultiplexSchema = new Schema({
             sort_field:{type:Number},
             seats_left: { type: Number },
             movie: { type: Object },//(for now, if we get data from cache/ add   whole movie obj), 
-            price: { adult: { type: Number }, child: { type: Number }, disabled: { type: Number } }
+            price: { adult: { type: Number }, child: { type: Number }, disabled: { type: Number },student:{type:Number} }
         }],
     date_added: { type: Date, default: Date.now },
 });
