@@ -2,6 +2,8 @@ var mysql = require('mysql');
 var pool = require('../services/mysql')
 var bcrypt = require('bcrypt');
 const saltRounds = 10;
+var mongoURL = 'mongodb://root:root@ds243059.mlab.com:43059/fandango';
+var MongoClient = require('mongodb').MongoClient;
 
 function errHandler(err) {
     console.error('There was an error performing the operation');
@@ -237,6 +239,25 @@ function login_request( msg, callback ) {
                         bcrypt.compare(password, hash, (err, doesMatch) => {
                             console.log(doesMatch);
                             if(doesMatch) {
+
+                                //remove the user from disbaledusers collection from mongodb
+                                MongoClient.connect(mongoURL, function(err, db) {
+                                    if (err) { console.log("Error connecting to mongodb in disabling user..."); errHandler(err); }
+                                    else {
+                                        console.log("Connected to mongodb in login_request to check and delete from disabledusers collection");
+                                        var dbo = db.db("fandango");
+                                        var disabledUser = { email: email };
+                                        dbo.collection("disabledusers").findOneAndDelete(disabledUser, function(err, res) {
+                                            if (err) { console.log("Error deleting user from mongodb in disabledusers..."); errHandler(err); }
+                                            else {
+                                                console.log("1 document deleted and that is:", res);
+                                                db.close();
+                                            }
+                                        });
+                                    }
+                                });
+
+                                //update mysql disbalility
                                 var sqlUpdateDisability = 'update user set disable = 0 where email = ' + mysql.escape(email);
                                 db.query(sqlUpdateDisability, (err, result1) => {
                                     db.release();
@@ -406,6 +427,118 @@ function update_email_profile_request(msg, callback) {
 }
 
 
+//UserModal update_email_information_profile
+function update_password_profile_request(msg, callback) {
+    console.log("Inside update_password_profile_request in kafkabackend UserModal", msg);
+    var id = msg.id;
+    var currentPassword = msg.currentPassword;
+    var updatedPassword = msg.updatedPassword;
+
+    var passwordObject = {
+        message: '',
+        code: ''
+    }
+
+
+    pool.connect((err, db) => {
+        if(err) {
+            console.log("Error in UserModal update_password_profile_request while connecting to DB");
+            errHandler(err);
+        } else {
+            console.log("Connected to MYSQL in update_password_profile_request in usermodal");
+
+            var sql1 = "select password from user where id = " + mysql.escape(id);
+            db.query(sql1, (err, result1) => {
+                if(err) {
+                    console.log("Error in UserModal update_password_profile_request while getting password from DB");
+                    errHandler(err);
+                }
+                else {
+                    var hash = result1[0].password;
+                    bcrypt.compare(currentPassword, hash, (err, doesMatch) => {
+                        if(doesMatch) {
+                            //hash the updatedPassword
+                            bcrypt.hash(updatedPassword, saltRounds, (err, hash) => {
+                                if(err) {
+                                    console.log("Error hashing the updatedpassword");
+                                }
+                                else {
+                                    var sql = "update user set password = " + mysql.escape(hash) + " where id = " + mysql.escape(id);
+                                    db.query(sql, (err, result) => {
+                                        if(err) {
+                                            console.log("Error in UserModal update_password_profile_request while update query to DB");
+                                            errHandler(err);
+                                        }
+                                        else{
+                                            console.log("Result after updating password of the user..", result);
+                                            passwordObject = {
+                                                message: 'Updated Users Password Successfully',
+                                                code: 1 //success
+                                            }
+                                            callback(null, passwordObject);
+                                        }
+                                    });
+                                }
+                            })
+                        }
+                        else {
+                            passwordObject = {
+                                message: 'Password do not match',
+                                code: 2 //does not match
+                            }
+                            callback(null, passwordObject);
+                        }
+                    })
+                }
+            })
+
+
+        }
+    });
+}
+
+//UserModal disable_account_request
+function disable_account_request( msg, callback) {
+    console.log("Inside disable_account_request in kafkabackend UserModal", msg);
+    var id = msg.id;
+    var email = msg.email;
+    pool.connect((err, db) => {
+        if(err) {
+            console.log("Error in UserModal disable_account_request while connecting to DB");
+            errHandler(err);
+        } else {
+            console.log("Connected to MYSQL in disable_account_request in usermodal");
+            var sql = "update user set disable = 1 where id = " + mysql.escape(id);
+            db.query(sql, (err, result) => {
+                if(err) {
+                    console.log("Error in UserModal disable_account_request while update query to DB");
+                    errHandler(err);
+                }
+                else {
+                    console.log("Result after disable_account_request from DB..", result);
+                    //updated the user in mysql side, now inserting into mongodb
+                    MongoClient.connect(mongoURL, function(err, db) {
+                        if (err) { console.log("Error connecting to mongodb in disabling user..."); errHandler(err); }
+                        else {
+                            var dbo = db.db("fandango");
+                            var disabledUser = { id: id, email: email };
+                            dbo.collection("disabledusers").insertOne(disabledUser, function(err, res) {
+                                if (err) { console.log("Error inserting in mongodb in disabledusers..."); errHandler(err); }
+                                else {
+                                    console.log("1 document inserted");
+                                    db.close();
+                                    callback(null, "Account Disabled");
+                                }
+                            });
+                        }
+                    });
+
+                }
+            });
+        }
+    });
+};
+
 //==============================================================================
 /**
 * Export module
@@ -419,6 +552,8 @@ module.exports = {
     get_profile_request : get_profile_request ,
     update_basic_information_profile_request : update_basic_information_profile_request,
     update_email_profile_request : update_email_profile_request,
+    update_password_profile_request : update_password_profile_request,
+    disable_account_request : disable_account_request,
     errHandler: errHandler
     //  deleteUser: deleteUser
   };

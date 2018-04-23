@@ -23,7 +23,14 @@ module.exports = function (app) {
   //Update Profile Details Email
   app.post('/updateprofileemail', api_controller.updateProfileDetailsEmail );
 
-  //Find All Multiplex
+  //Update Profile Details Password
+  app.post('/updateprofilepassword', api_controller.updateProfileDetailsPassword );
+
+
+  //Update Profile Details Password
+  app.post('/disableaccount', api_controller.disableAccount );
+
+    //Find All Multiplex
   app.get('/findAllMultiplex', api_controller.findAllMultiplex);
 
   //Find Multiplex By Id

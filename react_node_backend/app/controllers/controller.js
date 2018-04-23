@@ -141,7 +141,7 @@ exports.updateProfileDetailsEmail = ( req, res ) => {
     var data= {
         id :  req.body.id,
         email : req.body.email,
-        request_code : 5 // Update Profile Details - Basic Info
+        request_code : 5 // Update Profile Details - Email
     };
     console.log(data);
 
@@ -149,6 +149,59 @@ exports.updateProfileDetailsEmail = ( req, res ) => {
         console.log('Kafka Response in Update Profile - Email :' );
         if (err) {
             console.log( 'After Kafka response : User Profile Email Not Updated');
+            console.log(err);
+            res.json(result);
+        }
+        else {
+            console.log(result);
+            res.json(result);
+            return;
+        }
+    })
+};
+
+
+// Update Profile Details Password
+exports.updateProfileDetailsPassword = ( req, res ) => {
+    console.log("Node Backend : Update Profile Details Password " , req.body );
+    var data= {
+        id :  req.body.id,
+        currentPassword : req.body.currentPassword,
+        updatedPassword : req.body.updatedPassword,
+        request_code : 6 // Update Profile Details - Password
+    };
+    console.log(data);
+
+    kafka.make_request('user_request', data, (err, result) => {
+        console.log('Kafka Response in Update Profile - Password :' );
+        if (err) {
+            console.log( 'After Kafka response : User Profile Password Not Updated');
+            console.log(err);
+            res.json(result);
+        }
+        else {
+            console.log(result);
+            res.json(result);
+            return;
+        }
+    })
+};
+
+
+//disable user account
+exports.disableAccount = ( req, res ) => {
+    console.log("Node Backend : disableAccount " , req.body );
+    var data= {
+        id :  req.body.id,
+        email: req.body.email,
+        request_code : 7 // disableAccount
+    };
+    console.log(data);
+
+    kafka.make_request('user_request', data, (err, result) => {
+        console.log('Kafka Response in disableAccount :', result );
+        if (result.errorMsg !== '') {
+            console.log( 'After Kafka response : disableAccount failed');
             console.log(err);
             res.json(result);
         }

@@ -4,6 +4,7 @@ import Index from './Index';
 import Header from './Header';
 import Footer from './Footer';
 import swal from 'sweetalert';
+import '../assets/css/style.css'
 
 // import SignIn from './SignIn';
 // import SignUp from './SignUp';
@@ -21,11 +22,17 @@ class AccountSettings extends Component {
         ExpirationMonth : '',
         ExpirationYear : '',
         ZipCode : '' ,
-        error: ''
+        error: '',
+        oldPassword: '',
+        newPassword: ''
+
+
     });
     this.handleChange = this.handleChange.bind(this);
     this.handleSaveBasicInfo = this.handleSaveBasicInfo.bind(this);
     this.handleSaveEmail = this.handleSaveEmail.bind(this);
+    this.handleSavePasswordUpdate = this.handleSavePasswordUpdate.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
 
   componentWillMount = () => {
@@ -114,7 +121,86 @@ class AccountSettings extends Component {
         }
     }
 
+    handleSavePasswordUpdate(e) {
+        e.preventDefault();
+        var data = {
+            id: localStorage.getItem('userid'),
+            currentPassword: this.state.oldPassword,
+            updatedPassword: this.state.newPassword
+        }
+
+        if(this.state.newPassword.length > 8 && this.state.oldPassword.length >= 8) {
+            let url = envURL+'updateprofilepassword';
+            axios.post(url, data, { withCredentials: true })
+                .then((response) => {
+                    console.log("After updating password...",response.data);
+                    if(response.data.data.code === 1) { //success
+                        swal(response.data.successMsg, "", "success");
+                    }
+                    else {
+                        swal(response.data.errorMsg, "", "warning");
+                    }
+                })
+        }
+        else {
+            this.setState({
+                error: 'Password should be at least 8 characters'
+            })
+        }
+
+
+
+    }
+
+
+    handleDelete(e) {
+        e.preventDefault();
+        swal({
+            title: "Are you sure?",
+            text: "We regret leaving you!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    //api to disable the user
+
+                    var data = {
+                        id: localStorage.getItem('userid'),
+                        email: this.state.email
+                    }
+
+                    let url = envURL+'disableaccount';
+                    axios.post(url, data, { withCredentials: true})
+                        .then((response) => {
+                            console.log(response.data);
+                            if(response.data.successMsg !== '') {
+                                swal("We Regret Leaving You!", {
+                                    icon: "success",
+                                });
+                                localStorage.removeItem('userid');
+                                axios.post(envURL + 'logout', null, { withCredentials: true })
+                                    .then((response) => {
+                                        console.log(response.data);
+                                        if(response.data.session === 'logged out') {
+                                            this.props.history.push('/');
+                                        }
+                                    })
+                            }
+
+                        })
+
+                } else {
+                    swal("Thanks for Staying!");
+                }
+            });
+    }
+
     handleBasicInfoClick(e){
+        this.setState({
+            error : ''
+        });
         var basic_info_element = document.getElementById("basic-info-form");
         if(basic_info_element.style.display == "none" || basic_info_element.style.display == ""){
             this.hideDivBoxesAndArrows();
@@ -128,7 +214,10 @@ class AccountSettings extends Component {
     }
 
   handleEmailChangeClick(e){
-    var email_element = document.getElementById("email-form");
+      this.setState({
+          error : ''
+      });
+      var email_element = document.getElementById("email-form");
     if(email_element.style.display == "none" || email_element.style.display == ""){
       this.hideDivBoxesAndArrows();
       email_element.style.display = "block";
@@ -142,11 +231,14 @@ class AccountSettings extends Component {
   }
 
   handlePasswordChangeClick(e){
-    var password_element = document.getElementById("password-form");
+      this.setState({
+          error : ''
+      });
+      var password_element = document.getElementById("password-form");
     if(password_element.style.display == "none" || password_element.style.display == ""){
       this.hideDivBoxesAndArrows();
       password_element.style.display = "block";
-      password_element.style.height = "220px";      
+      password_element.style.height = "220px";
       document.getElementsByClassName("password-change-arrow")[0].classList.add("accordion-opened");
     }
     else{
@@ -156,7 +248,11 @@ class AccountSettings extends Component {
   }
 
   handlePaymentClick(e){
-    var payment_element = document.getElementById("payment-form");
+      this.setState({
+          error : ''
+      });
+
+      var payment_element = document.getElementById("payment-form");
     if(payment_element.style.display == "none" || payment_element.style.display == ""){
       this.hideDivBoxesAndArrows();
       payment_element.style.display = "block";
@@ -168,6 +264,22 @@ class AccountSettings extends Component {
       document.getElementsByClassName("payment-arrow")[0].classList.remove("accordion-opened");
     }
   }
+
+    handleDeleteClick(e){
+        this.setState({
+            error : ''
+        });
+        var basic_info_element = document.getElementById("delete-info-form");
+        if(basic_info_element.style.display == "none" || basic_info_element.style.display == ""){
+            this.hideDivBoxesAndArrows();
+            basic_info_element.style.display = "block";
+            document.getElementsByClassName("delete-info-arrow")[0].classList.add("accordion-opened");
+        }
+        else {
+            basic_info_element.style.display = "none";
+            document.getElementsByClassName("delete-info-arrow")[0].classList.remove("accordion-opened");
+        }
+    }
 
   hideDivBoxesAndArrows(){
     var boxes = document.getElementsByClassName("form-box");
@@ -278,6 +390,10 @@ class AccountSettings extends Component {
                     <div class="password-change-arrow accordion-arrow"></div>
                   </div>
                   <div class="panel form-box accordion-body accordion-closed" id="password-form">
+                      <div className='text-danger'>
+                          {this.state.error}
+                      </div>
+                      <br/>
                     <div class="large-12 columns">
                         Use 8 or more characters.
                         <br /><br />
@@ -293,7 +409,7 @@ class AccountSettings extends Component {
                         <input type="password" id="confPassword" class="vip-password-field" />
                     </div> */}
                     <div class="large-3 columns right-25 password-save">
-                        <a id="save-password" class="btn save-button">Save</a>
+                        <a id="save-password" class="btn save-button" onClick={ this.handleSavePasswordUpdate }>Save</a>
                     </div>
                   </div>
               </div>
@@ -378,6 +494,35 @@ class AccountSettings extends Component {
                     </div>
                   </div>
               </div>
+
+                <div class="panel-group">
+                    <div class="panel accordion-head" data-accordion-target="delete-info-form" onClick = {this.handleDeleteClick.bind(this)}>
+                        <h2 class="delete-info-form heading-style-1 heading-size-l profile-headers" > Delete Account</h2>
+                        <div class="delete-info-arrow accordion-arrow"></div>
+                    </div>
+                    <div class="panel form-box accordion-body accordion-closed" id="delete-info-form">
+                        <div className='text-danger'>
+                            {this.state.error}
+                        </div>
+                        <br/>
+                        <div class="row">
+                            <div class="large-8 columns">
+                                <label >Enter Reason to Leave us</label>
+                                <br/>
+                                <small>You will be able to recover your account whenever you wish to login back!</small>
+                                <br/>
+                                <br/>
+                                <input name="ctl00$ctl00$GlobalBody$Body$LeaveComment" type="text"
+                                        maxlength="80" id="LeaveComment" />
+                            </div>
+                            <div id="divDeleteAccountButton" class="large-4 columns right-40">
+                                <a id="save-basic" class="btn save-button" onClick={this.handleDelete} >Delete Account</a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
 
             </div>
             <div class="large-3 columns">

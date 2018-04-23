@@ -183,6 +183,68 @@ user_consumer.on('message', function (message) {
             return;
         });
     }
+    else if(data.data.request_code === 6) {
+        console.log("In Request Code 6 : Update Password " , data.data );
+        UserModal.update_password_profile_request(data.data, function (err, res) {
+            console.log('Kafka Server : after handle in update_password_profile_request', res.code, res.message);
+            var resultObject = {
+                successMsg: '',
+                errorMsg: '',
+                data: {}
+            };
+
+            if(res.code === 1) {
+
+                resultObject.successMsg = res.message;
+                resultObject.errorMsg = '';
+                resultObject.data = res
+            }
+            else if(res.code === 2) {
+                resultObject.successMsg = '';
+                resultObject.errorMsg = res.message;
+                resultObject.data =  {};
+            }
+            console.log("After formation of resultobject in update_password_profile_request in serverjs",resultObject);
+            var payloads = utility.createPayload(data, resultObject);
+            console.log('is producer ready : ' + producer.ready);
+            producer.send(payloads, function (err, data) {
+                utility.log(data, err) ;
+            } );
+            return;
+        });
+    }
+    else if(data.data.request_code === 7) {
+        console.log("In Request Code 7 : Disable Account " , data.data );
+        UserModal.disable_account_request(data.data, function (err, res) {
+            console.log('Kafka Server : after handle in disable_account_request', res);
+            var resultObject = {
+                successMsg: '',
+                errorMsg: '',
+                data: {}
+            };
+
+            if(res !== null) {
+
+                resultObject.successMsg = res;
+                resultObject.errorMsg = '';
+                resultObject.data = res
+            }
+            else {
+                resultObject.successMsg = '';
+                resultObject.errorMsg = 'Error disabling user';
+                resultObject.data =  {};
+            }
+            console.log("After formation of resultobject in disable_account_request in serverjs",resultObject);
+            var payloads = utility.createPayload(data, resultObject);
+            console.log('is producer ready : ' + producer.ready);
+            producer.send(payloads, function (err, data) {
+                utility.log(data, err) ;
+            } );
+            return;
+        });
+    }
+
+
 });
 
 

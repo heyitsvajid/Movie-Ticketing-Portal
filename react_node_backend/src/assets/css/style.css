@@ -26,3 +26,7 @@
 .form-control {
     margin-top: 1em;
 }
+
+#divDeleteAccountButton {
+    margin-top: 10px;
+}
