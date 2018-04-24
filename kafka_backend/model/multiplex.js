@@ -10,7 +10,7 @@ var MultiplexSchema = new Schema({
     address: { type: String, required: true },
     city: { type: String, required: true },
     state: { type: String, required: true },
-    zipcode: { type: Number, required: true },
+    zipcode: { type: String, required: true },
     contact_number: { type: Number, required: true },
     multiplex_owner_id: { type: Number, required: true },
     multiplex_logo: { type: String, required: true },

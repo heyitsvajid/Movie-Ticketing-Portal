@@ -7,10 +7,13 @@ class Header extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        isLoggedIn: false
+        isLoggedIn: false,
+        searchQuery: ''
     }
 
       this.handleLogout = this.handleLogout.bind(this);
+      this.handleSearch = this.handleSearch.bind(this);
+      this.handleChange = this.handleChange.bind(this);
   }
   
   componentWillMount(){
@@ -39,6 +42,24 @@ class Header extends Component {
                   })
               }
           })
+  }
+
+  handleChange(e) {
+      this.setState({
+          [e.target.name]: e.target.value
+      })
+  }
+
+  handleSearch() {
+      console.log("search clicked", this.state.searchQuery);
+      var data = {
+          searchQuery: this.state.searchQuery
+      }
+      axios.post(envURL + 'searchQuery', data, {withCredentials: true})
+          .then((response) => {
+              console.log("After search results in Header compoent...", response.data);
+          })
+
   }
 
 
@@ -84,11 +105,11 @@ class Header extends Component {
               <form id = "search-form" action="/search" autocomplete="off" role="search" novalidate>
                   <div class="fan-autocomplete">
                     <div class="fan-autocomplete-results"></div>
-                    <input class="fan-input style-search" type="text" name="q" placeholder="Enter City + State, ZIP Code, or Movie" />
+                    <input class="fan-input style-search" type="text" name="searchQuery" onChange={ this.handleChange } placeholder="Enter City + State, ZIP Code, or Movie" />
                     <div class="csspinner double-up no-overlay"></div>
                   </div>
                   <input type="hidden" name="mode" value="general"/>
-                  <button class="fan-btn fan-btn-style-go" type="button">Go</button>
+                  <button class="fan-btn fan-btn-style-go" onClick = { this.handleSearch } type="button">Go</button>
                 </form>
               </li>
             </ul>

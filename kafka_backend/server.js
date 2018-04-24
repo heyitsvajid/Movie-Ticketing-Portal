@@ -371,6 +371,32 @@ multiplex_consumer.on('message', function (message) {
             return;
         });
     }
+    if (request_data.data.request_code == 5) {
+        console.log('Kafka Server multiplex_consumer : message received inside request code 5 for searching', request_data.data);
+        MultiplexModel.multiplexSearch(request_data.data,function (err, res) {
+            var resultObject = {
+                successMsg: '',
+                errorMsg: '',
+                data: {}
+            }
+            console.log('Kafka Server : after handle');
+            console.log(res);
+            if(err || !res){
+                resultObject.successMsg= '';
+                resultObject.errorMsg= 'Error fetching search results';
+            }else{
+                resultObject.successMsg= 'Fetching Search Results';
+                resultObject.errorMsg= '';
+                resultObject.data=res;
+            }
+            let payloads = utility.createPayload(request_data, resultObject);
+            console.log('is producer ready : ' + producer.ready);
+            producer.send(payloads, function (err, data) {
+                utility.log(data, err);
+            });
+            return;
+        });
+    }
 });
 
 //Movie Consumer

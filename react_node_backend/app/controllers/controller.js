@@ -5,7 +5,7 @@ let fs = require('fs');
 var User = require('../model/user.js');
 var passport = require('../config/passport.js');
 var kafka = require('../kafka/client');
-
+var redisClient = require('../config/redis').getClient();
 
 //Creating New Multiplex Admin
 exports.createMultiplexAdmin =  ( req, res ) => {
@@ -211,6 +211,59 @@ exports.disableAccount = ( req, res ) => {
             return;
         }
     })
+};
+
+
+//search
+exports.searchQuery =  ( req, res ) => {
+    console.log("In Node Backend, searching by state, zip, moviename, city", req.body);
+     let data = { data: req.body, request_code: 5 };
+     var redisHashKey = req.body.searchQuery;
+     var resultObject = {
+        successMsg: '',
+        errorMsg: '',
+        data: {}
+     };
+
+    //implementation of redis for search string
+    //checking whether the search key already exists with redis
+    redisClient.get(redisHashKey, (err, reply) => {
+        if(err) {
+            console.log("Error connecting to redis in searchQuery controller");
+        } else if(reply === null) { //we could not find the key in redis as the key is expired
+
+            //making request to kafka to get the search results as the key does not exist
+            kafka.make_request('multiplex_request', data, (err, result) => {
+                console.log("After the kafka search results",result);
+
+                //creating the resultObject
+                resultObject.successMsg = result.successMsg;
+                resultObject.errorMsg = result.errorMsg;
+                resultObject.data = result.data;
+                var redisData = JSON.stringify(resultObject);
+
+                //setting this result to a search key in redis for 50 seconds
+                redisClient.set(redisHashKey, redisData, 'EX', 50);
+
+                //responding here with any result either got from kafka or redis
+                res.json(resultObject);
+
+            })
+        } else {
+            var redisReplyObject = JSON.parse(reply);
+            console.log("Printing redisReplyObject without request to kafka:", redisReplyObject);
+
+            //creating the resultObject
+            resultObject.successMsg = redisReplyObject.successMsg;
+            resultObject.errorMsg = redisReplyObject.errorMsg;
+            resultObject.data = redisReplyObject.data;
+            //responding here with any result either got from kafka or redis
+            res.json(resultObject);
+        }
+
+
+    });
+
 };
 
 
@@ -425,6 +478,7 @@ exports.findMultiplexById =  ( req, res ) => {
 };
 
 
+
 //Movie Operations
 exports.findAllMovie = function (req, res) {
     console.log("findAllMovie_request : node backend");
@@ -469,6 +523,7 @@ exports.findMovieById =  ( req, res ) => {
         }
     })
 };
+
 
 exports.createNewMovie = function (req, res) {
     // Post Project API
