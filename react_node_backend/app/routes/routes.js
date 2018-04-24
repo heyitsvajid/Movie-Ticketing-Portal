@@ -30,6 +30,10 @@ module.exports = function (app) {
   //Update Profile Details Password
   app.post('/disableaccount', api_controller.disableAccount );
 
+  //Search based on zip, state, city or movie
+  app.post('/searchQuery', api_controller.searchQuery );
+
+
     //Find All Multiplex
   app.get('/findAllMultiplex', api_controller.findAllMultiplex);
 

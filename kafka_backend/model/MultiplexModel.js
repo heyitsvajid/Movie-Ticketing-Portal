@@ -192,6 +192,40 @@ function findMultiplexById(id, callback) {
 
     });
 }
+
+function multiplexSearch(data, callback) {
+    console.log('Inside MultiplexModal search')
+    console.log(data);
+
+    MultiplexModel.find({
+        $or: [ { city: { $regex: data.data.searchQuery, $options:"$i" } },
+               { state: { $regex: data.data.searchQuery, $options:"$i" } },
+               { zipcode: { $regex: data.data.searchQuery, $options:"$i" } },
+               { name: { $regex: data.data.searchQuery, $options:"$i" } },
+               { "show_timings.movie.title" : { $regex: data.data.searchQuery, $options:"$i" } }
+        ]
+        },
+        function (err, searchResults) {
+            if (err) {
+                console.log("Error in searching..inside multiplexSearch");
+                errHandler(err);
+            }
+            else if (searchResults) {
+                console.log('Found search results')
+                console.log("Result in searching..inside multiplexSearch: ", searchResults);
+                callback(err, searchResults)
+
+            }
+            else {
+                console.log('Nothing found')
+                callback(err, null)
+            }
+
+        });
+}
+
+
+
 //==============================================================================
 /**
 * Export module
@@ -205,7 +239,8 @@ module.exports = {
   updateMultiplex: updateMultiplex,
   addShowTiming: addShowTiming,
   updateShowTiming: updateShowTiming,
-  findMultiplexById:findMultiplexById
+  findMultiplexById:findMultiplexById,
+  multiplexSearch: multiplexSearch
   //  deleteUser: deleteUser
 };
 //==============================================================================
