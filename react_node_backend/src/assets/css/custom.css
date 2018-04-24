@@ -861,10 +861,6 @@ fieldset ul #creditcard{
   font-weight: bold;
 }
 
-.abcd{
-  border: 1px solid black;
-}
-
 .main.billing_summary{
   width: 100% !important;
 }
@@ -888,4 +884,36 @@ button#NewCustomerCheckoutButton {
 
 .box-heading{
   font-weight: bolder;
+}
+
+.table-responsive{margin-top:25px;}
+
+#purchase-history{
+  background-color: #EBEBEB;
+}
+
+.container.order-container {
+  margin-top: 5%;
+}
+
+.label-success{
+  background-color: green !important;
+}
+
+.modal-invoice-header{
+  width: 80% !important;
+}
+
+.invoice-row{
+  width: 130% !important;
+}
+
+.modal-dialog.purchase-modal {
+  max-width: 50% !important;
+}
+
+#transaction-purchase-header{
+  font-weight: bolder !important;
+  font-size: 22px !important;
+  margin-left: -7% !important;
 }

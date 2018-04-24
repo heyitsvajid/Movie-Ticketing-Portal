@@ -1,109 +1,91 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom'
-import EndFooter from './EndFooter';
-import { Link } from 'react-router-dom';
-import LatestMovies from './LatestMovies';
-import MovieSlider from './MovieSlider';
-import { envURL, reactURL } from '../config/environment';
 import axios from 'axios';
+import Index from './Index';
+import Header from './Header';
+import Footer from './Footer';
+// import SignIn from './SignIn';
+// import SignUp from './SignUp';
 
-
-// import '../assets/css/ticketbooking.css'
-
-
-class TicketConfirmation extends Component {
-
+class PurchaseHistory extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      multiplex: {},
-      show: {},
-      movie:{},
-      price:{adult:0,student:0,disabled:0,child:0},
-      a_tickets: 0,
-      s_tickets: 0,
-      sc_tickets: 0,
-      c_tickets: 0,
-      adult_total_amount: "$0.00",
-      student_total_amount: "$0.00",
-      child_total_amount: "$0.00",
-      sc_total_amount: "$0.00"
-    };
   }
-
-  handlePrint(e){
-    window.print();
+  
+  componentWillMount(){
+  
   }
 
   render() {
     return (
-      <div class="ticketBoxoffice">
-        <div id="siteContainer">
-          <div id="headerContainer" class="purchase detail on-order" name="HeaderContainer">
-            <div class="commonContainer">
-              <div id="memberGreeting">Congratulations, You've got the movie tickets!</div>
-            </div>
-
-            <div id="headerPurchase">
-              <div class="commonContainer">
-                <div id="logo">
-                  <a href='http://www.fandango.com/' title='Click to go to Fandango homepage'>Fandango Home</a>
-                </div>
-              </div>
-            </div>
+    <div id="purchase-history">
+      <Header />
+      <div class="container order-container">
+        <div class="row">
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Movie Name</th>
+                  <th>Date</th>
+                  <th>Amount</th>
+                  <th>Ticket Count</th>
+                  <th>Movie Staus</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  
+                  <td><a href="#myModal" class="" data-toggle="modal">Launch Demo Modal</a></td>
+                  <td>11/6/2014</td>
+                  <td>$899.00</td>
+                  <td>10</td>
+                  <td><span class="label label-info">Pending</span></td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td><a href="http://www.mirchu.net/mobiles/lg-g3/" target="_blank">LG G3</a></td>
+                  <td>10/6/2014</td>
+                  <td>$621.00</td>
+                  <td>10</td>
+                  <td><span class="label label-success">Completed</span></td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td><a href="http://www.mirchu.net/mobiles/samsung-galaxy-s5/" target="_blank">Samsung Galaxy S5</a></td>
+                  <td>11/9/2013</td>
+                  <td>$640.00</td>
+                  <td>10</td>
+                  <td><span class="label label-info">Pending</span></td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td><a href="http://www.mirchu.net/rook-bootstrap-app-landing-page/" target="_blank">Rook Landing Page</a></td>
+                  <td>11/6/2014</td>
+                  <td>$12.00</td>
+                  <td>10</td>
+                  <td><span class="label label-success">Completed</span></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <div id="container" class="commonContainer">
-            <div class="row">
-              <div id="heading" class="main ">
-                <h1 class="section-header inline inline heading-style-stub heading-style-1 heading-size-l section-header" >Confirmation</h1>
-                <ul class="breadcrumb">
-                  <li class="tickets complete"><i class="icon"></i>Tickets</li>
-                  <li class="payment complete"><i class="icon"></i>Payment</li>
-                  <li class="confirmation complete"><i class="icon"></i>Confirmation</li>
-                </ul>
-              </div>
-            </div>
-            <div class="row">
-              <div class="main billing_summary" style={{width: "auto !important"}}>
-                <div class="module-standard">
-                  <section class="confirm-box">
-                    <section>
-                      <div id="tqpSection" class="showtime">
-                        <h2 class="header-secondary tickets-h2">THANK YOU FOR YOUR PURCHASE. YOUR CONFIRMATION HAS BEEN EMAILED TO YOU.</h2>
-                        <h2 class="header-secondary tickets-h2">CONFIRMATION #1221121212</h2>
-                        
-
-                      </div>
-                    </section>
-
-                  
-                  
-                  </section>
-
-
-                  <section class="confirm-box">
-                    <section>
-                      <div id="tqpSection" class="showtime">
-                      <h2 class="header-secondary tickets-h2">TO PICK UP YOUR TICKETS WITH YOUR CREDIT CARD:</h2>
-                      <ol class = "confirm-list">
-                        <li>1. Take your Visa credit card to the theater.</li>
-                        <li>2. Avoid the box office line! Retrieve your tickets from the kiosk located Box Office.</li>
-                        <li>3. Enjoy the show!</li>
-                      </ol>
-                      </div>
-                    </section>                 
-                  </section>
-
-                  <section >
+        </div>
+      </div>
+      <div id="myModal" class="modal fade">
+      <div class="modal-dialog purchase-modal">
+          <div class="modal-content">
+              <div class="modal-body">
+              <section >
                     <div id="tqpSection" class="showtime">
                         <div class="container">
                           <div class="row">
-                              <div class="col-xs-12">
+                              <div class="col-xs-12 modal-invoice-header">
                                 <div class="text-center">
-                                    <h2 id="purchase-header">Invoice for purchase #33221</h2>
+                                    <h2 id="transaction-purchase-header">Invoice for purchase #33221</h2>
                                 </div>
                                 <hr/>
-                                <div class="row">
+                                <div class="row invoice-row">
                                     <div class="col-xs-12 col-md-3 col-lg-3 pull-left">
                                       <div class="panel panel-default height">
                                           <div class="panel-heading box-heading">Movie and Screen</div>
@@ -194,34 +176,17 @@ class TicketConfirmation extends Component {
                         </div>
                     </div>
                   </section>
-                  <div class="buttonContainer">
-                    <button id="NewCustomerCheckoutButton" onClick = {this.handlePrint.bind(this)} type="button" class="button primary medium checkout-btn">Print</button>
-                  </div>
-                  
-                </div>
               </div>
-             
-            </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
           </div>
-
-        </div>
-        <EndFooter />
       </div>
-
-    );
-  }
-  setAddressAndScreen(id){
-    debugger;
-
-    this.state.multiplex.screens.forEach(element => {
-        if(element._id==id){
-          this.setState({
-            screen:'Auditorium ' + element.screen_number,
-            addressLine1:this.state.multiplex.address,
-            addressLine2:this.state.multiplex.city+','+this.state.multiplex.state +','+this.state.multiplex.zipcode
-          }) 
-        }
-    });
+  </div>
+      <Footer />
+    </div>
+    )
   }
 }
-export default withRouter(TicketConfirmation);
+
+export default PurchaseHistory;

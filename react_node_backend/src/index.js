@@ -20,6 +20,7 @@ import TicketBooking from './Components/TicketBooking';
 import SignUp from "./Components/SignUp";
 import CheckoutTest from './Components/CheckoutTest'
 import TicketConfirmation from './Components/TicketConfirmation'
+import PurchaseHistory from './Components/PurchaseHistory'
 
 const store = createStore(allReducers);
 
@@ -39,6 +40,7 @@ ReactDOM.render(
         <Route exact path="/profile" component={AccountSettings} />
         <Route exact path="/co" component={CheckoutTest} />
         <Route exact path="/confirmation" component={TicketConfirmation} />
+        <Route exact path="/orders" component={PurchaseHistory} />
       </div>
     </Router>
   </Provider>,
