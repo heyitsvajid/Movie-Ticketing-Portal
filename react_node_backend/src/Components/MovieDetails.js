@@ -12,11 +12,18 @@ class MovieDetails extends Component {
     this.state={
       movie:{},
       reviews:[],
-      img:''
+      img:'',
+      rating: 0,
+      title: "",
+      review_content: ""
     }
   }
   
   componentWillMount(){
+    this.fetchDataFromServer();
+  }
+
+  fetchDataFromServer(){
     let findMovieByIdAPI = envURL + 'findMovieById';
     //var movieId = localStorage.getItem('movieIdforDetails')
     var movieId = localStorage.getItem("movieID");
@@ -46,18 +53,21 @@ class MovieDetails extends Component {
   }
 
   handleTrailerClick(e){
-    window.open('https://www.youtube.com/embed/tgbNymZ7vqY;');
+    if(this.state.movie.trailer_link != undefined){
+      window.open(this.state.movie.trailer_link);
+    }
   }
 
   addReview() {
     var review = {
-        rating: 4,
-        review: "sdjbsdljvbsjkdvb",
+        rating: this.state.rating,
+        review: this.state.review_content != "" ? this.state.review_content : "No Content Supplied!",
+        title: this.state.title != "" ? this.state.title : "Untitled",
         user_id: 12,
         user_name: "Vajid"
     }
 
-    var apiPayload = { review: review, movie_id: 2 };
+    var apiPayload = { review: review, movie_id: localStorage.getItem("movieID") };
     let addShowTimingsAPI = envURL + 'addMovieReview';
 
     axios.post(addShowTimingsAPI, apiPayload)
@@ -75,12 +85,13 @@ class MovieDetails extends Component {
                     text: res.data.successMsg,
                 })
             }
+            this.fetchDataFromServer();
         })
         .catch(err => {
             console.error(err);
         });
   }
-
+  
   getReleaseDate(release_date){
     const monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
@@ -91,12 +102,104 @@ class MovieDetails extends Component {
     return final_date;
   }
 
+  renderMovieCharacters() {
+    let nineCharacters = [];
+    var movieCharacters = this.state.movie.movie_characters;
+    if(movieCharacters != undefined){
+      if(movieCharacters.length > 0){
+        for(let i = 0; i < 9;i++){
+          movieCharacters[i] != undefined ? nineCharacters.push(movieCharacters[i]) : nineCharacters.push("Coming Soon");
+        }  
+      }
+      let moviesNode = nineCharacters.map((item, index) => {
+        var imageSource = item == "Coming Soon" ? require('../assets/static_images/defaut.jpeg'): require('../images/' + item.image_path);
+        return (
+          <li>
+            <div class="fluid poster">
+                <a href="#">
+                  <img class="carousel-cast-crew__portrait visual-thumb" src={imageSource} aria-label="Landon Liboiron portrait" role="img"/>
+                </a>
+                <div>
+                  <a href="#" class="heading-style-1 heading-size-s heading__movie-carousel">
+                  <span class="heading-style-1 movie-header heading-size-s heading__movie-carousel">
+                  {item == "Coming Soon" ? "Coming Soon": item.name}
+                  </span>
+                  </a>
+                  {/* <span class="carousel-cast-crew__sub-title">
+                  Carter
+                  </span> */}
+                </div>
+            </div>
+          </li>
+        )
+      });
+
+      return (
+        <ol class="carousel-items js-items">
+          { moviesNode }
+        </ol>
+        
+      )
+    }
+  }
+
+  getMovieReviews(){
+    var movieReviews = this.state.movie.review_ratings;
+    if(movieReviews != undefined){
+      let reviews = movieReviews.map((item, index) => {
+        let ratingsHash = { 1: "", 2: "",  3: "", 4: "", 5: "" };
+        var item_ratings = item.rating;
+        for(let i = Object.keys(ratingsHash).length; i > 0 ; i--){
+          if(item_ratings > 0){
+            ratingsHash[i] = "checked"
+            item_ratings-=1;
+          }
+        }
+        return (
+          <li class="fan-reviews__item">
+            <div class="stars-large__star-rating--no-hover" data-star-rating="4">
+              <span className={'fa fa-star ' + ratingsHash[1]}></span>
+              <span className={'fa fa-star ' + ratingsHash[2]}></span>
+              <span className={'fa fa-star ' + ratingsHash[3]}></span>
+              <span className={'fa fa-star ' + ratingsHash[4]}></span>
+              <span className={'fa fa-star ' + ratingsHash[5]}></span>
+            </div>
+            <div class="user-review-heading fan-reviews__headline heading-style-1 heading-size-l">
+                {item.title}
+            </div>
+            <div class="fan-reviews__user-name">
+                By {item.user_name}
+            </div>
+            <div class="fan-reviews__review">{item.review}</div>
+          </li>
+        )
+      });
+      return (
+        <ul class="fan-reviews__list">
+          { reviews }
+        </ul>        
+      )
+    }
+  }
+
+  handleStarClick(e){
+    this.setState({rating: parseInt(e.target.dataset.rating)});
+  }
+
+  handleTitleChange(e){
+    this.setState({ title: e.target.value });
+  }
+
+  handleReviewContentChange(e){
+    this.setState({ review_content: e.target.value });
+  }
 
   render() {
-    debugger
-    let movie_image = null;
+    
+    let movie_image, a = null;
     if(this.state.movie.movie_logo != undefined){
-      
+      movie_image = <img class="movie-details__movie-img visual-thumb" src = {require('../images/' + this.state.movie.movie_logo)} alt="Blumhouse's Truth or Dare (2018) Movie Poster" />
+      a = <a href = "https://www.youtube.com/embed/tgbNymZ7vqY"><img  src={require('../images/' + this.state.movie.movie_logo)} alt="Truth or Dare: Trailer 1" itemprop="image" /></a>
     }
     return (
     <div>
@@ -144,8 +247,8 @@ class MovieDetails extends Component {
                   <div class="row mop__layout">
                   <div class="mop__details-container">
                     <section class="movie-details">
-                        <a class="movie-details__mop-link" href="/blumhouses-truth-or-dare-2018-208538/movie-overview">
-                        <img class="movie-details__movie-img visual-thumb" src="https://images.fandango.com/ImageRenderer/200/0/redesign/static/img/default_poster.png/0/images/masterrepository/Fandango/208538/TruthOrDare2018.jpg" alt="Blumhouse's Truth or Dare (2018) Movie Poster" />
+                        <a class="movie-details__mop-link" href="#">
+                        {movie_image}
                         </a>
                         <ul class="movie-details__detail">
                           <li>{'release_date' in this.state.movie?
@@ -161,7 +264,7 @@ class MovieDetails extends Component {
 
                           </li>
                           <li>{'movie_keywords' in this.state.movie?this.state.movie.movie_keywords.join('/'):''}, 
-</li>
+                          </li>
                           <li class="fd-star-rating__container">
                               <div class="js-fd-star-rating fd-star-rating" data-star-rating="2">
                                 <a class="fd-star-rating__star icon icon-star-rating-small js-heartsAndStars-star" data-action="rate" data-id="208538" data-isnew="true" data-rate-movie="true" data-show-caption="true" data-value="5" title="Loved It">
@@ -174,17 +277,7 @@ class MovieDetails extends Component {
                            Fan Ratings</li>
                           <li>
                           </li>
-                          {/* <div class="rotten-tomatoes">
-                              <a class="rotten-tomatoes__link" href="http://rottentomatoes.com/m/blumhouses_truth_or_dare" target="_blank" rel="noopener" title="View more reviews and scores">
-                                <span class="icon icon-rottom-rotten rotten-tomatoes__icon"></span>
-                                <span class="rotten-tomatoes__score">
-                                15%
-                                </span>
-                                <h3 class="rotten-tomatoes__brand">
-                                    Rotten Tomatoes™
-                                </h3>
-                              </a>
-                          </div> */}
+                          
                         </ul>
                     </section>
                     <div class="js-movie-showtimes__location-form mop__location-form">
@@ -207,52 +300,20 @@ class MovieDetails extends Component {
                     <div class="js-movie-showtimes__container mop__showtimes-container hide">
                         <div class="js-spinner csspinner"></div>
                     </div>
-                    <section class="fan-alert js-fan-alert hide" data-movie-id="208538" data-fan-alert-from="">
-                        <h3 class="fan-alert__header font-sans-serif font-lg uppercase">
-                          <span class="icon icon-alarm-white fan-alert__icon"></span> Fandango Fanalert™
-                        </h3>
-                        <div class="fan-alert__wrap js-fan-alert-wrap">
-                          <p class="fan-alert__description">Sign up for a FanAlert and be the first to know when tickets and other exclusives are available in your area.</p>
-                          <div class="js-fan-alert-error page-header-emphasis fan-alert__error"></div>
-                          <input type="text" class="fan-alert__input fan-alert__input-email js-fan-alert-email js-keyup" placeholder="Email Address" autocomplete="off" />
-                          <input type="text" class="fan-alert__input fan-alert__input-location js-fan-alert-location js-keyup" placeholder="Zip Code or City, State" maxlength="200" />
-                          <label class="fan-alert__fan-mail-label">
-                          <input type="checkbox" class="fan-alert__fan-mail-checkbox js-checkbox" />
-                          Also sign me up for FanMail to get updates on all things movies: tickets, special offers, screenings + more.
-                          </label>
-                          <a class="fan-alert__privacy-link" href="/policies/privacy-policy">Privacy Policy</a>
-                          <button class="fan-alert__btn btn-cta js-fan-alert-btn" type="button" name="button">Sign Up For FanAlert™</button>
-                        </div>
-                        <div class="js-fan-alert-msg hide fan-alert__link-wrap">
-                          <a href="/movietimes">CHECK OUT WHAT'S PLAYING NEAR YOU</a>
-                        </div>
-                    </section>
+                    
                   </div>
                     <div class="mop__content-container"  onClick = {this.handleTrailerClick.bind(this)}>
-                      <section class="mop__content">
+                      <section id="trailer-section" class="mop__content">
                           <div class="mop-video">
-                            <div id="vdlpVideoPlayerWrap" class="media-player" data-width="" data-height="350" src="https://www.youtube.com/embed/tgbNymZ7vqY">
-                                >
+                            <div id="vdlpVideoPlayerWrap" class="media-player" data-width="" data-height="350">
                                 <div class="media-player__placeholder js-video-placeholder" >
-                                  <a href = "https://www.youtube.com/embed/tgbNymZ7vqY"><img  src="https://images.fandango.com/imagerelay/500/0/video.fandango.com/MPX/image/NBCU_Fandango/961/727/thumb_2E972604-B3C7-478B-85C3-248588DCDD23.jpg/image.jpg/redesign/static/img/noxSquare.jpg" alt="Truth or Dare: Trailer 1" itemprop="image" /></a>
+                                  {a}
                                 </div>
                             </div>
                             <div class="mop-video__summary-wrapper">
-                                <div class="mop-video__share-button-wrap">
-                                  <div class="js-share share-button invert-hover ">
-                                      <a class="js-share-click share-button__click style-cta"><span class="share"></span> Share</a>
-                                      <ul class="js-share-network share-button__network invisible">
-                                        <li><a href="//www.facebook.com/sharer/sharer.php?u=" data-shared-network="facebook" target="_blank" class="share-button__network-btn icon icon-share-facebook">Share on Facebook</a></li>
-                                        <li><a href="//twitter.com/share?url=" data-shared-network="twitter" target="_blank" class="share-button__network-btn icon icon-share-twitter">Share on Twitter</a></li>
-                                        <li><a href="//plus.google.com/share?url=" data-shared-network="google-plus" target="_blank" class="share-button__network-btn icon icon-share-google-plus">Share on Google+</a></li>
-                                        <li><a href="//www.tumblr.com/widgets/share/tool?canonicalUrl=" data-shared-network="tumblr" target="_blank" class="share-button__network-btn icon icon-share-tumblr">Share on Tumblr</a></li>
-                                        <li><a href="//www.pinterest.com/pin/create/button/?url=" data-shared-network="pinterest" target="_blank" class="share-button__network-btn icon icon-share-pinterest">Share on Pinterest</a></li>
-                                        <li><a href="mailto:?subject=" data-shared-network="email" class="share-button__network-btn icon icon-share-email">Share by Email</a></li>
-                                      </ul>
-                                  </div>
-                                </div>
+                                
                                 <h2 class="mop-video__title js-summary-video-title">
-                                  Truth or Dare: Trailer 1
+                                  {'title' in this.state.movie? this.state.movie.title: ''}: Trailer
                                 </h2>
                                 <div class="mop-video__description js-summary-video-description">
                                 </div>
@@ -260,11 +321,9 @@ class MovieDetails extends Component {
                           </div>
                       </section>
                       <div class="mop__ad-unit">
-                          <div class="ad" data-unit="boxadm" data-responsive="true" data-media="mobile">
-                          </div>
-                          <div class="ad" data-unit="boxaddt" data-responsive="true" data-media="desktop,tablet">
-                          </div>
+                        <img src={require('../assets/static_images/static_add.png')} alt="Chicago"  />
                       </div>
+                      
                     </div>
 
                   </div>
@@ -274,11 +333,11 @@ class MovieDetails extends Component {
               class="mop__synopsis "
               >
               <div class="mop__synopsis-inner">
-                  <h2 class="mop__synopsis-title">Blumhouse&#39;s Truth or Dare (2018) Synopsis</h2>
+                  <h2 class="mop__synopsis-title">Blumhouse&#39;s {'title' in this.state.movie? this.state.movie.title: ''} (2018) Synopsis</h2>
                   <p class="mop__synopsis-content">A harmless game of “Truth or Dare” among friends turns deadly when someone—or something—begins to punish those who tell a lie—or refuse the dare.</p>
-                  <a class="mop__synopsis-link" href="/blumhouses-truth-or-dare-2018-208538/plot-summary">
+                  {/* <a class="mop__synopsis-link" href="/blumhouses-truth-or-dare-2018-208538/plot-summary">
                   Read Full Synopsis
-                  </a>
+                  </a> */}
               </div>
             </div>
             <div class="row ad-unit--shop-ad">
@@ -287,336 +346,19 @@ class MovieDetails extends Component {
             </div>
             <section class="row">
               <div class="">
-                  <h3 class="inline heading-style-stub heading-style-1 heading-size-l section-header">
+                  <h3 class="cast-crew-heading inline heading-style-stub heading-style-1 heading-size-l section-header">
                     Cast + Crew
                   </h3>
                   <div class="carousel jcarousel carousel-style-strip row js-carousel-cast-crew">
-                    <ol class="carousel-items js-items">
-                        
-                        <li>
-                          <div class="fluid poster">
-                              <a
-                                href="/people/Sophia-Taylor-Ali-10572/overview"
-                                class="
-                                visual-container
-                                "
-                                >
-                                <img
-                                    class="carousel-cast-crew__portrait visual-thumb"
-                                    src="https://images.fandango.com/ImageRenderer/300/0/redesign/static/img/default_poster.png/0/images/MasterRepository/performer%20images/P780158/SophiaAli-2018.jpg"
-                                    aria-label="Sophia Taylor Ali portrait"
-                                    role="img"
-                                    />
-                              </a>
-                              <div>
-                                <a
-                                    href="/people/Sophia-Taylor-Ali-10572/overview"
-                                    class="
-                                    heading-style-1
-                                    heading-size-s
-                                    heading__movie-carousel
-                                    "
-                                    >
-                                <span class="heading-style-1 movie-header heading-size-s heading__movie-carousel">
-                                Sophia Taylor Ali
-                                </span>
-                                </a>
-                                <span class="carousel-cast-crew__sub-title">
-                                Penelope
-                                </span>
-                              </div>
-                          </div>
-                        </li>
-                        <li>
-                          <div class="fluid poster">
-                              <a
-                                href="/people/Landon-Liboiron-394122/overview"
-                                class="
-                                visual-container
-                                "
-                                >
-                                <img
-                                    class="carousel-cast-crew__portrait visual-thumb"
-                                    src="https://images.fandango.com/ImageRenderer/300/0/redesign/static/img/default_poster.png/0/images/MasterRepository/performer%20images/P518117/LandonLiboiron-2012.jpg"
-                                    aria-label="Landon Liboiron portrait"
-                                    role="img"
-                                    />
-                              </a>
-                              <div>
-                                <a
-                                    href="/people/Landon-Liboiron-394122/overview"
-                                    class="
-                                    heading-style-1
-                                    heading-size-s
-                                    heading__movie-carousel
-                                    "
-                                    >
-                                <span class="heading-style-1 movie-header heading-size-s heading__movie-carousel">
-                                Landon Liboiron
-                                </span>
-                                </a>
-                                <span class="carousel-cast-crew__sub-title">
-                                Carter
-                                </span>
-                              </div>
-                          </div>
-                        </li>
-                        <li>
-                          <div class="fluid poster">
-                              <a
-                                href="/people/Aurora-Perrineau-526802/overview"
-                                class="
-                                visual-container
-                                "
-                                >
-                                <img
-                                    class="carousel-cast-crew__portrait visual-thumb"
-                                    src="https://images.fandango.com/ImageRenderer/300/0/redesign/static/img/default_poster.png/0/images/MasterRepository/performer%20images/P771865/AURORAPERRINEAU.jpg"
-                                    aria-label="Aurora Perrineau portrait"
-                                    role="img"
-                                    />
-                                
-                              </a>
-                              <div>
-                                <a
-                                    href="/people/Aurora-Perrineau-526802/overview"
-                                    class="
-                                    heading-style-1
-                                    heading-size-s
-                                    heading__movie-carousel
-                                    "
-                                    >
-                                <span class="heading-style-1 movie-header heading-size-s heading__movie-carousel">
-                                Aurora Perrineau
-                                </span>
-                                </a>
-                                <span class="carousel-cast-crew__sub-title">
-                                Giselle
-                                </span>
-                              </div>
-                          </div>
-                        </li>
-                        <li>
-                          <div class="fluid poster">
-                              <a
-                                href="/people/Sam-Lerner-392098/overview"
-                                class="
-                                visual-container
-                                "
-                                >
-                                <img
-                                    class="carousel-cast-crew__portrait visual-thumb"
-                                    src="https://images.fandango.com/ImageRenderer/300/0/redesign/static/img/default_poster.png/0/images/MasterRepository/performer%20images/P467783/samlernerfeat.jpg"
-                                    aria-label="Sam Lerner portrait"
-                                    role="img"
-                                    />
-                                
-                              </a>
-                              <div>
-                                <a
-                                    href="/people/Sam-Lerner-392098/overview"
-                                    class="
-                                    heading-style-1
-                                    heading-size-s
-                                    heading__movie-carousel
-                                    "
-                                    >
-                                <span class="heading-style-1 movie-header heading-size-s heading__movie-carousel">
-                                Sam Lerner
-                                </span>
-                                </a>
-                                <span class="carousel-cast-crew__sub-title">
-                                Ronnie
-                                </span>
-                              </div>
-                          </div>
-                        </li>
-                        <li>
-                          <div class="fluid poster">
-                              <a
-                                href="/people/Brady-Smith-628252/overview"
-                                class="
-                                visual-container
-                                "
-                                >
-                                <img
-                                    class="carousel-cast-crew__portrait visual-thumb"
-                                    src="https://images.fandango.com/ImageRenderer/300/0/redesign/static/img/default_poster.png/0/images/MasterRepository/performer%20images/P437723/bradysmith-1.jpg"
-                                    aria-label="Brady Smith portrait"
-                                    role="img"
-                                    />
-                                
-                              </a>
-                              <div>
-                                <a
-                                    href="/people/Brady-Smith-628252/overview"
-                                    class="
-                                    heading-style-1
-                                    heading-size-s
-                                    heading__movie-carousel
-                                    "
-                                    >
-                                <span class="heading-style-1 movie-header heading-size-s heading__movie-carousel">
-                                Brady Smith
-                                </span>
-                                </a>
-                                <span class="carousel-cast-crew__sub-title">
-                                Roy Cameron
-                                </span>
-                              </div>
-                          </div>
-                        </li>
-                        <li>
-                          <div class="fluid poster">
-                              <a
-                                href="/people/Morgan-Lindholm-824432/overview"
-                                class="
-                                visual-container
-                                "
-                                >
-                                <img
-                                    class="carousel-cast-crew__portrait visual-thumb"
-                                    src="https://images.fandango.com/ImageRenderer/300/0/redesign/static/img/default_poster.png/0/images/MasterRepository/performer%20images/P874299/MorganLindholm-2018.jpg"
-                                    aria-label="Morgan Lindholm portrait"
-                                    role="img"
-                                    />
-                              
-                              </a>
-                              <div>
-                                <a
-                                    href="/people/Morgan-Lindholm-824432/overview"
-                                    class="
-                                    heading-style-1
-                                    heading-size-s
-                                    heading__movie-carousel
-                                    "
-                                    >
-                                <span class="carousel-cast-crew__title">
-                                Morgan Lindholm
-                                </span>
-                                </a>
-                                <span class="carousel-cast-crew__sub-title">
-                                Alexis Podell
-                                </span>
-                              </div>
-                          </div>
-                        </li>
-                        <li>
-                          <div class="fluid poster">
-                              <a
-                                href="/people/Tom-Choi-117517/overview"
-                                class="
-                                visual-container
-                                "
-                                >
-                                <img
-                                    class="carousel-cast-crew__portrait visual-thumb"
-                                    src="https://images.fandango.com/ImageRenderer/300/0/redesign/static/img/default_poster.png/0/images/MasterRepository/performer%20images/P477928/TomChoi-2018.jpg"
-                                    aria-label="Tom Choi portrait"
-                                    role="img"
-                                    />
-                                
-                              </a>
-                              <div>
-                                <a
-                                    href="/people/Tom-Choi-117517/overview"
-                                    class="
-                                    heading-style-1
-                                    heading-size-s
-                                    heading__movie-carousel
-                                    "
-                                    >
-                                <span class="heading-style-1 movie-header heading-size-s heading__movie-carousel">
-                                Tom Choi
-                                </span>
-                                </a>
-                                <span class="carousel-cast-crew__sub-title">
-                                Officer Han Chang
-                                </span>
-                              </div>
-                          </div>
-                        </li>
-                        <li>
-                          <div class="fluid poster">
-                              <a
-                                href="/people/Carlo-Sciortino-820165/overview"
-                                class="
-                                visual-container
-                                "
-                                >
-                                <img
-                                    class="carousel-cast-crew__portrait visual-thumb"
-                                    src="https://images.fandango.com/ImageRenderer/300/0/redesign/static/img/default_poster.png/0/images/masterrepository/other/temp.jpg"
-                                    aria-label="Carlo Sciortino portrait"
-                                    role="img"
-                                    />
-                                
-                              </a>
-                              <div>
-                                <a
-                                    href="/people/Carlo-Sciortino-820165/overview"
-                                    class="
-                                    heading-style-1
-                                    heading-size-s
-                                    heading__movie-carousel
-                                    "
-                                    >
-                                <span class="heading-style-1 movie-header heading-size-s heading__movie-carousel">
-                                Carlo Sciortino
-                                </span>
-                                </a>
-                                <span class="carousel-cast-crew__sub-title">
-                                Markie&#39;s Kisser
-                                </span>
-                              </div>
-                          </div>
-                        </li>
-                        <li>
-                          <div class="fluid poster">
-                              <a
-                                href="/people/Lesley-Stratton-651881/overview"
-                                class="
-                                visual-container
-                                "
-                                >
-                                <img
-                                    class="carousel-cast-crew__portrait visual-thumb"
-                                    src="https://images.fandango.com/ImageRenderer/300/0/redesign/static/img/default_poster.png/0/images/MasterRepository/performer%20images/P359480/LeslieStratton-2018.jpg"
-                                    aria-label="Lesley Stratton portrait"
-                                    role="img"
-                                    />
-                                
-                              </a>
-                              <div>
-                                <a
-                                    href="/people/Lesley-Stratton-651881/overview"
-                                    class="
-                                    heading-style-1
-                                    heading-size-s
-                                    heading__movie-carousel
-                                    "
-                                    >
-                                <span class="heading-style-1 movie-header heading-size-s heading__movie-carousel">
-                                Lesley Stratton
-                                </span>
-                                </a>
-                                <span class="carousel-cast-crew__sub-title">
-                                Student
-                                </span>
-                              </div>
-                          </div>
-                        </li>
-                    </ol>
-                   
+                    {this.renderMovieCharacters()}
                   </div>
-                  <a class="carousel-cast-crew__see-full cta right" href="/blumhouses-truth-or-dare-2018-208538/cast-and-crew">
-                  See Full Cast + Crew for Blumhouse&#39;s Truth or Dare (2018)
-                  </a>
+                    <a class="carousel-cast-crew__see-full cta right" href="/blumhouses-truth-or-dare-2018-208538/cast-and-crew">
+                    {/* See Full Cast + Crew for Blumhouse&#39;s Truth or Dare (2018) */}
+                    </a>
               </div>
             </section>
-            
             <div class="row width-100">
-              <h3 id= "review-list" class="inline heading-style-stub heading-style-1 heading-size-l">Movie Reviews</h3>
+              <h3 id = "review-list" class="inline heading-style-stub heading-style-1 heading-size-l">Movie Reviews</h3>
               <div class="row">
                   <section class="rt-reviews js-reviews__rt-container width-50">
                     <div class="rt-reviews__headline-wrap">
@@ -749,41 +491,6 @@ class MovieDetails extends Component {
                     </ul>
                   </section>
                   
-
-
-                  <div id="myModal" class="modal fade" role="dialog">
-                  <div class="modal-dialog">
-
-
-                  <div class="modal-content">
-                  <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Feedback</h4>
-                  </div>
-                  <div class="modal-body">
-                  <div id="message"></div>
-                                                  <div class="form-group"> 
-                                                  <span id="updatecapacitymodalerrortext" ></span> 
-                                                    </div>
-                                                      <div class="form-group" >
-                                                      <label  class="col-md-4">Your Name : </label>
-                                                      <div  class="col-md-6"><input type="text" class="form-control" size="10" id="capacity_txt_modal" />
-                                                      </div>
-
-                  </div>
-                  <label for="input-1" class="control-label">Rate This</label>
-                  <div id="rateYo"></div>
-                  <input type="hidden" name="rating" id="rating_input"/>
-                  <br/>
-                  <button type="button" id="updateCapacityBtn" class="btn btn-info ">Save</button>
-                  <button type="button" id="capacityModalClose" class="btn btn-default" data-dismiss="modal">Close</button>
-                  </div>
-                  </div> 
-                  <div class="modal-footer">
-                  </div>
-
-                  </div>
-                  </div>
                   <section class="fan-reviews width-50">
                     <div class="fan-reviews__header">
                         <h2 class="review-heading fan-reviews__title heading-style-1 heading-size-l">Fan Reviews</h2>
@@ -801,165 +508,7 @@ class MovieDetails extends Component {
                     <div class="fan-reviews__content-wrap">
                         <div class="fan-reviews__decoration-top"></div>
                         <div class="js-reviews__fan-container">
-                          <ul class="fan-reviews__list">
-                              <li class="fan-reviews__item">
-                                <div class="stars-large__star-rating--no-hover" data-star-rating="4">
-                                  <span class="fa fa-star"></span>
-                                  <span class="fa fa-star"></span>
-                                  <span class="fa fa-star checked"></span>
-                                  <span class="fa fa-star checked"></span>
-                                  <span class="fa fa-star checked"></span>
-                                </div>
-                                <div class="user-review-heading fan-reviews__headline heading-style-1 heading-size-l">
-                                    its alright
-                                </div>
-                                <div class="fan-reviews__user-name">
-                                    By reyesjaja44
-                                </div>
-                                <div class="fan-reviews__review">i've seen better definitely, but overall it was pretty good. i would recommend seeing it.</div>
-                              </li>
-                              <li class="fan-reviews__item">
-                                <div class="stars-large__star-rating--no-hover" data-star-rating="5">
-                                <span class="fa fa-star"></span>
-                                  <span class="fa fa-star"></span>
-                                  <span class="fa fa-star checked"></span>
-                                  <span class="fa fa-star checked"></span>
-                                  <span class="fa fa-star checked"></span>
-                                </div>
-                                <div class="user-review-heading fan-reviews__headline heading-style-1 heading-size-l">&nbsp;</div>
-                                <div class="fan-reviews__user-name">
-                                    By preciouscrockett30
-                                </div>
-                              </li>
-                              <li class="fan-reviews__item">
-                                <div class="stars-large__star-rating--no-hover" data-star-rating="4">
-                                <span class="fa fa-star"></span>
-                                  <span class="fa fa-star"></span>
-                                  <span class="fa fa-star checked"></span>
-                                  <span class="fa fa-star checked"></span>
-                                  <span class="fa fa-star checked"></span>
-                                </div>
-                                <div class="user-review-heading fan-reviews__headline heading-style-1 heading-size-l">
-                                    Untitled
-                                </div>
-                                <div class="fan-reviews__user-name">
-                                    By Llamas1974
-                                </div>
-                                <div class="fan-reviews__review">The beginning was a good part! It was so intense</div>
-                              </li>
-                              <li class="fan-reviews__item">
-                                <div class="stars-large__star-rating--no-hover" data-star-rating="3">
-                                  <span class="fa fa-star"></span>
-                                  <span class="fa fa-star"></span>
-                                  <span class="fa fa-star checked"></span>
-                                  <span class="fa fa-star checked"></span>
-                                  <span class="fa fa-star checked"></span>
-                                </div>
-                                <div class="user-review-heading user-review-heading fan-reviews__headline heading-style-1 heading-size-l">
-                                    Ok
-                                </div>
-                                <div class="fan-reviews__user-name">
-                                    By gretterdiaz
-                                </div>
-                                <div class="fan-reviews__review">It was an Ok movie but I still ******* watching it. Very freaky too</div>
-                              </li>
-                              <li class="fan-reviews__item">
-                                <div class="stars-large__star-rating--no-hover" data-star-rating="2">
-                                  <span class="fa fa-star"></span>
-                                  <span class="fa fa-star"></span>
-                                  <span class="fa fa-star checked"></span>
-                                  <span class="fa fa-star checked"></span>
-                                  <span class="fa fa-star checked"></span>
-                                </div>
-                                <div class="user-review-heading fan-reviews__headline heading-style-1 heading-size-l">
-                                    Ehh. Save your money.
-                                </div>
-                                <div class="fan-reviews__user-name">
-                                    By Cksenior3
-                                </div>
-                                <div class="fan-reviews__review">Despite not being into the trailer I gave this a shot. It has a solid start but got ridiculous pretty quickly. And they basically threw the end away. Felt like the writers themselves got bored and wanted to hurry and wrap it up.</div>
-                              </li>
-                              <li class="fan-reviews__item">
-                                <div class="stars-large__star-rating--no-hover" data-star-rating="5">
-                                  <span class="fa fa-star"></span>
-                                  <span class="fa fa-star"></span>
-                                  <span class="fa fa-star checked"></span>
-                                  <span class="fa fa-star checked"></span>
-                                  <span class="fa fa-star checked"></span>
-                                    
-                                </div>
-                                <div class="user-review-heading fan-reviews__headline heading-style-1 heading-size-l">
-                                    Yes es10101010
-                                </div>
-                                <div class="fan-reviews__user-name">
-                                    By Hannahrose24
-                                </div>
-                                <div class="fan-reviews__review">I loved this movie</div>
-                              </li>
-                              <li class="fan-reviews__item">
-                                <div class="stars-large__star-rating--no-hover" data-star-rating="3">
-                                  <span class="fa fa-star"></span>
-                                  <span class="fa fa-star"></span>
-                                  <span class="fa fa-star checked"></span>
-                                  <span class="fa fa-star checked"></span>
-                                  <span class="fa fa-star checked"></span>
-                                </div>
-                                <div class="user-review-heading fan-reviews__headline heading-style-1 heading-size-l">
-                                    Untitled
-                                </div>
-                                <div class="fan-reviews__user-name">
-                                    By nataliee290
-                                </div>
-                                <div class="fan-reviews__review">Good movie, bad ending</div>
-                              </li>
-                              <li class="fan-reviews__item">
-                                <div class="stars-large__star-rating--no-hover" data-star-rating="4">
-                                  <span class="fa fa-star"></span>
-                                  <span class="fa fa-star"></span>
-                                  <span class="fa fa-star checked"></span>
-                                  <span class="fa fa-star checked"></span>
-                                  <span class="fa fa-star checked"></span>
-                                </div>
-                                <div class="user-review-heading fan-reviews__headline heading-style-1 heading-size-l">
-                                    Not what I expected
-                                </div>
-                                <div class="fan-reviews__user-name">
-                                    By shortdog2k
-                                </div>
-                                <div class="fan-reviews__review">The facial features were very similar to the first Purge and I spent a majority of the movie laughing. But all in all the script was pretty original</div>
-                              </li>
-                              <li class="fan-reviews__item">
-                                <div class="stars-large__star-rating--no-hover" data-star-rating="1">
-                                  <span class="fa fa-star"></span>
-                                  <span class="fa fa-star"></span>
-                                  <span class="fa fa-star checked"></span>
-                                  <span class="fa fa-star checked"></span>
-                                  <span class="fa fa-star checked"></span>
-                                </div>
-                                <div class="user-review-heading fan-reviews__headline heading-style-1 heading-size-l">
-                                    Dont even bother.
-                                </div>
-                                <div class="fan-reviews__user-name">
-                                    By drzlinda09
-                                </div>
-                              </li>
-                              <li class="fan-reviews__item">
-                                <div class="stars-large__star-rating--no-hover" data-star-rating="3">
-                                  <span class="fa fa-star"></span>
-                                  <span class="fa fa-star"></span>
-                                  <span class="fa fa-star checked"></span>
-                                  <span class="fa fa-star checked"></span>
-                                  <span class="fa fa-star checked"></span>
-                                </div>
-                                <div class="user-review-heading fan-reviews__headline heading-style-1 heading-size-l">
-                                    Untitled
-                                </div>
-                                <div class="fan-reviews__user-name">
-                                    By vincentgonzales199011262016160
-                                </div>
-                                <div class="fan-reviews__review">Didn’t like how it ended</div>
-                              </li>
-                          </ul>
+                          {this.getMovieReviews()}
                         </div>
                         <div class="fan-reviews__decoration-bottom"></div>
                     </div>
@@ -970,6 +519,7 @@ class MovieDetails extends Component {
                  
               </div>
             </div>
+            
         </div>
         <section class="favoriteFlyout js-heartsAndStars-flyout">
             <div class="favoriteFlyout__message js-heartsAndStars-flyout-message"></div>
@@ -989,16 +539,16 @@ class MovieDetails extends Component {
                 <div id="writeReviewForm__ratingInput" class="write-review-form__rating-input">
                     <div class="fd-star-rating__container">
                       <div class="js-rating-input__star-wrap fd-star-rating " data-star-rating="" >
-                      <input class="star star-5" id="star-5" type="radio" name="star"/>
-                      <label class="star star-5" for="star-5"></label>
+                      <input class="star star-5" id="star-5" type="radio" name="star" />
+                      <label class="star star-5" for="star-5" data-rating = "5" onClick = {this.handleStarClick.bind(this)}></label>
                       <input class="star star-4" id="star-4" type="radio" name="star"/>
-                      <label class="star star-4" for="star-4"></label>
+                      <label class="star star-4" for="star-4" data-rating = "4" onClick = {this.handleStarClick.bind(this)}></label>
                       <input class="star star-3" id="star-3" type="radio" name="star"/>
-                      <label class="star star-3" for="star-3"></label>
+                      <label class="star star-3" for="star-3" data-rating = "3" onClick = {this.handleStarClick.bind(this)}></label>
                       <input class="star star-2" id="star-2" type="radio" name="star"/>
-                      <label class="star star-2" for="star-2"></label>
+                      <label class="star star-2" for="star-2" data-rating = "2" onClick = {this.handleStarClick.bind(this)}></label>
                       <input class="star star-1" id="star-1" type="radio" name="star"/>
-                      <label class="star star-1" for="star-1"></label>
+                      <label class="star star-1" for="star-1" data-rating = "1" onClick = {this.handleStarClick.bind(this)}></label>
                       </div>
                     </div>
                 </div>
@@ -1007,15 +557,14 @@ class MovieDetails extends Component {
                 <ul id="writeReviewForm__errors"></ul>
                 <section class="write-review-form__group">
                     <label for="writeReviewForm__title">Title:</label>
-                    <input type="text" maxlength="200" id="writeReviewForm__title"/>
+                    <input type="text" maxlength="200" id="writeReviewForm__title" onChange = {this.handleTitleChange.bind(this)}/>
                 </section>
                 <section class="write-review-form__group">
-                    
-                    <textarea rows="12" cols="200" id="writeReviewForm__body"></textarea>
+                    <textarea rows="12" cols="200" id="writeReviewForm__body" onChange = {this.handleReviewContentChange.bind(this)} ></textarea>
                 </section>
                 <p class="write-review-form__save-btn">
                     <a id="writeReviewForm__cancel-button" class="btn-cancel" href="/blumhouses-truth-or-dare-2018-208538/movie-reviews">Cancel</a>
-                    <button class="btn-cta" id="writeReviewForm__button">Save Review</button>
+                    <button class="btn-cta" id="writeReviewForm__button" onClick = {this.addReview.bind(this)}>Save Review</button>
                 </p>
               </section>
             </div>

@@ -32,25 +32,41 @@ class Footer extends Component {
       });
   }
 
-
+  showMovieDetailsPage(e){
+    const movieId = e.target.dataset.movieid;
+    localStorage.setItem("movieID", movieId);
+    window.location.href = reactURL + "movie_details";
+  }
 
   renderLatestMovies() {
     let eightMovies = [];
-    if(this.state.movieList.length>0){
+    var movies = this.state.movieList;
+    if(movies.length>0){
       for(var i=0;i<8;i++){
-        eightMovies.push(this.state.movieList[0]);
+        movies[i] != undefined ? eightMovies.push(movies[i]) : eightMovies.push("Coming Soon");
       }  
     }
     let moviesNode = eightMovies.map((item, index) => {
-      var imageSource = require('../images/' + item.movie_logo) ? require('../images/' + item.movie_logo) : ''
-      return (
-        <li key={item._id} class="media narrow footer-coming-soon--list-item">
-          <a class="visual-container poster-thumb-size-s" href="#">
+      debugger
+      var imageSource = item == "Coming Soon" ? require('../assets/static_images/defaut.jpeg') : require('../images/' + item.movie_logo);
+      let movieAnchorTag = null;
+      if(item == "Coming Soon"){
+        movieAnchorTag = <a class="visual-container poster-thumb-size-s" href="#" >
             <img class="visual-thumb" style={{width: 131, height: 200, position: 'absolute', top: this.props.top, left: this.props.left}}
-             src={imageSource} alt={item.title} />
+             src={imageSource} />
           </a>
+      }
+      else{
+        movieAnchorTag = <a class="visual-container poster-thumb-size-s" data-movieID = {item._id} href="#" onClick = {this.showMovieDetailsPage.bind(this)}>
+            <img class="visual-thumb" style={{width: 131, height: 200, position: 'absolute', top: this.props.top, left: this.props.left}}
+             src={imageSource} alt={item.title} data-movieID = {item._id} onClick = {this.showMovieDetailsPage.bind(this)} />
+          </a>
+      }
+      return (
+        <li key={item == "Coming Soon" ? "" : item._id} class="media narrow footer-coming-soon--list-item">
+          { movieAnchorTag}
           <div class="footer-coming-soon--info-block poster-thumb-size-s">
-            <a class="heading-style-1 movie-header footer-coming-soon--heading" href="#">{item.title}</a>
+            <a class="heading-style-1 movie-header footer-coming-soon--heading" href="#" data-movieID = {item._id} onClick = {this.showMovieDetailsPage.bind(this)}>{item.title}</a>
           </div>
         </li>
       )
@@ -131,7 +147,7 @@ class Footer extends Component {
           <section class="footer-coming-soon row width-100 hide-on-mobile">
             <h2 class="inline heading-style-stub heading-style-1 heading-size-l section-header">New + Coming soon</h2>
    
-{this.renderLatestMovies()}
+            {this.renderLatestMovies()}
           </section>
           <nav class="hide-on-mobile">
             <div class="row">

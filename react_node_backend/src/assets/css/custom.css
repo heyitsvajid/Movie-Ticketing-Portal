@@ -917,3 +917,28 @@ button#NewCustomerCheckoutButton {
   font-size: 22px !important;
   margin-left: -7% !important;
 }
+
+
+a.movie-details__mop-link {
+  width: 200px;
+  height: 250px;
+}
+
+#trailer-section {
+    width: 600px !important;
+    height: 209px !important;
+    margin-left: 2%;
+}
+
+.row.width-100{
+  padding: 0 !important;
+}
+
+.cast-crew-heading{
+  margin-left: 1.8% !important;
+}
+
+#review-list{
+  margin-left: 1%;
+  margin-top: 2%;
+}
