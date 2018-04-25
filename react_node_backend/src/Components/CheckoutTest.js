@@ -13,9 +13,18 @@ class CheckoutTest extends Component {
         this.state = {
             name: null, 
             email: null, 
-            ticketType : null,
-            ticketPrice : null,
-            totalTickets : null,
+            adult_total_amount : null,
+            student_total_amount:null,
+            da_total_amount:null,
+            child_total_amount:null,
+            multiplex: {},
+            show: {},
+            movie:{},
+            movie_logo : null,
+            price:{adult:0,student:0,disabled:0,child:0},
+            showTime : null,
+            // ticketPrice : null,
+            // totalTickets : null,
             total : null,
             tax : 0,
             movie_id : null,
@@ -35,17 +44,17 @@ class CheckoutTest extends Component {
             firstName : null,
             lastName : null,
             cardZipCode : null,
-            adult_tickets : 0,
-            child_tickets : 0,
-            disabled_tickets : 0,
-            student_tickets : 0,
+            a_tickets : 0,
+            c_tickets : 0,
+            da_tickets : 0,
+            s_tickets : 0,
             paymentSuccess : false,
             cardDetails : null,
             save_card : false
             // cvv : null
         }
         this.getUserDetails = this.getUserDetails.bind(this)
-        this.getMovieDetails = this.getMovieDetails.bind(this)
+        // this.getMovieDetails = this.getMovieDetails.bind(this)
         this.getMultiplexDetails = this.getMultiplexDetails.bind(this)
         this.getTicketDetails = this.getTicketDetails.bind(this)
         this.handleCardNumber = this.handleCardNumber.bind(this)
@@ -59,7 +68,7 @@ class CheckoutTest extends Component {
   
     componentWillMount(){
         this.getUserDetails()
-        this.getMovieDetails()
+        // this.getMovieDetails()
         this.getMultiplexDetails()
         this.getTicketDetails()
         this.getTicketDetails()
@@ -77,60 +86,135 @@ class CheckoutTest extends Component {
 
 
     getTicketDetails(){
+        debugger
         this.setState({
-            adult_tickets : localStorage.getItem("adult_tickets"),
-            child_tickets : localStorage.getItem("child_tickets"),
-            disabled_tickets : localStorage.getItem("disabled_tickets"),
-            student_tickets : localStorage.getItem("student_tickets"),
-            ticketType : localStorage.getItem("ticketType"),
-            totalTickets : localStorage.getItem("totalTickets"),
-            ticketPrice : localStorage.getItem("ticketPrice"),
-            total : this.state.ticketPrice * this.state.totalTickets
+            a_tickets : localStorage.getItem("a_tickets"),
+            c_tickets : localStorage.getItem("c_tickets"),
+            da_tickets : localStorage.getItem("da_tickets"),
+            s_tickets : localStorage.getItem("s_tickets"),
+            adult_total_amount : localStorage.getItem("adult_total_amount").split("$")[1],
+            student_total_amount : localStorage.getItem("student_total_amount").split("$")[1],
+            da_total_amount : localStorage.getItem("da_total_amount").split("$")[1],
+            child_total_amount : localStorage.getItem("child_total_amount").split("$")[1],
+            // totalTickets : this.state.adult_tickets+this.state.child_tickets+this.state.disabled_tickets+this.state.student_tickets,
+            // disabled_tickets : localStorage.getItem("da_tickets"),
+            // ticketPrice : localStorage.getItem("ticketPrice"),
+            // total : Number(this.state.adult_total_amount) + Number(this.state.child_total_amount) + Number(this.state.da_total_amount) + Number(this.state.student_total_amount)
         })
-        localStorage.clear()
     }
 
-    getMovieDetails(){
-        debugger
-        let findMovieById = envURL + 'findMovieById';
-        var movie_id = 1;
-        // localStorage.getItem("movie_id")
-        console.log(movie_id)
-        debugger
-        axios.get(findMovieById, movie_id)
-            .then(res => {
-                debugger
-                    console.log('Fetching Movie Details');
-                    console.log(res.data.data);
-                    this.setState({
-                        movie_id : res.data.data.movie_id,
-                        movieName: res.data.movieName,
-                        movieRating : res.data.mpaa_ratings,
-                        movieTime : res.data.data.time
-                    })
-            })
-            .catch(err => {
-                console.error(err);
-            });
-    }
+    // getMovieDetails(){
+    //     debugger
+    //     let findMovieById = envURL + 'findMovieById';
+    //     var movie_id = 1;
+    //     // localStorage.getItem("movie_id")
+    //     console.log(movie_id)
+    //     debugger
+    //     axios.get(findMovieById, movie_id)
+    //         .then(res => {
+    //             debugger
+    //                 console.log('Fetching Movie Details');
+    //                 console.log(res.data.data);
+    //                 this.setState({
+    //                     movie_id : res.data.data.movie_id,
+    //                     movieName: res.data.movieName,
+    //                     movieRating : res.data.mpaa_ratings,
+    //                     movieTime : res.data.data.time
+    //                 })
+    //         })
+    //         .catch(err => {
+    //             console.error(err);
+    //         });
+    // }
     getMultiplexDetails(){
-        let getMultiplexById = envURL + 'getMultiplexById';
-        axios.get(getMultiplexById)
-            .then(res => {
-                    console.log('Fetching Multiplex Details');
-                    console.log(res.data.data);
-                    this.setState({
-                        multiplex_id : res.data.data.multiplex_id,
-                        multiplexName: res.data.data.name,
-                        multiplexAddress : res.data.data.address,
-                        multiplexCity : res.data.data.city,
-                        multiplexState : res.data.data.state,
-                        multiplexZipCode : res.data.data.zipcode
-                    })
+
+
+    let findMultiplexByIdAPI = envURL + 'findMultiplexById';
+    var multiplexId = localStorage.getItem('bookMultiplexId')
+    var showId = localStorage.getItem('bookShowId');
+    localStorage.removeItem('bookShowId');
+    localStorage.removeItem('bookMultiplexId');
+    console.log('Fetching multiplex Details');
+    if (multiplexId && showId) {
+      var payload = {
+        _id: multiplexId
+      }
+      axios.post(findMultiplexByIdAPI, payload)
+        .then(res => {
+            debugger
+          if (res.data.successMsg != '') {
+            console.log('Fetching multiplex by id');
+            console.log(res.data.data);
+            this.setState({
+              multiplex: res.data.data ? res.data.data : {},
+              multiplex_id : res.data.data._id,
+              multiplexName: res.data.data.name,
+              multiplexAddress : res.data.data.address,
+              multiplexCity : res.data.data.city,
+              multiplexState : res.data.data.state,
+              multiplexZipCode : res.data.data.zipcode
             })
-            .catch(err => {
-                console.error(err);
+            console.log("Printing Multiplex Data")
+            console.log(this.state.multiplex)
+            var multiplex = res.data.data;
+            multiplex.show_timings.forEach(element => {
+                if(showId == element._id){
+                    debugger
+                    console.log(element)
+                  this.setState({
+                    show:element,
+                    movie:element.movie,
+                    movie_id : element.movie._id,
+                    movieName: element.movie.title,
+                    movieRating : element.movie.mpaa_ratings,
+                    showTime : element.date_time,
+                    movieDayDate : element.date_time.split(", ")[0] + " " + element.date_time.split(", ")[1],
+                    movieTime : element.date_time.split(", ")[2],
+                    movie_logo: element.movie.movie_logo,
+                    price:element.price,
+            //   screenNumber : res.data.data.screens[0].screen_number
+                    
+                  },()=>{
+                    console.log(this.state)
+                    // this.setAddressAndScreen(this.state.show.screen_number)
+                    return;
+                  })
+                }
             });
+            debugger
+          } else {
+            console.error('Error Fetching all multiplex');
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+
+    } else {
+      this.props.history.push('/movies')
+    }
+
+/////////////////////////////////////////////////////////////////////
+
+
+
+        // let getMultiplexById = envURL + 'getMultiplexById';
+        // axios.get(getMultiplexById)
+        //     .then(res => {
+        //             console.log('Fetching Multiplex Details');
+        //             console.log(res.data.data);
+        //             this.setState({
+        //                 multiplex_id : res.data.data.multiplex_id,
+        //                 multiplexName: res.data.data.name,
+        //                 multiplexAddress : res.data.data.address,
+        //                 multiplexCity : res.data.data.city,
+        //                 multiplexState : res.data.data.state,
+        //                 multiplexZipCode : res.data.data.zipcode
+        //             })
+        //     })
+        //     .catch(err => {
+        //         console.error(err);
+        //     });
     }
     getCardDetails(){
         let getCardDetails = envURL + 'getCardDetails';
@@ -210,19 +294,20 @@ class CheckoutTest extends Component {
                                 }
         var billingInformation = {  user_email : this.state.email,
                                     user_name : this.state.name,
-                                    amount : this.state.total,
+                                    amount : ( Number(this.state.adult_total_amount) + Number(this.state.child_total_amount) + Number(this.state.da_total_amount) + Number(this.state.student_total_amount)).toFixed(2),
                                     tax : this.state.tax,
                                     movie_id : this.state.movie_id,
                                     movie_name : this.state.movieName,
+                                    show_time : this.state.showTime,
                                     multiplex_id : this.state.multiplex_id,
                                     multiplex_name : this.state.multiplexName,
                                     multiplex_address : this.state.multiplexAddress,
                                     multiplex_city : this.state.multiplexCity,
                                     multiplex_zipcode : this.state.multiplexZipCode,
-                                    adult_tickets : this.state.adult_tickets,
-                                    child_tickets : this.state.child_tickets,
-                                    disabled_tickets : this.state.disabled_tickets,
-                                    student_tickets : this.state.student_tickets
+                                    adult_tickets : this.state.a_tickets,
+                                    child_tickets : this.state.c_tickets,
+                                    disabled_tickets : this.state.da_tickets,
+                                    student_tickets : this.state.s_tickets
         }
         var payment_details = {
                                     card_details : cardInformation,
@@ -512,25 +597,25 @@ class CheckoutTest extends Component {
                           <div id="movieTicketSummary">
                             <div class="message note remove"></div>
                             <div class="moviePoster">
-                                <img id="moviePosterImage" alt="" src="https://images.fandango.com/r1.0.589/ImageRenderer/180/272/redesign/static/img/default_poster_128x190.png/210358/images/masterrepository/fandango/210358/mercury-vertical3.jpg" />
+                                <img id="moviePosterImage" alt="" src = { require('../images/' + (this.state.movie_logo !== null ? this.state.movie_logo : "fandango_poster.png"))} />
                             </div>
                             <div class="movieInfo">
                                 <ul class="movie-specs">
                                   <li class="title">
-                                      <h3 id="movieTitle">Mercury (2018) {this.state.movieName} </h3>
+                                      <h3 id="movieTitle">{this.state.movieName} </h3>
                                   </li>
-                                  <li class="info"><span id="ratingInfo" class="emptyCheck">PG-13 {this.state.movieRating}</span><span id="ratingSeparator" class="separator emptyCheck">, </span><span class="emptyCheck" id="runtimeInfo">1 hr 48 min</span></li>
+                                  <li class="info"><span id="ratingInfo" class="emptyCheck">{this.state.movieRating}</span><span id="ratingSeparator" class="separator emptyCheck">, </span><span class="emptyCheck" id="runtimeInfo">{('movie_length' in this.state.movie)?this.state.movie.movie_length:''} mins</span></li>
                                 </ul>
                                 <ul class="movie-other-specs">
                                   <li>
-                                      <h2 id="movieDate">Monday, Apr 23 {this.state.movieDayDate}</h2>
+                                      <h2 id="movieDate">{this.state.movieDayDate}</h2>
                                   </li>
                                   <li>
-                                      <h2 id = "movieTime">5:00 PM {this.state.movieTime} </h2>
+                                      <h2 id = "movieTime">{this.state.movieTime} </h2>
                                       <span class=""></span>                
                                       <div class="emptyCheck" id="lateNightShowtimeMesg"></div>
                                       <p  class="newShowtime">
-                                        <a href="ticketboxoffice.aspx?mid=210358&tid=AAFRF">Select new showtime</a>
+                                        <a href="/movies">Select new showtime</a>
                                       </p>
                                       <div class="amenities">
                                                                             
@@ -549,11 +634,11 @@ class CheckoutTest extends Component {
                                 </ul>
                                 <ul class="movie-other-specs">
                                   <li>
-                                      <h2 id="theaterName">Towne 3 Cinemas {this.state.multiplexName}</h2>
+                                      <h2 id="theaterName">{this.state.multiplexName}</h2>
                                   </li>
-                                  <li id="theaterAddress"><a id="maplink" href="http://www.fandango.com/maps/drivingdirections.aspx?category=ticketboxoffice_secure&label=Towne 3 Cinemas&icontitles=yes&streetaddress=&zip=&iconid=213&level=8&state=&height=295&country=CA&city=&tid=AAFRF&mouse_mode=center&width=400" target="_blank"  class="emptyCheck">1433 The Alameda<br />San Jose, CA 95126 {this.state.multiplexAddress}</a> </li>
+                                  <li id="theaterAddress"><a id="maplink" href="http://www.fandango.com/maps/drivingdirections.aspx?category=ticketboxoffice_secure&label=Towne 3 Cinemas&icontitles=yes&streetaddress=&zip=&iconid=213&level=8&state=&height=295&country=CA&city=&tid=AAFRF&mouse_mode=center&width=400" target="_blank"  class="emptyCheck">{this.state.multiplexAddress}</a> </li>
                                   <li class="auditorium">
-                                      <h2 id="auditoriumInfo" class="emptyCheck">Auditorium 2 {this.state.screenNumber} </h2>
+                                      <h2 id="auditoriumInfo" class="emptyCheck">Auditorium: {this.state.screenNumber} </h2>
                                   </li>
                                   <li class="theaterNotes">
                                       <h2 class="emptyCheck" id="notesHeader"></h2>
@@ -570,12 +655,33 @@ class CheckoutTest extends Component {
                                 <table>
                                   <tr class="ticketTypeRow pricing">
                                       <td class="type heading">
-                                        <span class="ticketTypeHeading">Adult {this.state.ticketType} </span>
+                                        <span class="ticketTypeHeading">Adult</span>
                                       </td>
-                                      <td class="price">1 x $10.00  = {this.state.ticketDetails}</td>
-                                      <td class="math">$10.00 {this.state.ticketTotal}</td>
+                                      <td class="price">{this.state.a_tickets+ " x $"+ (typeof this.state.price.adult !== "undefined" ? this.state.price.adult.toFixed(2) : "00.00" )} </td>
+                                      <td class="math">${this.state.adult_total_amount}</td>
+                                      </tr>
+                                      <tr class="ticketTypeRow pricing">
+                                      <td class="type heading">
+                                        <span class="ticketTypeHeading">Student</span>
+                                      </td>
+                                      <td class="price">{this.state.s_tickets+ " x $"+ (typeof this.state.price.student !== "undefined" ?  this.state.price.student.toFixed(2) : "00.00" ) }</td>
+                                      <td class="math">${this.state.student_total_amount}</td>
+                                      </tr>
+                                      <tr class="ticketTypeRow pricing">
+                                      <td class="type heading">
+                                        <span class="ticketTypeHeading">Disabled</span>
+                                      </td>
+                                      <td class="price">{this.state.da_tickets+ " x $"+ (typeof this.state.price.disabled !== "undefined" ? this.state.price.disabled.toFixed(2) : "00.00" )}</td>
+                                      <td class="math">${this.state.da_total_amount}</td>
+                                      </tr>
+                                      <tr class="ticketTypeRow pricing">
+                                      <td class="type heading">
+                                        <span class="ticketTypeHeading">Child</span>
+                                      </td>
+                                      <td class="price">{this.state.c_tickets+ " x $"+ (typeof this.state.price.child !== "undefined" ?  this.state.price.child.toFixed(2) : "00.00" )}</td>
+                                      <td class="math">${this.state.child_total_amount}</td>
                                   </tr>
-                                  <tr class="feesRow pricing">
+                                  {/* <tr class="feesRow pricing">
                                       <td class="type heading" colspan="2">
                                         <a href="javascript:toggleConvenience()">Convenience Fee</a>
                                         <div  class="convenienceFeeFlyout">
@@ -601,12 +707,12 @@ class CheckoutTest extends Component {
                                       <td class="type heading"><a href="#" data-reveal-id="tc_287">150 VIP+ POINTS</a></td>
                                       <td class="price"></td>
                                       <td class="math">INCLUDED</td>
-                                  </tr>
+                                  </tr> */}
                                   <tr class="totalRow">
                                       <td class="paymentLogo"><span class=""></span></td>
                                       <td class="total-wrap">Total:</td>
                                       <td class="">
-                                        <span class="total" id="purchaseTotal">$11.50  {this.state.total} {/* or */} {this.state.totalTickets * this.state.ticketPrice}</span>
+                                        <span class="total" id="purchaseTotal">${ ( Number(this.state.adult_total_amount) + Number(this.state.child_total_amount) + Number(this.state.da_total_amount) + Number(this.state.student_total_amount)).toFixed(2)}</span>
                                         <input name="ExpressWebCheckout$OrderSummaryView$purchaseTotalHidden" type="hidden" id="purchaseTotalHidden" value="11.50" />
                                       </td>
                                   </tr>

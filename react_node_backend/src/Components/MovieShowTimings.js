@@ -68,8 +68,7 @@ class Layout extends Component {
                                                 groups[groupName] = [];
                                             }
                                             let selectedDate = new Date(this.state.selectedDate);
-                                            let showDate = new Date(item.show_timings[i].sort_field);
-                                            debugger;                                           
+                                            let showDate = new Date(item.show_timings[i].sort_field);                                          
                                             if(selectedDate.getDate()==showDate.getDate()
                                             && selectedDate.getDay()==showDate.getDay()
                                             && selectedDate.getYear()==showDate.getYear()){
@@ -325,7 +324,6 @@ renderMultiplexShowTimings(){
             let movie ={};
             var imageSource=''; 
             timeNodes = movie_shows.shows.map((show, index) => {
-                debugger;
                 movie =show.movie;
                 imageSource = require('../images/' + movie.movie_logo)? require('../images/' + movie.movie_logo):''
                 return(

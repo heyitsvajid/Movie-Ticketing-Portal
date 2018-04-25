@@ -22,12 +22,12 @@ class TicketBooking extends Component {
       price:{adult:0,student:0,disabled:0,child:0},
       a_tickets: 0,
       s_tickets: 0,
-      sc_tickets: 0,
+      da_tickets: 0,
       c_tickets: 0,
       adult_total_amount: "$0.00",
       student_total_amount: "$0.00",
       child_total_amount: "$0.00",
-      sc_total_amount: "$0.00"
+      da_total_amount: "$0.00"
     };
   }
 
@@ -35,9 +35,9 @@ class TicketBooking extends Component {
     let findMultiplexByIdAPI = envURL + 'findMultiplexById';
     var multiplexId = localStorage.getItem('bookMultiplexId')
     var showId = localStorage.getItem('bookShowId');
-    localStorage.removeItem('bookShowId');
-    localStorage.removeItem('bookMultiplexId');
-
+    // localStorage.removeItem('bookShowId');
+    // localStorage.removeItem('bookMultiplexId');
+    console.log('Fetching multiplex Details');
     if (multiplexId && showId) {
       var payload = {
         _id: multiplexId
@@ -46,6 +46,7 @@ class TicketBooking extends Component {
         .then(res => {
           if (res.data.successMsg != '') {
             console.log('Fetching multiplex by id');
+            console.log('Hello');
             console.log(res.data.data);
             this.setState({
               multiplex: res.data.data ? res.data.data : {}
@@ -80,26 +81,43 @@ class TicketBooking extends Component {
 
   handleAdultTicketChange(e) {
     var currentTickets = e.target.value == "" ? 0 : parseInt(e.target.value);
-    var calculatedPrice = "$" + (currentTickets * 10).toFixed(2);
+    var calculatedPrice = "$" + (currentTickets * (typeof this.state.price.adult !== "undefined" ? this.state.price.adult : 0)).toFixed(2);
     this.setState({ a_tickets: currentTickets, adult_total_amount: calculatedPrice })
   }
 
   handleStudentTicketChange(e) {
     var currentTickets = e.target.value == "" ? 0 : parseInt(e.target.value);
-    var calculatedPrice = "$" + (currentTickets * 5).toFixed(2);
+    var calculatedPrice = "$" + (currentTickets * (typeof this.state.price.student !== "undefined" ? this.state.price.student : 0)).toFixed(2);
     this.setState({ s_tickets: currentTickets, student_total_amount: calculatedPrice })
   }
 
-  handleSeniorTicketChange(e) {
+  handleDisabledTicketChange(e) {
     var currentTickets = e.target.value == "" ? 0 : parseInt(e.target.value);
-    var calculatedPrice = "$" + (currentTickets * 5).toFixed(2);
-    this.setState({ sc_tickets: currentTickets, sc_total_amount: calculatedPrice })
+    var calculatedPrice = "$" + (currentTickets * (typeof this.state.price.disabled !== "undefined" ? this.state.price.disabled : 0)).toFixed(2);
+    this.setState({ da_tickets: currentTickets, da_total_amount: calculatedPrice })
   }
 
   handleChildTicketChange(e) {
+    debugger
     var currentTickets = e.target.value == "" ? 0 : parseInt(e.target.value);
-    var calculatedPrice = "$" + (currentTickets * 5).toFixed(2);
+    var calculatedPrice = "$" + (currentTickets * (typeof this.state.price.child !== "undefined" ? this.state.price.child : 0)).toFixed(2);
     this.setState({ c_tickets: currentTickets, child_total_amount: calculatedPrice })
+  }
+
+  handleBuyTicket(e){
+    e.preventDefault();
+    debugger
+    console.log("Saving Ticket and going to next page")
+    console.log(this.state)
+    localStorage.setItem('a_tickets', this.state.a_tickets)
+    localStorage.setItem('adult_total_amount', this.state.adult_total_amount)
+    localStorage.setItem('s_tickets', this.state.s_tickets)
+    localStorage.setItem('student_total_amount', this.state.student_total_amount)
+    localStorage.setItem('da_tickets', this.state.da_tickets)
+    localStorage.setItem('da_total_amount', this.state.da_total_amount)
+    localStorage.setItem('c_tickets', this.state.c_tickets)
+    localStorage.setItem('child_total_amount', this.state.child_total_amount)
+    this.props.history.push('/co');    
   }
 
   render() {
@@ -177,7 +195,7 @@ class TicketBooking extends Component {
                                 <input name="AreaRepeater$ctl00$TicketRepeater$ctl01$quantitytb" type="text" id="AreaRepeater_TicketRepeater_0_quantitytb_1" class="input_txt" onChange={this.handleStudentTicketChange.bind(this)} maxlength="2" tabindex="2" value={this.state.s_tickets} />
                               </td>
                               <td class="timesX">x</td>
-                              <td class="pricePerTicket">${this.state.price.student}</td>
+                              <td class="pricePerTicket">${typeof this.state.price.student !== "undefined" ? this.state.price.student : 0}</td>
                               <td class="equals">=</td>
                               <td class="rowTotal"><input name="AreaRepeater$ctl00$TicketRepeater$ctl01$ItemTotal" type="text" id="AreaRepeater_TicketRepeater_0_ItemTotal_1" class="sub" size="8" readonly="readonly" tabindex="-1" value={this.state.student_total_amount} /></td>
                             </tr>
@@ -194,12 +212,12 @@ class TicketBooking extends Component {
                                 <input type="hidden" name="itemTotalControlName" id="itemTotalControlName" value="AreaRepeater_TicketRepeater_0_ItemTotal_2" />
                               </th>
                               <td class="numberofTickets">
-                                <input name="AreaRepeater$ctl00$TicketRepeater$ctl02$quantitytb" type="text" id="AreaRepeater_TicketRepeater_0_quantitytb_2" class="input_txt" onChange={this.handleSeniorTicketChange.bind(this)} maxlength="2" tabindex="3" value={this.state.sc_tickets} />
+                                <input name="AreaRepeater$ctl00$TicketRepeater$ctl02$quantitytb" type="text" id="AreaRepeater_TicketRepeater_0_quantitytb_2" class="input_txt" onChange={this.handleDisabledTicketChange.bind(this)} maxlength="2" tabindex="3" value={this.state.da_tickets} />
                               </td>
                               <td class="timesX">x</td>
                               <td class="pricePerTicket">${this.state.price.disabled}</td>
                               <td class="equals">=</td>
-                              <td class="rowTotal"><input name="AreaRepeater$ctl00$TicketRepeater$ctl02$ItemTotal" type="text" id="AreaRepeater_TicketRepeater_0_ItemTotal_2" class="sub" size="8" readonly="readonly" tabindex="-1" value={this.state.sc_total_amount} /></td>
+                              <td class="rowTotal"><input name="AreaRepeater$ctl00$TicketRepeater$ctl02$ItemTotal" type="text" id="AreaRepeater_TicketRepeater_0_ItemTotal_2" class="sub" size="8" readonly="readonly" tabindex="-1" value={this.state.da_total_amount} /></td>
                             </tr>
                             <tr>
                               <th class="ticketType">
@@ -228,7 +246,7 @@ class TicketBooking extends Component {
                     </div>
                   </section>
                   <div class="buttonContainer">
-                    <button id="NewCustomerCheckoutButton" type="button" class="button primary medium">Buy Tickets</button>
+                    <button id="NewCustomerCheckoutButton" type="button" class="button primary medium" onClick = {this.handleBuyTicket.bind(this)}>Buy Tickets</button>
                   </div>
                   <section class="offers">
                     <h3 class="offerHeading">For Fandango VIPs</h3>
