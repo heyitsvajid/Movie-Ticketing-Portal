@@ -3,19 +3,83 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import Header from './Header'
 import Footer from './Footer'
+import { envURL, reactURL } from '../config/environment';
+
 
 class MovieDetails extends Component {
   constructor(props) {
     super(props);
+    this.state={
+      movie:{},
+      reviews:[],
+      img:''
+    }
   }
   
   componentWillMount(){
-  
+    let findMovieByIdAPI = envURL + 'findMovieById';
+    //var movieId = localStorage.getItem('movieIdforDetails')
+    var movieId = 2
+    if (movieId) {
+      var payload = {
+        _id: movieId
+      }
+      axios.post(findMovieByIdAPI, payload)
+        .then(res => {
+          if (res.data.successMsg != '') {
+            console.log('Fetching movie by id');
+            console.log(res.data.data);
+            this.setState({
+              movie: res.data.data ? res.data.data : {},
+              reviews: res.data.data.review_ratings ? res.data.data.review_ratings : {},
+              img:require('../images/' + res.data.data.movie_logo)? require('../images/' + res.data.data.movie_logo):''
+            })
+          } else {
+            console.error('Error Fetching all movie');
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+
+    }
   }
 
   handleTrailerClick(e){
     window.open('https://www.youtube.com/embed/tgbNymZ7vqY;');
   }
+
+  addReview() {
+    var review = {
+        rating: 4,
+        review: "sdjbsdljvbsjkdvb",
+        user_id: 12,
+        user_name: "Vajid"
+    }
+
+    var apiPayload = { review: review, movie_id: 2 };
+    let addShowTimingsAPI = envURL + 'addMovieReview';
+
+    axios.post(addShowTimingsAPI, apiPayload)
+        .then(res => {
+            if (res.data.errorMsg != '') {
+                swal({
+                    type: 'error',
+                    title: 'Add Show Time',
+                    text: res.data.errorMsg,
+                })
+            } else if (res.data.successMsg != '') {
+                swal({
+                    type: 'success',
+                    title: 'Add Show',
+                    text: res.data.successMsg,
+                })
+            }
+        })
+        .catch(err => {
+            console.error(err);
+        });
+}
 
   render() {
     return (
@@ -33,7 +97,7 @@ class MovieDetails extends Component {
                           <feComposite in2="SourceGraphic" operator="in"></feComposite>
                         </filter>
                     </defs>
-                    <img class="js-backgroundBlur-image" x="0" y="0" width="100%" height="110%" src="https://images.fandango.com/ImageRenderer/300/0/redesign/static/img/default_poster.png/0/images/masterrepository/Fandango/208538/fmc_mc_TruthorDare.jpg" preserveAspectRatio="xMidYMid slice"/>
+                    <img class="js-backgroundBlur-image" x="0" y="0" width="100%" height="110%" src={this.state.img} preserveAspectRatio="xMidYMid slice"/>
                   </svg>
               </div>
               <div class="mop__details-inner">
@@ -41,7 +105,7 @@ class MovieDetails extends Component {
                     <div class="row">
                         <div class="width-100">
                           <h1 class="subnav__title movie-detail-header heading-style-1 heading-size-xl">
-                              Blumhouse&#39;s Truth or Dare (2018)
+                              {'title' in this.state.movie?this.state.movie.title:''}
                               
                           </h1>
                           <ul class="subnav__link-list">
@@ -68,27 +132,36 @@ class MovieDetails extends Component {
                         <img class="movie-details__movie-img visual-thumb" src="https://images.fandango.com/ImageRenderer/200/0/redesign/static/img/default_poster.png/0/images/masterrepository/Fandango/208538/TruthOrDare2018.jpg" alt="Blumhouse's Truth or Dare (2018) Movie Poster" />
                         </a>
                         <ul class="movie-details__detail">
-                          <li>Released</li>
-                          <li class="release-date movie-details__release-date">April 13, 2018</li>
-                          <li>
-                              PG-13, 
-                              1 hr 40 min
+                          <li>{'release_date' in this.state.movie?
+                          (new Date())>(new Date(this.state.movie.release_date))?'Released':'':''
+                        }
+                        Released</li>
+                          <li class="release-date movie-details__release-date">
+                          {'release_date' in this.state.movie?
+                          new Date(this.state.movie.release_date).getMonth()+1
+                          +'-'+new Date(this.state.movie.release_date).getDate()
+                          +'-'+new Date(this.state.movie.release_date).getFullYear() :''}
                           </li>
-                          <li>Suspense/Thriller</li>
+                          <li>
+                          {'mpaa_ratings' in this.state.movie?this.state.movie.mpaa_ratings+' ':''}, 
+                          {'movie_length' in this.state.movie?this.state.movie.movie_length+' min':''}, 
+
+                          </li>
+                          <li>{'movie_keywords' in this.state.movie?this.state.movie.movie_keywords.join('/'):''}, 
+</li>
                           <li class="fd-star-rating__container">
-                              <div class="
-                                js-fd-star-rating
-                                fd-star-rating
-                                " data-star-rating="3.5">
+                              <div class="js-fd-star-rating fd-star-rating" data-star-rating="2">
                                 <a class="fd-star-rating__star icon icon-star-rating-small js-heartsAndStars-star" data-action="rate" data-id="208538" data-isnew="true" data-rate-movie="true" data-show-caption="true" data-value="5" title="Loved It">
                                 </a>
 
                               </div>
                           </li>
-                          <li class="movie-details__fan-ratings">874 Fan Ratings</li>
+                          <li class="movie-details__fan-ratings">
+                          {'review_ratings' in this.state.movie?this.state.movie.review_ratings.length +' ':''}
+                           Fan Ratings</li>
                           <li>
                           </li>
-                          <div class="rotten-tomatoes">
+                          {/* <div class="rotten-tomatoes">
                               <a class="rotten-tomatoes__link" href="http://rottentomatoes.com/m/blumhouses_truth_or_dare" target="_blank" rel="noopener" title="View more reviews and scores">
                                 <span class="icon icon-rottom-rotten rotten-tomatoes__icon"></span>
                                 <span class="rotten-tomatoes__score">
@@ -98,7 +171,7 @@ class MovieDetails extends Component {
                                     Rotten Tomatoes™
                                 </h3>
                               </a>
-                          </div>
+                          </div> */}
                         </ul>
                     </section>
                     <div class="js-movie-showtimes__location-form mop__location-form">

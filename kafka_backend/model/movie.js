@@ -24,7 +24,8 @@ var MovieSchema = new Schema({
         review:{ type: String },
         user_id:{ type: Number },
         user_name:{ type: String },
-        likes_count:{ type: Number,default: 0}
+        likes_count:{ type: Number,default: 0},
+        title:{ type: String,default:'Untitled' }
     }],
     number_clicks:{ type: Number, default: 0 },
     date_added:{type:Date, default: Date.now},
