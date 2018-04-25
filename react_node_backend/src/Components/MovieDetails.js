@@ -4,7 +4,7 @@ import axios from 'axios';
 import Header from './Header'
 import Footer from './Footer'
 import { envURL, reactURL } from '../config/environment';
-
+import swal from 'sweetalert2'
 
 class MovieDetails extends Component {
   constructor(props) {
@@ -19,7 +19,7 @@ class MovieDetails extends Component {
   componentWillMount(){
     let findMovieByIdAPI = envURL + 'findMovieById';
     //var movieId = localStorage.getItem('movieIdforDetails')
-    var movieId = 2
+    var movieId = localStorage.getItem("movieID");
     if (movieId) {
       var payload = {
         _id: movieId
@@ -79,9 +79,25 @@ class MovieDetails extends Component {
         .catch(err => {
             console.error(err);
         });
-}
+  }
+
+  getReleaseDate(release_date){
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"];
+    let day = new Date(this.state.movie.release_date).getDate();
+    let month_name = monthNames[new Date().getMonth()];
+    let year = new Date(this.state.movie.release_date).getFullYear()
+    const final_date = "" + month_name + " " + day + ", " + year;
+    return final_date;
+  }
+
 
   render() {
+    debugger
+    let movie_image = null;
+    if(this.state.movie.movie_logo != undefined){
+      
+    }
     return (
     <div>
       <Header/>
@@ -105,14 +121,14 @@ class MovieDetails extends Component {
                     <div class="row">
                         <div class="width-100">
                           <h1 class="subnav__title movie-detail-header heading-style-1 heading-size-xl">
-                              {'title' in this.state.movie?this.state.movie.title:''}
+                              {'title' in this.state.movie? this.state.movie.title: ''}
                               
                           </h1>
                           <ul class="subnav__link-list">
                               <li class=" subnav__link-item"><a class="below-header-link subnav__link" href="/blumhouses-truth-or-dare-2018-208538/movie-overview">Overview</a></li>
                               <li class="subnav__link-item"><a class="below-header-link subnav__link" href="/blumhouses-truth-or-dare-2018-208538/movie-times">Movie Times + Tickets</a></li>
                               <li class="subnav__link-item"><a class="below-header-link subnav__link" href="/blumhouses-truth-or-dare-2018-208538/plot-summary">Synopsis</a></li>
-                              <li class="subnav__link-item"><a class="below-header-link subnav__link" href="/blumhouses-truth-or-dare-2018-208538/movie-reviews">Movie Reviews</a></li>
+                              <li class="subnav__link-item"><a class="below-header-link subnav__link" href="/movie_details#review-list">Movie Reviews</a></li>
                               <li class="subnav__link-item"><a class="below-header-link subnav__link" href="https://www.fandango.com/movie-trailer/blumhousestruthordare2018-trailer/208538">Trailers</a></li>
                               <li class="subnav__link-item vertical-dropdown">
                                 <a class="below-header-link subnav__link" href="#">More</a>
@@ -133,14 +149,11 @@ class MovieDetails extends Component {
                         </a>
                         <ul class="movie-details__detail">
                           <li>{'release_date' in this.state.movie?
-                          (new Date())>(new Date(this.state.movie.release_date))?'Released':'':''
+                          (new Date())>(new Date(this.state.movie.release_date))?'Released':'':'Coming Soon'
                         }
                         Released</li>
                           <li class="release-date movie-details__release-date">
-                          {'release_date' in this.state.movie?
-                          new Date(this.state.movie.release_date).getMonth()+1
-                          +'-'+new Date(this.state.movie.release_date).getDate()
-                          +'-'+new Date(this.state.movie.release_date).getFullYear() :''}
+                          {'release_date' in this.state.movie? this.getReleaseDate(this.state.movie.release_date) :''}
                           </li>
                           <li>
                           {'mpaa_ratings' in this.state.movie?this.state.movie.mpaa_ratings+' ':''}, 
@@ -603,7 +616,7 @@ class MovieDetails extends Component {
             </section>
             
             <div class="row width-100">
-              <h3 class="inline heading-style-stub heading-style-1 heading-size-l">Movie Reviews</h3>
+              <h3 id= "review-list" class="inline heading-style-stub heading-style-1 heading-size-l">Movie Reviews</h3>
               <div class="row">
                   <section class="rt-reviews js-reviews__rt-container width-50">
                     <div class="rt-reviews__headline-wrap">
