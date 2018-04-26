@@ -79,7 +79,26 @@ module.exports = function (app) {
   //Add Movie Review
   app.post('/addMovieReview', api_controller.addMovieReview);
 
+  //Complete payment details
   app.post('/completePayment', api_controller.completePayment);
+
+  //Find details of ticket confirmation
+  app.post('/getTicketConfirmation', api_controller.getTicketConfirmation);
+
+
+  //Admin data fetching
+
+  app.post('/getMovieRevenuePerYear', api_controller.getMovieRevenuePerYear);
+
+  app.post('/getCityRevenuePerYear', api_controller.getCityRevenuePerYear);
+
+  app.post('/getMultiplexSoldTicketsPerMonth', api_controller.getMultiplexSoldTicketsPerMonth);
+
+  app.post('/getAllBillingDetails', api_controller.getAllBillingDetails);
+
+  app.post('/getBillingDetailsPerUser', api_controller.getBillingDetailsPerUser);
+
+  app.post('/getCardDetailsPerUser', api_controller.getCardDetailsPerUser);
 
 
 

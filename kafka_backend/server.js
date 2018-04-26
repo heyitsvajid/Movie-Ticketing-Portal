@@ -931,6 +931,34 @@ fetchBillingDetails.on('message', function (message) {
                 return;
             });
         }
+        else if(request_id==7){
+            console.log("request_id : "+ request_id)
+            PaymentModel.getTicketConfirmation(billing_data,function (err, res) {
+                var resultObject = {
+                    successMsg: '',
+                    errorMsg: '',
+                    data: {}
+                }
+                console.log('Kafka Server : after handle');
+                console.log(res );
+                if(err){
+                    resultObject.successMsg= '';
+                    resultObject.errorMsg= 'Error completing payment';
+                }else{
+                    resultObject.successMsg= 'Data successfully fetched.';
+                    resultObject.errorMsg= '';
+                    resultObject.data=res;         
+                }
+
+                console.log(resultObject );
+                let payloads = utility.createPayload(billing_data,res,resultObject);
+                console.log('is producer ready : ' + producer.ready);
+                producer.send(payloads, function (err, data) {
+                    utility.log(data, err);
+                });
+                return;
+            });
+        }
 });
 
 

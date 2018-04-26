@@ -16,26 +16,78 @@ class TicketConfirmation extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      multiplex: {},
-      show: {},
-      movie:{},
-      price:{adult:0,student:0,disabled:0,child:0},
-      a_tickets: 0,
-      s_tickets: 0,
-      sc_tickets: 0,
-      c_tickets: 0,
-      adult_total_amount: "$0.00",
-      student_total_amount: "$0.00",
-      child_total_amount: "$0.00",
-      sc_total_amount: "$0.00"
+      ticket_details : {},
+      movieTime : '',
+      a_tickets : 0,
+      c_tickets : 0,
+      da_tickets : 0,
+      s_tickets : 0,
+      adult_total_amount : 0,
+      student_total_amount : 0,
+      da_total_amount : 0,
+      child_total_amount : 0,
+      total : 0
     };
   }
+
+  componentWillMount(){
+    this.getUserDetails()
+    this.getBillingDetails()
+    this.getTicketDetails()
+  }
+
+  getUserDetails(){
+    this.setState({
+      name : localStorage.getItem("name"),
+      email : localStorage.getItem("email"),
+      cards_last_four_digits : localStorage.getItem("cards_last_four_digits"),
+      card_expiry : localStorage.getItem("card_expiry")
+    })
+  }
+
+  getBillingDetails(){
+    debugger
+        let getTicketConfirmation = envURL + 'getTicketConfirmation';
+        var payment_details = localStorage.getItem("billing_id")
+        axios.post(getTicketConfirmation, payment_details)
+            .then(res => {
+                    debugger
+                    console.log('Payment Completed');
+                    console.log(res.data.results.billing_information[0]);
+                    this.setState({
+                        ticket_details : res.data.results.billing_information[0],
+                        movieDate : res.data.results.billing_information[0].show_time.split(" ")[0] + " " + res.data.results.billing_information[0].show_time.split(" ")[1] + " " + res.data.results.billing_information[0].show_time.split(" ")[2] + " " + res.data.results.billing_information[0].show_time.split(" ")[3],
+                        movieTime : res.data.results.billing_information[0].show_time.split(" ")[4] + " " + res.data.results.billing_information[0].show_time.split(" ")[5]
+                    })
+            })
+            .catch(err => {
+                console.error(err);
+            });
+  }
+  getTicketDetails(){
+    debugger
+    this.setState({
+        a_tickets : localStorage.getItem("a_tickets"),
+        c_tickets : localStorage.getItem("c_tickets"),
+        da_tickets : localStorage.getItem("da_tickets"),
+        s_tickets : localStorage.getItem("s_tickets"),
+        adult_total_amount : localStorage.getItem("adult_total_amount").split("$")[1],
+        student_total_amount : localStorage.getItem("student_total_amount").split("$")[1],
+        da_total_amount : localStorage.getItem("da_total_amount").split("$")[1],
+        child_total_amount : localStorage.getItem("child_total_amount").split("$")[1],
+        // totalTickets : this.state.adult_tickets+this.state.child_tickets+this.state.disabled_tickets+this.state.student_tickets,
+        // disabled_tickets : localStorage.getItem("da_tickets"),
+        // ticketPrice : localStorage.getItem("ticketPrice"),
+        total : Number(localStorage.getItem("adult_total_amount").split("$")[1]) + Number(localStorage.getItem("student_total_amount").split("$")[1]) + Number(localStorage.getItem("da_total_amount").split("$")[1]) + Number(localStorage.getItem("child_total_amount").split("$")[1])
+    })
+}
 
   handlePrint(e){
     window.print();
   }
 
   render() {
+    debugger
     return (
       <div class="ticketBoxoffice">
         <div id="siteContainer">
@@ -70,7 +122,7 @@ class TicketConfirmation extends Component {
                     <section>
                       <div id="tqpSection" class="showtime">
                         <h2 class="header-secondary tickets-h2">THANK YOU FOR YOUR PURCHASE. YOUR CONFIRMATION HAS BEEN EMAILED TO YOU.</h2>
-                        <h2 class="header-secondary tickets-h2">CONFIRMATION #1221121212</h2>
+                        <h2 class="header-secondary tickets-h2">CONFIRMATION: #{this.state.ticket_details.id}</h2>
                         
 
                       </div>
@@ -100,7 +152,7 @@ class TicketConfirmation extends Component {
                           <div class="row">
                               <div class="col-xs-12">
                                 <div class="text-center">
-                                    <h2 id="purchase-header">Invoice for purchase #33221</h2>
+                                    <h2 id="purchase-header">Invoice for purchase #{this.state.ticket_details.id}</h2>
                                 </div>
                                 <hr/>
                                 <div class="row">
@@ -109,13 +161,13 @@ class TicketConfirmation extends Component {
                                           <div class="panel-heading box-heading">Movie and Screen</div>
                                           <div class="panel-body billing-body">
                                             <strong>Movie:  </strong>
-                                            Avengers<br/>
+                                            {this.state.ticket_details.movie_name}<br/>
                                             <strong>Date:   </strong>
-                                            March 28, 2017<br/>
+                                            {this.state.movieDate}<br/>
                                             <strong>Time:    </strong>
-                                            3:00 P.M<br/>
+                                            {this.state.movieTime}<br/>
                                             <strong>Auditorium:   </strong>
-                                            6
+                                            {this.state.ticket_details.screen_number}
                                           </div>
                                       </div>
                                     </div>
@@ -123,9 +175,9 @@ class TicketConfirmation extends Component {
                                       <div class="panel panel-default height">
                                           <div class="panel-heading box-heading">Payment Information</div>
                                           <div class="panel-body billing-body">
-                                            <strong>Card Name:</strong> Visa<br/>
-                                            <strong>Card Number:</strong> ***** 332<br/>
-                                            <strong>Exp Date:</strong> 09/2020<br/>
+                                            {/* <strong>Card Name:</strong> Visa<br/> */}
+                                            <strong>Card Number:</strong> ***** {this.state.cards_last_four_digits}<br/>
+                                            <strong>Exp Date:</strong> {this.state.card_expiry} <br/>
                                           </div>
                                       </div>
                                     </div>
@@ -133,9 +185,9 @@ class TicketConfirmation extends Component {
                                       <div class="panel panel-default height">
                                           <div class="panel-heading box-heading">Multiplex Address</div>
                                           <div class="panel-body billing-body">
-                                            <strong>Towne 3 Cinemas</strong><br/>
-                                            1433 The Alameda<br/>
-                                            San Jose, CA <strong>95126</strong><br/>
+                                            <strong>{this.state.ticket_details.multiplex_name}</strong><br/>
+                                            {this.state.ticket_details.multiplex_address}<br/>
+                                            {this.state.ticket_details.multiplex_city}<strong> {this.state.ticket_details.multiplex_zipcode}</strong><br/>
                                           </div>
                                       </div>
                                     </div>
@@ -162,27 +214,33 @@ class TicketConfirmation extends Component {
                                             <tbody>
                                                 <tr>
                                                   <td>Adult</td>
-                                                  <td class="text-center">$15.00</td>
-                                                  <td class="text-center">3</td>
-                                                  <td class="text-right">$45</td>
+                                                  <td class="text-center">${(this.state.a_tickets !== "0" ? (this.state.adult_total_amount/this.state.a_tickets).toFixed(2) : "00.00")}</td>
+                                                  <td class="text-center">{this.state.a_tickets}</td>
+                                                  <td class="text-right">${this.state.adult_total_amount}</td>
                                                 </tr>
                                                 <tr>
                                                   <td>Students</td>
-                                                  <td class="text-center">$10.00</td>
-                                                  <td class="text-center">2</td>
-                                                  <td class="text-right">$20.00</td>
+                                                  <td class="text-center">${(this.state.s_tickets !== "0" ? (this.state.student_total_amount/this.state.s_tickets).toFixed(2) : "00.00")}</td>
+                                                  <td class="text-center">{this.state.s_tickets}</td>
+                                                  <td class="text-right">${this.state.student_total_amount}</td>
                                                 </tr>
                                                 <tr>
                                                   <td>Child</td>
-                                                  <td class="text-center">$5.00</td>
-                                                  <td class="text-center">2</td>
-                                                  <td class="text-right">$10</td>
+                                                  <td class="text-center">${(this.state.c_tickets !== "0" ? (this.state.child_total_amount/this.state.c_tickets).toFixed(2) : "00.00")}</td>
+                                                  <td class="text-center">{this.state.c_tickets}</td>
+                                                  <td class="text-right">${this.state.child_total_amount}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td>Disabled</td>
+                                                  <td class="text-center">${(this.state.da_tickets !== "0" ? (this.state.da_total_amount/this.state.da_tickets).toFixed(2) : "00.00")}</td>
+                                                  <td class="text-center">{this.state.da_tickets}</td>
+                                                  <td class="text-right">${this.state.da_total_amount}</td>
                                                 </tr>
                                                 <tr>
                                                   <td class="emptyrow"></td>
                                                   <td class="emptyrow"></td>
                                                   <td class="emptyrow text-center"><strong>Total</strong></td>
-                                                  <td class="emptyrow text-right">$75.00</td>
+                                                  <td class="emptyrow text-right">${this.state.total.toFixed(2)}</td>
                                                 </tr>
                                             </tbody>
                                           </table>
