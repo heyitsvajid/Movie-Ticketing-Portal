@@ -292,100 +292,123 @@ class ShowTimingsForm extends Component {
     render() {
         return (
             <div>
-                <h3>{this.state.multiplex.name} Show Timings</h3>
+                <h4 class="c-grey-900 mB-20">{this.state.multiplex.name} All Show Timings</h4>
                 <hr />
-
                 {this.returnShowTimingsList()}
                 <br />
                 <hr class='mt-5 mb-5' />
                 <h3>{this.state.update ? 'Update' : 'Add New'} Show </h3>
                 <hr />
-                <form class="form-horizontal">
-                    <div class="form-group">
-                        <label class="col-lg-3 control-label"><h5>Multiplex : </h5></label>
-                        <div class="col-lg-5">
-                            {this.state.multiplex.name}
+                <div class="row gap-20 masonry pos-r" style={{position: 'relative', height: '1086px'}}>
+                    <div class="masonry-item col-md-6" style={{position: 'absolute', top: '0px'}}>
+                        <div class="bgc-white p-20 bd">
+                            <div class="mT-30">
+                                <form id="dashboard-form" className='form-multiplexadmin'>        
+
+                                    <div className="form-group">
+                                        <label class="dashboard-label">Multiplex</label>
+                                        <input class="form-control" type="text" name="title" required="" value={this.state.multiplex.name} disabled />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label class="dashboard-label">Movie</label>
+                                        <br/>
+                                        <select class="form-control" value={this.state.movie_id}
+                                            onChange={this.handleUserInput} name="movie_id" id="movie_id" options={this.state.movieOptions}>
+                                            <option value="" disabled>Movie</option>
+                                            {
+                                                this.state.movieList.map(function (movie) {
+                                                    return <option key={movie._id}
+                                                        value={movie._id}>{movie.title}</option>;
+                                                })
+                                            }
+                                        </select>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div className="form-group col-md-4">
+                                            <label class="dashboard-label">Screen Number</label>
+                                            <select class="form-control" value={this.state.screen_number}
+                                                onChange={this.handleUserInput} name="screen_number" id="screen_number">
+                                                <option value="" disabled>Screen Number</option>
+                                                {
+                                                    this.state.multiplex.screens.map(function (screen) {
+                                                        return <option key={screen.screen_number}
+                                                            value={screen._id}>{'Screen :' + screen.screen_number + ' Seats: '
+                                                                + screen.seat_count}</option>;
+                                                    })
+                                                }
+
+                                            </select>
+                                        </div>
+
+                                        <div className="form-group col-md-8">
+                                            <label class="dashboard-label">Show Time</label>
+                                            <DatePicker
+                                                style={{width: '170%'}}
+                                                selected={(this.state.date_time)}
+                                                onChange={this.handleChange.bind(this)}
+                                                minDate={moment()}
+                                                showTimeSelect
+                                                timeFormat="HH:mm"
+                                                excludeTimes={[moment().hours(17).minutes(0), moment().hours(18).minutes(30)]}
+                                                dateFormat="LLL"
+                                                timeIntervals={15}
+                                                timeCaption="Time"
+                                                placeholder="Select Show Date"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <label class="dashboard-label">Price</label>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    
+                                    <div class="form-row">
+                                        <div className="form-group col-md-6">
+                                            <label class="dashboard-label">Adult</label>
+                                            <input class="form-control" type="number" name="adult"
+                                            placeholder="Adult Price" required="" value={this.state.adult} onChange={this.handleUserInput} />
+                                        </div>
+
+                                        <div className="form-group col-md-6">
+                                            <label class="dashboard-label">Child</label>
+                                            <input class="form-control" type="number" name="child"
+                                            placeholder="Child Price" required="" value={this.state.child} onChange={this.handleUserInput} />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div className="form-group col-md-6">
+                                            <label class="dashboard-label">Disabled</label>
+                                            <input class="form-control" type="number" name="disabled"
+                                            placeholder="Disabled Price" required="" value={this.state.disabled} onChange={this.handleUserInput} />
+                                        </div>
+
+                                        <div className="form-group col-md-6">
+                                            <label class="dashboard-label">Student</label>
+                                            <input class="form-control" type="number" name="student"
+                                            placeholder="Student Price" required="" value={this.state.student} onChange={this.handleUserInput} />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div className="form-group col-md-4">
+                                            {this.state.update ? <input type="submit" class="dashboard-form-btn btn btn-primary"
+                                            value="Update Show Timing" required="" onClick={this.updateShowTiming.bind(this)} /> : 
+                                            <input type="submit" class="dashboard-form-btn btn btn-primary"
+                                                value="Add Show Timing" required="" onClick={this.handleSubmit.bind(this)} />}
+                                        </div>
+                                        <div className="form-group col-md-8">
+                                            <input type="reset" class="dashboard-form-btn btn btn-default" value="Cancel" />
+                                        </div>
+                                    </div>                                  
+                                </form>      
+                            </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="col-md-3 control-label"><h5>Movie :</h5></label>
-                        <div class="col-md-5">
-                            <select class="form-control col-sm-5" value={this.state.movie_id}
-                                onChange={this.handleUserInput} name="movie_id" id="movie_id" options={this.state.movieOptions}>
-                                <option value="" disabled>Movie</option>
-                                {
-                                    this.state.movieList.map(function (movie) {
-                                        return <option key={movie._id}
-                                            value={movie._id}>{movie.title}</option>;
-                                    })
-                                }
-                            </select>
-                        </div>
-                    </div>
-
-
-                    <div class="form-group">
-                        <label class="col-md-3 control-label"><h5>Screen Number :</h5></label>
-                        <div class="col-md-5">
-                            <select class="form-control col-sm-5" value={this.state.screen_number}
-                                onChange={this.handleUserInput} name="screen_number" id="screen_number">
-                                <option value="" disabled>Screen Number</option>
-                                {
-                                    this.state.multiplex.screens.map(function (screen) {
-                                        return <option key={screen.screen_number}
-                                            value={screen._id}>{'Screen :' + screen.screen_number + ' Seats: '
-                                                + screen.seat_count}</option>;
-                                    })
-                                }
-
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-3 control-label"><h5>Show Time :</h5></label>
-                        <div class="col-md-5">
-                            <DatePicker
-                                selected={(this.state.date_time)}
-                                onChange={this.handleChange.bind(this)}
-                                minDate={moment()}
-                                showTimeSelect
-                                timeFormat="HH:mm"
-                                excludeTimes={[moment().hours(17).minutes(0), moment().hours(18).minutes(30)]}
-                                dateFormat="LLL"
-                                timeIntervals={15}
-                                timeCaption="Time"
-                                placeholder="Select Show Date"
-                            />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-lg-3 control-label"><h5>Price :</h5></label>
-                        <div class="col-lg-5">
-                            <input class="form-control" type="number" name="adult"
-                                placeholder="Adult Price" required="" value={this.state.adult} onChange={this.handleUserInput} />
-                            <input class="form-control" type="number" name="child"
-                                placeholder="Child Price" required="" value={this.state.child} onChange={this.handleUserInput} />
-                            <input class="form-control" type="number" name="disabled"
-                                placeholder="Disabled Price" required="" value={this.state.disabled} onChange={this.handleUserInput} />
-                            <input class="form-control" type="number" name="student"
-                                placeholder="Student Price" required="" value={this.state.student} onChange={this.handleUserInput} />
-
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-md-3 control-label"></label>
-                        <div class="col-md-8">
-                            {this.state.update ? <input type="submit" class="btn btn-primary"
-                                value="Update Show Timing" required="" onClick={this.updateShowTiming.bind(this)} /> : 
-                                <input type="submit" class="btn btn-primary"
-                                    value="Add Show Timing" required="" onClick={this.handleSubmit.bind(this)} />}
-
-                            <span></span>
-                            <input type="reset" class="btn btn-default" value="Cancel" />
-                        </div>
-                    </div>
-                </form>
+                </div>
             </div>
         )
     }

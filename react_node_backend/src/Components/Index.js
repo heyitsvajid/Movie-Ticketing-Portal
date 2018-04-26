@@ -28,7 +28,8 @@ class Index extends Component {
                 <div id="page" role="main"> 
                   <section class="home-module">
                     <div class="row layout-content-sidebar">
-                      <div class="right sidebar tablet-width-100 homeMovieCarousel--ad-wrapper">
+                      {/* <div class="right sidebar tablet-width-100 homeMovieCarousel--ad-wrapper"> */}
+                      <div class="tablet-width-100 homeMovieCarousel--ad-wrapper">
                         <div class="ad" data-unit="boxadm" data-responsive="true" data-media="mobile">
                         </div>
                         <div class="ad" data-unit="boxaddt" data-responsive="true" data-media="desktop,tablet">

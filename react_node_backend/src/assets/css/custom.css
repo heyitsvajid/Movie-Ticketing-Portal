@@ -942,3 +942,62 @@ a.movie-details__mop-link {
   margin-left: 1%;
   margin-top: 2%;
 }
+
+#admin-header{
+  margin-top: -40px !important;
+  width: 100% !important;
+}
+
+.header-container {
+  margin-left: 70%;
+}
+
+.admin-list{
+  margin-left: -10%;
+}
+
+form#dashboard-form {
+  background-color: white !important;
+}
+
+.masonry-item{
+  margin-left: 20% !important;
+}
+
+.dashboard-form-btn{
+  background-color: #2196f3 !important;
+}
+
+.add-character-btn{
+  margin-left: 3%;
+}
+
+.custom-file-upload {
+	border: 1px solid #ccc;
+	display: inline-block;
+	padding: 6px 12px;
+	cursor: pointer;
+	background-color: #29B2FE;
+}
+
+img.avatar.img-circle {
+  margin-left: 36%;
+  width: 25%;
+  height: 25%;
+}
+
+select#mpaa_ratings {
+  min-width: 70%;
+}
+
+.dashboard-label{
+  color: #4c4c4c;
+}
+
+.admin-head{
+  font-weight: bolder;
+}
+
+#date-picker{
+  width: 170%;
+}

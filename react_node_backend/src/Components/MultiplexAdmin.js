@@ -137,68 +137,72 @@ class MultiplexAdmin extends Component {
     render() {
         return(
             <div >
+                
+                <h4 class="c-grey-900 mB-20">All Multiplex Admins</h4>
+                {this.returnMultiplexAdminList()}
                 <div>
                     <div>
-                    <h3>Multiplex Admin List</h3>
-                <hr />
+                        <hr class='mt-5 mb-5' />
+                        <h3>Add New Multiplex Admin</h3>
+                        <hr />
+                        <div class="row gap-20 masonry pos-r" style={{position: 'relative', height: '1086px'}}>
+                            <div class="masonry-item col-md-6" style={{position: 'absolute', top: '0px'}}>
+                                <div class="bgc-white p-20 bd">
+                                    <div class="mT-30">
+                                        <form id="dashboard-form" className='form-multiplexadmin' onSubmit={this.handleCreateUser}>
 
-                {this.returnMultiplexAdminList()}
-                <hr class='mt-5 mb-5' />
-                <h3>Add New Multiplex Admin</h3>
-                <hr />
+                                            <div class="form-row">
+                                                <div className="form-group col-md-6">
+                                                    <label class="dashboard-label">First Name</label>
+                                                    <input type="text" onChange={this.handleChange} placeholder="Enter First Name" className="form-control" id="first_name" name='first_name' pattern='[A-Za-z]*' title='Please enter valid name' required />
+                                                </div>
 
-                        <form className='form-multiplexadmin' onSubmit={this.handleCreateUser} >
-                            <div className='well well-lg'>
-                                <div className='errormessage text-center alert-danger'>
-                                    { this.state.error }
+                                                <div className="form-group col-md-6">
+                                                    <label class="dashboard-label">Last Name</label>
+                                                    <input type="text" onChange={this.handleChange} placeholder="Enter Last Name" className="form-control" id="last_name" name='last_name' pattern='[A-Za-z]*' title='Please enter valid name' required />
+                                                </div>
+                                            </div>
+                                            <div className="form-group">
+                                                <label class="dashboard-label">Email</label>
+                                                <input type="email" placeholder="Enter Email" onChange={this.handleChange} className="form-control" id="email" name='email' />
+                                            </div>
+                                            <div className="form-group">
+                                                <label class="dashboard-label">Password</label>
+                                                <input type="password" placeholder="Enter Password" className="form-control" onChange={this.handleChange} id="pwd" name='password' required />
+                                            </div>
+                                            <div className="form-group">
+                                                <label class="dashboard-label">Address</label>
+                                                <input type="text" placeholder="Enter Address" className="form-control" onChange={this.handleChange} id="address" name='address' required />
+                                            </div>
+                                            <div class="form-row">
+                                                <div className="form-group col-md-6">
+                                                    <label class="dashboard-label">City</label>
+                                                    <input type="text" placeholder="Enter City" className="form-control" onChange={this.handleChange} id="city" name='city' pattern='[A-Za-z]*' title='Please enter valid city' required />
+                                                </div>
+
+                                                <div className="form-group col-md-6">
+                                                    <label class="dashboard-label">State</label>
+                                                    <input type="text" placeholder="Enter State" className="form-control" onChange={this.handleChange} id="state" name='state' pattern='[A-Za-z]*' title='Please enter valid state' required />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row">
+                                                <div className="form-group col-md-6">
+                                                    <label class="dashboard-label">ZipCode</label>
+                                                    <input type="text" placeholder="Enter ZipCode" className="form-control" onChange={this.handleChange} id="zipcode" name='zipcode' pattern='[0-9]{5}' title='Please enter 5 Digit Zipcode' required />
+                                                </div>
+                                                <div className="form-group col-md-6">
+                                                    <label class="dashboard-label">Phone Number</label>
+                                                    <input type="text" placeholder="Enter Phone Number" className="form-control" onChange={this.handleChange} id="phone_number" name='phone_number' pattern='[0-9]{10}' title='Please enter 10 Digit Phone Number' required />
+                                                </div>
+                                            </div>
+
+                                            <button type="submit" class="dashboard-form-btn btn btn-primary">Submit</button>
+                                        </form>
+                                    </div>
                                 </div>
-                                <br/>
-                                <div className="form-group">
-                                    <h5>First Name :</h5>
-                                    <input type="text" onChange={this.handleChange} className="form-control" id="first_name" name='first_name'
-                                           pattern='[A-Za-z]*' title='Please enter valid name' required />
-                                </div>
-                                <div className="form-group">
-                                    <h5>Last Name :</h5>
-                                    <input type="text" onChange={this.handleChange} className="form-control" id="last_name" name='last_name'
-                                           pattern='[A-Za-z]*' title='Please enter valid name' required />
-                                </div>
-                                <div className="form-group">
-                                    <h5>Email :</h5>
-                                    <input type="email" onChange={this.handleChange} className="form-control" id="email" name='email'/>
-                                </div>
-                                <div className="form-group">
-                                    <h5>Password:</h5>
-                                    <input type="password" className="form-control" onChange={this.handleChange} id="pwd" name='password' required />
-                                </div>
-                                <div className="form-group">
-                                    <h5>Address :</h5>
-                                    <input type="text" className="form-control" onChange={this.handleChange} id="address" name='address' required />
-                                </div>
-                                <div className="form-group">
-                                    <h5>City :</h5>
-                                    <input type="text" className="form-control" onChange={this.handleChange} id="city" name='city'
-                                           pattern='[A-Za-z]*' title='Please enter valid city' required />
-                                </div>
-                                <div className="form-group">
-                                    <h5>State :</h5>
-                                    <input type="text" className="form-control" onChange={this.handleChange} id="state" name='state'
-                                           pattern='[A-Za-z]*' title='Please enter valid state' required />
-                                </div>
-                                <div className="form-group">
-                                    <h5>Zipcode :</h5>
-                                    <input type="text" className="form-control" onChange={this.handleChange} id="zipcode" name='zipcode'
-                                           pattern='[0-9]{5}' title='Please enter 5 Digit Zipcode' required />
-                                </div>
-                                <div className="form-group">
-                                    <h5>Phone Number :</h5>
-                                    <input type="text" className="form-control" onChange={this.handleChange} id="phone_number" name='phone_number'
-                                           pattern='[0-9]{10}' title='Please enter 10 Digit Phone Number' required />
-                                </div>
-                            <br/>
-                            <button className='btn btn-primary'> Create </button>
                             </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>

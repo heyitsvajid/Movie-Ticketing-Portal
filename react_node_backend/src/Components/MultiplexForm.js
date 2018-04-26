@@ -216,7 +216,7 @@ class MultiplexForm extends Component {
                     <td>{item.screens.length}</td>
                     <td>{item.state}</td>
                     <td>{item.city}</td>
-                    <td><input type="button" class="btn-link"
+                    <td><input type="button" class="dashboard-form-btn link-style nav-link btn-info action-link"
                         value="Update" required="" id={item._id} onClick={this.handleMultiplexUpdate.bind(this)} />
                     </td>
                 </tr>
@@ -243,7 +243,6 @@ class MultiplexForm extends Component {
     }
 
     updateMultiplex(e) {
-        debugger;
         e ? e.preventDefault() : ''
         if (!this.state.name || !this.state.address || !this.state.state_name || !this.state.city || !this.state.zipcode
             || !this.state.multiplex_owner_id || !this.state.amenities || !this.state.screens.length > 0 || !this.state.file) {
@@ -360,125 +359,134 @@ class MultiplexForm extends Component {
     render() {
         return (
             <div>
-                <h3>Multiplex List</h3>
+                <h4 class="c-grey-900 mB-20">All Multiplex</h4>
                 <hr />
 
                 {this.returnMultiplexList()}
                 <hr class='mt-5 mb-5' />
                 <h3>{this.state.update ? 'Update' : 'Add New'} Multiplex</h3>
                 <hr />
-                <form class="form-horizontal">
-                    <div class="form-group">
-                        <label class="col-lg-3 control-label"><h5>Name</h5></label>
-                        <div class="col-lg-5">
-                            <input class="form-control" type="text" name="name"
-                                placeholder="Name" required="" value={this.state.name} onChange={this.handleUserInput} />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-lg-3 control-label"><h5>Address</h5></label>
-                        <div class="col-lg-5">
-                            <input class="form-control" type="text" name="address"
-                                placeholder="Address Line" required="" value={this.state.address} onChange={this.handleUserInput} />
-                            <input class="form-control" type="text" name="city"
-                                placeholder="City" required="" value={this.state.city} onChange={this.handleUserInput} />
-                            <input class="form-control" type="text" name="state_name"
-                                placeholder="State" required="" value={this.state.state_name} onChange={this.handleUserInput} />
-                            <input class="form-control" type="text" name="zipcode"
-                                placeholder="Zip Code" required="" value={this.state.zipcode} onChange={this.handleUserInput} />
+                
+                <div class="row gap-20 masonry pos-r" style={{position: 'relative', height: '1086px'}}>
+                    <div class="masonry-item col-md-6" style={{position: 'absolute', top: '0px'}}>
+                        <div class="bgc-white p-20 bd">
+                            <div class="mT-30">
+                                <form id="dashboard-form" className='form-multiplexadmin'>
 
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-3 control-label"><h5>Contact</h5></label>
-                        <div class="col-md-5">
-                            <input class="form-control" type="number" name="contact_number"
-                                placeholder="Contact" required="" value={this.state.contact_number} onChange={this.handleUserInput} />
+                                    <div className="form-group">
+                                        <label class="dashboard-label">Name</label>
+                                        <input class="form-control" type="text" name="name"
+                                            placeholder="Enter Multiplex Name" required="" value={this.state.name} onChange={this.handleUserInput} />
+                                    </div>
+                                    <div className="form-group">
+                                        <label class="dashboard-label">Address</label>
+                                        <input class="form-control" type="text" name="address"
+                                            placeholder="Address Line" required="" value={this.state.address} onChange={this.handleUserInput} />
+                                    </div>
+                                    
+                                    <div class="form-row">
+                                        <div className="form-group col-md-6">
+                                            <label class="dashboard-label">City</label>
+                                            <input class="form-control" type="text" name="city"
+                                                placeholder="City" required="" value={this.state.city} onChange={this.handleUserInput} />
+                                        </div>
 
-                        </div>
-                    </div>
+                                        <div className="form-group col-md-6">
+                                            <label class="dashboard-label">State</label>
+                                            <input class="form-control" type="text" name="state_name"
+                                                placeholder="State" required="" value={this.state.state_name} onChange={this.handleUserInput} />
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div className="form-group col-md-6">
+                                            <label class="dashboard-label">ZipCode</label>
+                                            <input class="form-control" type="text" name="zipcode"
+                                                placeholder="Zip Code" required="" value={this.state.zipcode} onChange={this.handleUserInput} />
+                                        </div>
 
-                    <div class="form-group">
-                        <label class="col-md-3 control-label"><h5>Multiplex Owner</h5></label>
-                        <div class="col-md-5">
-                            <select class="form-control col-sm-5" value={this.state.multiplex_owner_id}
-                                onChange={this.handleUserInput} name="multiplex_owner_id" id="multiplex_owner_id">
-                                   <option value="" disabled>Multiplex Owner</option>
-                                {
-                                    this.state.multiplexAdminList.map(function (admin) {
-                                        return <option key={admin.id}
-                                            value={admin.id}>{admin.first_name} : {admin.email}</option>;
-                                    })
-                                }
-                                      </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-lg-3 control-label"><h5>Amenities</h5></label>
-                        <div class="col-lg-5">
-                            <Creatable amenities={this.state.amenities} multiValueChange={this.multiValueChange.bind(this)} />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-lg-3 control-label"><h5>Add Multiplex Screens</h5></label>
- 
-                        <div class="col-lg-8">
-                            <div class="ml-5 row">
-                                <div class="col-2"> <label class="col-lg-15 control-label"><h5>Seat Count</h5></label>
-                                </div>
-                                <div class="col-3"> <input class="form-control" type="number" name="seat_count"
-                                    placeholder="Seat Count" required="" value={this.state.seat_count} onChange={this.handleUserInput} />
-                                </div>
+                                        <div className="form-group col-md-6">
+                                            <label class="dashboard-label">Contact Number</label>
+                                            <input class="form-control" type="number" name="contact_number"
+                                                placeholder="Contact" required="" value={this.state.contact_number} onChange={this.handleUserInput} />
+                                        </div>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label class="dashboard-label">Multiplex Owner</label>
+                                        <br/>
+                                        <select class="form-control" value={this.state.multiplex_owner_id}
+                                            onChange={this.handleUserInput} name="multiplex_owner_id" id="multiplex_owner_id">
+                                                <option value="" disabled>Multiplex Owner</option>
+                                            {
+                                                this.state.multiplexAdminList.map(function (admin) {
+                                                    return <option key={admin.id}
+                                                        value={admin.id}>{admin.first_name} : {admin.email}</option>;
+                                                })
+                                            }
+                                        </select>
+                                    </div>
+                                    <div className="form-group">
+                                        <label class="dashboard-label">Amenities</label>
+                                        <Creatable amenities={this.state.amenities} multiValueChange={this.multiValueChange.bind(this)} />
+                                    </div>
+                                    <label class="dashboard-label">Add Multiplex Screens</label>
+                                    <div class="form-row">
+                                        
+                                        <br/>
+                                        <div className="form-group col-md-4">
+                                        <input class="form-control" type="number" name="seat_count"
+                                            placeholder="Seat Count" required="" value={this.state.seat_count} onChange={this.handleUserInput} />
+                                        </div>
+
+                                        <div className="form-group col-md-4">
+                                            
+                                        <input class="form-control" type="number" name="row_count"
+                                        placeholder="Row Count" required="" value={this.state.row_count} onChange={this.handleUserInput} />
+                                        </div>
+                                        <div className="form-group col-md-4">
+                                            <input type="button" class="btn btn-info"
+                                        value="Add Screen" required="" onClick={this.handleAddScreen.bind(this)} />
+                                        </div>
+                                    </div>
+                                    <div className="form-group">
+                                        <label class="dashboard-label">Screen Rows</label>
+                                        <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">#</th>
+                                                        <th scope="col">Seats</th>
+                                                        <th scope="col">Row</th>
+                                                        <th scope="col">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {this.renderScreenRows()}
+                                                </tbody></table>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label class="dashboard-label">Multiplex Logo</label>
+                                        <input id="file-upload" type="file" onChange={ this._handleChangeFile.bind(this) } />
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div className="form-group col-md-3">
+                                        {this.state.update ? <input type="submit" class="dashboard-form-btn btn btn-primary"
+                                        value="Update Multiplex" required="" onClick={this.updateMultiplex.bind(this)} /> : <input type="submit" class="dashboard-form-btn btn btn-primary"
+                                            value="Add Multiplex" required="" onClick={this.handleSubmit.bind(this)} />}
+                                        </div>
+
+                                        <div className="form-group col-md-3">
+                                            <input type="reset" class="dashboard-form-btn btn btn-default" value="Cancel" />
+                                            
+                                        </div>
+                                    </div>
+                                   
+                                </form>
                             </div>
                         </div>
-                        <div class="col-lg-8">
-                            <div class="ml-5 row">
-                                <div class="col-2"> <label class="col-lg-15 control-label"><h5>Row Count</h5></label>
-                                </div>
-                                <div class="col-3"> <input class="form-control" type="number" name="row_count"
-                                    placeholder="Row Count" required="" value={this.state.row_count} onChange={this.handleUserInput} />
-                                </div>
-                                <input type="button" class="btn btn-info"
-                                    value="Add Screen" required="" onClick={this.handleAddScreen.bind(this)} />
-
-                            </div>
-                            <div class="ml-5 row">
-                            
-                            <div class="mt-2 col-lg-8">
-
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Seats</th>
-                                            <th scope="col">Row</th>
-                                            <th scope="col">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {this.renderScreenRows()}
-                                    </tbody></table></div>
-                        </div></div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label class="col-lg-3 control-label"><h5>Multiplex Logo</h5></label>
-                        <div class="col-lg-5">
-                            <input type="file" class="form-control" onChange={this._handleChangeFile.bind(this)} />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-3 control-label"></label>
-                        <div class="col-md-8">
-                            {this.state.update ? <input type="submit" class="btn btn-primary"
-                                value="Update Multiplex" required="" onClick={this.updateMultiplex.bind(this)} /> : <input type="submit" class="btn btn-primary"
-                                    value="Add Multiplex" required="" onClick={this.handleSubmit.bind(this)} />}
-
-                            <span></span>
-                            <input type="reset" class="btn btn-default" value="Cancel" />
-                        </div>
-                    </div>
-                </form>
+                </div>
             </div>)
     }
 

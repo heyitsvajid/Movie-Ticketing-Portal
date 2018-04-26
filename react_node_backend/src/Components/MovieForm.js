@@ -192,10 +192,15 @@ e.preventDefault();
                     <td>{item.movie_length}</td>
                     <td>{item.movie_definition}</td>
                     <td>{item.movie_characters.length}</td>
-                    <td><input type="button" class="btn-link"
-                        value="Update" required="" id={item._id} onClick={this.handleMovieUpdate.bind(this)} />
-                         - <input type="button" class="btn-link"
-                        value="Add Characters" required="" id={item._id} onClick={this.handleAddCharacters.bind(this)} />
+                    <td>
+                    {/* <a href = "#" data-id = {this.props.id} className="link-style nav-link btn-info action-link" onClick={this.handleProjectView}>Bid on Project</a> */}
+                        <div class = "row">
+                            <input type="button" class="dashboard-form-btn link-style nav-link btn-info action-link"
+                            value="Update" required="" id={item._id} onClick={this.handleMovieUpdate.bind(this)} />
+                            <input type="button" class="add-character-btn dashboard-form-btn link-style nav-link btn-info action-link"
+                            value="Add Characters" required="" id={item._id} onClick={this.handleAddCharacters.bind(this)} />
+                        </div>
+                        
                         
                     </td>
                 </tr>
@@ -320,7 +325,7 @@ e.preventDefault();
     render() {
         return (
             <div>
-                <h3>Movie List</h3>
+                <h4 class="c-grey-900 mB-20">All Movies</h4>
                 <hr />
 
                 {this.returnMovieList()}
@@ -330,89 +335,94 @@ e.preventDefault();
                 <hr class='mt-5 mb-5' />
                 <h3>{this.state.update ? 'Update' : 'Add New'} Movie</h3>
                 <hr />
-                <form class="form-horizontal">
-                    <div class="form-group">
-                        <label class="col-lg-3 control-label"><strong>Title</strong></label>
-                        <div class="col-lg-5">
-                            <input class="form-control" type="text" name="title"
-                                placeholder="Name" required="" value={this.state.title} onChange={this.handleUserInput} />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-lg-3 control-label"><strong>Trailer Link</strong></label>
-                        <div class="col-lg-5">
-                            <input class="form-control" type="text" name="trailer_link"
-                                placeholder="Address Line" required="" value={this.state.trailer_link} onChange={this.handleUserInput} />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-3 control-label"><strong>Movie Length</strong></label>
-                        <div class="col-md-5">
-                            <input class="form-control" type="number" name="movie_length"
-                                placeholder="Length in Minutes" required="" value={this.state.movie_length} onChange={this.handleUserInput} />
+                <div class="row gap-20 masonry pos-r" style={{position: 'relative', height: '1086px'}}>
+                    <div class="masonry-item col-md-6" style={{position: 'absolute', top: '0px'}}>
+                        <div class="bgc-white p-20 bd">
+                            <div class="mT-30">
+                                <form id="dashboard-form" className='form-multiplexadmin'>        
 
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-3 control-label"><strong>Release Date</strong></label>
-                        <div class="col-md-5">
-                            <DatePicker
-                                selected={(this.state.release_date)}
-                                onChange={this.handleChange.bind(this)}
-                                minDate={moment()}
-                                placeholderText="Select a release date"
-                            />
-                        </div>
-                    </div>
+                                    <div className="form-group">
+                                        <label class="dashboard-label">Title</label>
+                                        <input class="form-control" type="text" name="title" placeholder="Enter Movie Name" required="" value={this.state.title} onChange={this.handleUserInput} />
+                                    </div>
 
-                    <div class="form-group">
-                        <label class="col-md-3 control-label"><strong>MPAA Ratings</strong></label>
-                        <div class="col-md-5">
-                            <select class="form-control col-sm-5" value={this.state.mpaa_ratings}
-                                onChange={this.handleUserInput} name="mpaa_ratings" id="mpaa_ratings">
-                                <option value="G">General Audience</option>
-                                <option value="PG">PG – Parental Guidance Suggested</option>
-                                <option value="PG-13">PG-13 – Parents Strongly Cautioned</option>
-                                <option value="R">R – Restricted</option>
-                                <option value="NC-17">NC-17 – Adults Only</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-3 control-label"><strong>Definition</strong></label>
-                        <div class="col-md-5">
-                            <select class="form-control col-sm-5" value={this.state.movie_definition}
-                                onChange={this.handleUserInput} name="movie_definition" id="movie_definition">
-                                <option value="HD">HD</option>
-                                <option value="HHD">HHD</option>
-                            </select>
-                        </div>
-                    </div>
+                                    <div className="form-group">
+                                        <label class="dashboard-label">Trailer Link</label>
+                                        <input class="form-control" type="text" name="trailer_link" placeholder="Address Line" 
+                                        required="" value={this.state.trailer_link} onChange={this.handleUserInput} />
+                                    </div>
 
-                    <div class="form-group">
-                        <label class="col-lg-3 control-label"><strong>Movie Keywords</strong></label>
-                        <div class="col-lg-5">
-                            <Creatable amenities={this.state.movie_keywords} multiValueChange={this.multiValueChange.bind(this)} />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-lg-3 control-label"><strong>Movie Logo</strong></label>
-                        <div class="col-lg-5">
-                            <input type="file" class="form-control" onChange={this._handleChangeFile.bind(this)} />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-3 control-label"></label>
-                        <div class="col-md-8">
-                            {this.state.update ? <input type="submit" class="btn btn-primary"
-                                value="Update Movie" required="" onClick={this.updateMovie.bind(this)} /> : <input type="submit" class="btn btn-primary"
-                                    value="Add Movie" required="" onClick={this.handleSubmit.bind(this)} />}
+                                    <div class="form-row">
+                                        <div className="form-group col-md-6">
+                                            <label class="dashboard-label">Movie Length</label>
+                                            <input class="form-control" type="number" name="movie_length"
+                                            placeholder="Length in Minutes" required="" value={this.state.movie_length} onChange={this.handleUserInput} />
+                                        </div>
 
-                            <span></span>
-                            <input type="reset" class="btn btn-default" value="Cancel" />
+                                        <div className="form-group col-md-6">
+                                            <label class="dashboard-label">Release Date</label>
+                                            <DatePicker
+                                                selected={(this.state.release_date)}
+                                                onChange={this.handleChange.bind(this)}
+                                                minDate={moment()}
+                                                placeholderText="Select a release date"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div className="form-group col-md-6">
+                                            <label class="dashboard-label">MPAA Ratings</label>
+                                            <br/>
+                                            <select class="form-control col-sm-5" value={this.state.mpaa_ratings}
+                                                onChange={this.handleUserInput} name="mpaa_ratings" id="mpaa_ratings">
+                                                <option value="G">General Audience</option>
+                                                <option value="PG">PG – Parental Guidance Suggested</option>
+                                                <option value="PG-13">PG-13 – Parents Strongly Cautioned</option>
+                                                <option value="R">R – Restricted</option>
+                                                <option value="NC-17">NC-17 – Adults Only</option>
+                                            </select>
+                                        </div>
+
+                                        <div className="form-group col-md-6">
+                                            <label class="dashboard-label">Definition</label>
+                                            <br/>
+                                            <select class="form-control col-sm-5" value={this.state.movie_definition}
+                                                onChange={this.handleUserInput} name="movie_definition" id="movie_definition">
+                                                <option value="HD">HD</option>
+                                                <option value="HHD">HHD</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label class="dashboard-label">Movie Keywords</label>
+                                        <Creatable amenities={this.state.movie_keywords} multiValueChange={this.multiValueChange.bind(this)} />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label class="dashboard-label">Movie Logo</label>
+                                        <input id="file-upload" type="file" onChange={ this._handleChangeFile.bind(this) } />
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div className="form-group col-md-3">
+                                        {this.state.update ? <input type="submit" class="dashboard-form-btn btn btn-primary"
+                                                value="Update Movie" required="" onClick={this.updateMovie.bind(this)} /> : <input type="submit" class="dashboard-form-btn btn btn-primary"
+                                                    value="Add Movie" required="" onClick={this.handleSubmit.bind(this)} />}
+                                        </div>
+
+                                        <div className="form-group col-md-3">
+                                            <input type="reset" class="dashboard-form-btn btn btn-default" value="Cancel" />
+                                            
+                                        </div>
+                                    </div>
+                                </form>
+                                
+                            </div>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>)
     }
 

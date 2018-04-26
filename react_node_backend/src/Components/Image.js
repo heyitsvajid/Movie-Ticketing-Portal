@@ -149,26 +149,32 @@ class ImageUpload extends Component {
       <div>
         <h3>Add Movie Character</h3>
         <hr />
-        <form class='form-horizontal' onSubmit={this._handleSubmit}>
-          <div class="form-group">
-            <label class="col-lg-3 control-label"><strong>Character Name</strong></label>
-            <div class="col-lg-5">
-            <input class="form-control" type="text" name="name"
-                placeholder="Name" required="" value={this.state.name} onChange={this.handleUserInput.bind(this)} />
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-lg-3 control-label"><strong>Character Image</strong></label>
-            <div class="col-lg-5">
-            <br />
-              {this.renderImage()}
-              <input class='form-control mt-3' type="file" onChange={this._handleImageChange} required='' /><br />
-              <button type="submit" class="btn btn-primary mt-2" value="Add Character" onClick={this._handleSubmit}>Add Character</button>
+        <div class="row gap-20 masonry pos-r" style={{position: 'relative', height: '480px'}}>
+            <div class="masonry-item col-md-6" style={{position: 'absolute', top: '0px'}}>
+                <div class="bgc-white p-20 bd">
+                    <div class="mT-30">
+                    <form  id="dashboard-form" class='form-horizontal' onSubmit={this._handleSubmit}>
+                      <div className="form-group">
+                          <label class="dashboard-label">Character Name</label>
+                          <input class="form-control" type="text" name="name"
+                              placeholder="Name" required="" value={this.state.name} onChange={this.handleUserInput.bind(this)} />
+                      </div>
 
-            </div>
-          </div>
+                      {this.renderImage()}
 
-        </form>
+                      <div className="form-group">
+                          <label class="dashboard-label">Character Image</label>
+                        <input id="file-upload" type="file" onChange={ this._handleImageChange } />
+                        <button type="submit" class="dashboard-form-btn btn btn-primary mt-2" value="Add Character" onClick={this._handleSubmit}>Add Character</button>
+
+                      </div>
+                      
+                    </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
       </div>
     )
   }
