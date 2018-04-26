@@ -3,6 +3,7 @@ import axios from 'axios';
 import Index from './Index';
 import Header from './Header';
 import Footer from './Footer';
+import { envURL, reactURL } from '../config/environment';
 // import SignIn from './SignIn';
 // import SignUp from './SignUp';
 
@@ -12,7 +13,20 @@ class PurchaseHistory extends Component {
   }
   
   componentWillMount(){
-  
+    this.getBillingDetailsPerUser()
+  }
+
+  getBillingDetailsPerUser(){
+        let getBillingDetailsPerUser = envURL + 'getBillingDetailsPerUser';
+        var user_email = localStorage.getItem("email")
+        axios.post(getBillingDetailsPerUser, user_email)
+            .then(res => {
+                    console.log('Payment Completed');
+                    console.log(res.data);
+            })
+            .catch(err => {
+                console.error(err);
+            });
   }
 
   render() {
