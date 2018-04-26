@@ -966,6 +966,24 @@ exports.getMovieRevenuePerYear = function (req, res) {
     });
 }
 
+exports.getTicketConfirmation = function (req, res) {
+    console.log("Fetching Ticket Confirmation : node backend");
+    var request_id = {request_id : 7, billing_id : "52"};
+    kafka.make_request('fetchBillingDetails', request_id, function (err, results) {
+        console.log('Kafka Response:');
+        console.log(results);
+        if (err) {
+            console.log('Controller : Error Occurred : ');
+            console.log(err);
+            res.json(results);
+        }
+        else {
+            res.json({results: results});
+            return;
+        }
+    });
+}
+
 
 //method converted
 exports.logout = function (req, res) {

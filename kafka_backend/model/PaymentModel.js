@@ -214,6 +214,33 @@ function getMovieRevenuePerYear( msg, callback ) {
     })
 }
 
+function getTicketConfirmation( msg, callback ) {
+    console.log("In fetching total revenue per city per year", msg);
+    pool.connect((err, db) => {
+        if(err) {
+            console.log("Error in PaymentModel request while connecting to DB");
+            errHandler(err);
+        } else {
+            console.log("Connected to MYSQL in request of PaymentModel");
+            var sql = 'select * from billing_information where id = "' + msg.data.billing_id + '";';
+            console.log(sql)
+            db.query(sql, (err, result) => {
+                if(err) {
+                    console.log("Error in PaymentModel while fetching billing data into MySQLDB");
+                    errHandler(err);
+                    console.log("Transaction not found");
+                    callback(null, null);
+                } else {
+                    console.log(result)
+                    var billing_information = {billing_information : result}
+                    callback(null, billing_information);
+                }
+            })
+
+        }
+    })
+}
+
 module.exports = {
     complete_Payment : complete_Payment,
     fetchBillingDetails : fetchBillingDetails,
@@ -222,6 +249,7 @@ module.exports = {
     getMultiplexSoldTicketsPerMonth : getMultiplexSoldTicketsPerMonth,
     getCityRevenuePerYear : getCityRevenuePerYear,
     getMovieRevenuePerYear : getMovieRevenuePerYear,
+    getTicketConfirmation : getTicketConfirmation,
     errHandler: errHandler
     //  deleteUser: deleteUser
   };

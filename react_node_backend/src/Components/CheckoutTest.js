@@ -132,8 +132,8 @@ class CheckoutTest extends Component {
     let findMultiplexByIdAPI = envURL + 'findMultiplexById';
     var multiplexId = localStorage.getItem('bookMultiplexId')
     var showId = localStorage.getItem('bookShowId');
-    localStorage.removeItem('bookShowId');
-    localStorage.removeItem('bookMultiplexId');
+    // localStorage.removeItem('bookShowId');
+    // localStorage.removeItem('bookMultiplexId');
     console.log('Fetching multiplex Details');
     if (multiplexId && showId) {
       var payload = {
@@ -322,6 +322,8 @@ class CheckoutTest extends Component {
                         paymentSuccess : res.data.results.data.payment_successfull
                     })
                     localStorage.setItem("billing_id", res.data.results.data.id)
+                    localStorage.setItem("cards_last_four_digits", this.state.cardNumber.slice(this.state.cardNumber.length-4, this.state.cardNumber.length))
+                    localStorage.setItem("card_expiry", this.state.expiryMonth +"/"+this.state.expiryYear )
                     if(this.state.paymentSuccess){ window.location.href = reactURL + "confirmation" }
                     else { alert("Complete the payment to confirm your bookings.") }
             })
