@@ -3,6 +3,7 @@ import {withRouter} from 'react-router-dom';
 import axios from 'axios';
 import { envURL, reactURL } from '../config/environment';
 import '../assets/css/style.css'
+import swal from "sweetalert2";
 
 class MultiplexAdmin extends Component {
 
@@ -60,20 +61,32 @@ class MultiplexAdmin extends Component {
             disable : this.state.disable,
             role_number : this.state.role_number
         };
-        axios.post(url, admin, {withCredentials : true} )
-            .then( (response) => {
-                console.log("response from Kafka", response.data );
-                if( response.data.errorMsg !== '' ) {
-                    this.setState({
-                        error : "Email is already used for Multiplex Admin"
-                    })
-                }
-                else if( response.data.successMsg !== '' ) {
-                    console.log(response.data);
-                    alert("Multiplex Admin Added Successfully");
-                    window.location.reload(true);
-                }
-            } );
+
+        if (!this.state.zipcode.match(/(^\d{5}$)|(^\d{5}-\d{4}$)/i)) {
+            swal({
+                type: 'error',
+                title: 'Add Multiplex Admin',
+                text: 'Invalid Zipcode',
+            });
+            return;
+        }
+        else {
+            axios.post(url, admin, {withCredentials : true} )
+                .then( (response) => {
+                    console.log("response from Kafka", response.data );
+                    if( response.data.errorMsg !== '' ) {
+                        this.setState({
+                            error : "Email is already used for Multiplex Admin"
+                        })
+                    }
+                    else if( response.data.successMsg !== '' ) {
+                        console.log(response.data);
+                        alert("Multiplex Admin Added Successfully");
+                        window.location.reload(true);
+                    }
+                } );
+        }
+
 
             var that = this;
             setTimeout(function () {
@@ -210,19 +223,75 @@ class MultiplexAdmin extends Component {
                                             <div class="form-row">
                                                 <div className="form-group col-md-6">
                                                     <label class="dashboard-label">City</label>
-                                                    <input type="text" placeholder="Enter City" className="form-control" onChange={this.handleChange} id="city" name='city' pattern='[A-Za-z]*' title='Please enter valid city' required />
+                                                    <input type="text" placeholder="Enter City" className="form-control" onChange={this.handleChange} id="city" name='city' pattern='[A-Za-z]+[\s]*[A-Za-z]*' title='Please enter valid city' required />
                                                 </div>
 
                                                 <div className="form-group col-md-6">
-                                                    <label class="dashboard-label">State</label>
-                                                    <input type="text" placeholder="Enter State" className="form-control" onChange={this.handleChange} id="state" name='state' pattern='[A-Za-z]*' title='Please enter valid state' required />
+                                                    <label class="dashboard-label" > State : </label>
+                                                    <select class="form-control" onChange={this.handleChange} id="state" name='state' required >
+                                                        <option value="AL">Alabama</option>
+                                                        <option value="AK">Alaska</option>
+                                                        <option value="AZ">Arizona</option>
+                                                        <option value="AR">Arkansas</option>
+                                                        <option value="CA">California</option>
+                                                        <option value="CO">Colorado</option>
+                                                        <option value="CT">Connecticut</option>
+                                                        <option value="DE">Delaware</option>
+                                                        <option value="DC">District Of Columbia</option>
+                                                        <option value="FL">Florida</option>
+                                                        <option value="GA">Georgia</option>
+                                                        <option value="HI">Hawaii</option>
+                                                        <option value="ID">Idaho</option>
+                                                        <option value="IL">Illinois</option>
+                                                        <option value="IN">Indiana</option>
+                                                        <option value="IA">Iowa</option>
+                                                        <option value="KS">Kansas</option>
+                                                        <option value="KY">Kentucky</option>
+                                                        <option value="LA">Louisiana</option>
+                                                        <option value="ME">Maine</option>
+                                                        <option value="MD">Maryland</option>
+                                                        <option value="MA">Massachusetts</option>
+                                                        <option value="MI">Michigan</option>
+                                                        <option value="MN">Minnesota</option>
+                                                        <option value="MS">Mississippi</option>
+                                                        <option value="MO">Missouri</option>
+                                                        <option value="MT">Montana</option>
+                                                        <option value="NE">Nebraska</option>
+                                                        <option value="NV">Nevada</option>
+                                                        <option value="NH">New Hampshire</option>
+                                                        <option value="NJ">New Jersey</option>
+                                                        <option value="NM">New Mexico</option>
+                                                        <option value="NY">New York</option>
+                                                        <option value="NC">North Carolina</option>
+                                                        <option value="ND">North Dakota</option>
+                                                        <option value="OH">Ohio</option>
+                                                        <option value="OK">Oklahoma</option>
+                                                        <option value="OR">Oregon</option>
+                                                        <option value="PA">Pennsylvania</option>
+                                                        <option value="RI">Rhode Island</option>
+                                                        <option value="SC">South Carolina</option>
+                                                        <option value="SD">South Dakota</option>
+                                                        <option value="TN">Tennessee</option>
+                                                        <option value="TX">Texas</option>
+                                                        <option value="UT">Utah</option>
+                                                        <option value="VT">Vermont</option>
+                                                        <option value="VA">Virginia</option>
+                                                        <option value="WA">Washington</option>
+                                                        <option value="WV">West Virginia</option>
+                                                        <option value="WI">Wisconsin</option>
+                                                        <option value="WY">Wyoming</option>
+                                                    </select>
+
+                                                    {/*<label class="dashboard-label">State</label>*/}
+                                                    {/*<input type="text" placeholder="Enter State" className="form-control" onChange={this.handleChange} id="state" name='state' pattern='[A-Za-z]*' title='Please enter valid state' required />*/}
+
                                                 </div>
                                             </div>
 
                                             <div class="form-row">
                                                 <div className="form-group col-md-6">
                                                     <label class="dashboard-label">ZipCode</label>
-                                                    <input type="text" placeholder="Enter ZipCode" className="form-control" onChange={this.handleChange} id="zipcode" name='zipcode' pattern='[0-9]{5}' title='Please enter 5 Digit Zipcode' required />
+                                                    <input type="text" placeholder="Enter ZipCode" className="form-control" onChange={this.handleChange} id="zipcode" name='zipcode' required />
                                                 </div>
                                                 <div className="form-group col-md-6">
                                                     <label class="dashboard-label">Phone Number</label>

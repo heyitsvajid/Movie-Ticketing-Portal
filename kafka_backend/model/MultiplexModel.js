@@ -164,7 +164,7 @@ function updateShowTiming(updateShow, callback) {
           callback(err, updateMultiplex)
         });
       } else {
-        console.log('Multiplex not found')
+        console.log('Multiplex not found');
         callback(err, {})
       }
 
@@ -173,8 +173,8 @@ function updateShowTiming(updateShow, callback) {
 
 
 function findMultiplexById(id, callback) {
-  console.log('Inside MultiplexModal findMultiplexById')
-  console.log(id.data._id)
+  console.log('Inside MultiplexModal findMultiplexById');
+  console.log(id.data._id);
 
   MultiplexModel.findOne({ _id: id.data._id },
     function (err, multiplex) {
@@ -194,15 +194,15 @@ function findMultiplexById(id, callback) {
 }
 
 function multiplexSearch(data, callback) {
-    console.log('Inside MultiplexModal search')
+    console.log('Inside MultiplexModal search');
     console.log(data);
 
     MultiplexModel.find({
         $or: [ { city: { $regex: data.data.searchQuery, $options:"$i" } },
                { state: { $regex: data.data.searchQuery, $options:"$i" } },
                { zipcode: { $regex: data.data.searchQuery, $options:"$i" } },
-               { name: { $regex: data.data.searchQuery, $options:"$i" } },
-               { "show_timings.movie.title" : { $regex: data.data.searchQuery, $options:"$i" } }
+               { name: { $regex: data.data.searchQuery, $options:"$i" } }
+               // { "show_timings.movie.title" : { $regex: data.data.searchQuery, $options:"$i" } }
         ]
         },
         function (err, searchResults) {
@@ -211,13 +211,13 @@ function multiplexSearch(data, callback) {
                 errHandler(err);
             }
             else if (searchResults) {
-                console.log('Found search results')
+                console.log('Found search results');
                 console.log("Result in searching..inside multiplexSearch: ", searchResults);
                 callback(err, searchResults)
 
             }
             else {
-                console.log('Nothing found')
+                console.log('Nothing found');
                 callback(err, null)
             }
 

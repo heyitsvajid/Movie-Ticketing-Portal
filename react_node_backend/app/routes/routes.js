@@ -102,6 +102,6 @@ module.exports = function (app) {
 
 
 
-}
+};
 
 

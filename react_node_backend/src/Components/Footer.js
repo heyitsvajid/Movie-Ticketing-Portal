@@ -47,7 +47,6 @@ class Footer extends Component {
       }  
     }
     let moviesNode = eightMovies.map((item, index) => {
-      debugger
       var imageSource = item == "Coming Soon" ? require('../assets/static_images/defaut.jpeg') : require('../images/' + item.movie_logo);
       let movieAnchorTag = null;
       if(item == "Coming Soon"){
