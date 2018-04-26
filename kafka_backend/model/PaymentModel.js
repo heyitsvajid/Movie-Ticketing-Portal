@@ -196,7 +196,7 @@ function getMovieRevenuePerYear( msg, callback ) {
             errHandler(err);
         } else {
             console.log("Connected to MYSQL in request of PaymentModel");
-            var sql = 'select movie_id,movie_name, sum(amount),year(booking_date) from billing_information group by movie_id,year(booking_date);';
+            var sql = 'select movie_id,movie_name, sum(amount) as total_revenue,year(booking_date) as year from billing_information group by movie_id,year(booking_date);';
             console.log(sql)
             db.query(sql, (err, result) => {
                 if(err) {

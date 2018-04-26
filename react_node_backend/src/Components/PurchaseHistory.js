@@ -12,7 +12,20 @@ class PurchaseHistory extends Component {
   }
   
   componentWillMount(){
-  
+    this.getBillingDetailsPerUser()
+  }
+
+  getBillingDetailsPerUser(){
+        let getBillingDetailsPerUser = envURL + 'getBillingDetailsPerUser';
+        var user_email = localStorage.getItem("email")
+        axios.post(getTicketConfirmation, user_email)
+            .then(res => {
+                    console.log('Payment Completed');
+                    console.log(res.data.results.billing_information[0]);
+            })
+            .catch(err => {
+                console.error(err);
+            });
   }
 
   render() {
