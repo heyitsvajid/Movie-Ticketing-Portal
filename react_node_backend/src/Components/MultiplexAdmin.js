@@ -22,6 +22,7 @@ class MultiplexAdmin extends Component {
             disable : 0 ,
             role_number : 2,
             multiplexAdminList:[],
+            searchedAdminList: [],
             error : ''
         };
         this.handleChange = this.handleChange.bind(this);
@@ -88,7 +89,8 @@ class MultiplexAdmin extends Component {
                 console.log(response.data);
 
                 this.setState({
-                    multiplexAdminList:response.data.data?response.data.data:[]
+                    multiplexAdminList:response.data.data?response.data.data:[],
+                    searchedAdminList: response.data.data?response.data.data:[]
                 })
             } )
     };
@@ -104,8 +106,28 @@ class MultiplexAdmin extends Component {
             } )
     };
 
+    handleSearchBar(e){
+        var searched_array = [];
+        if(e.target.value != ""){
+          if(this.state.multiplexAdminList.length > 0){
+              for(let i = 0; i < this.state.multiplexAdminList.length; i++){
+                var strRegExPattern = new RegExp(e.target.value, 'i');
+                let list_element = this.state.multiplexAdminList[i]
+                if(list_element.first_name.match(strRegExPattern) || list_element.last_name.match(strRegExPattern)
+                || list_element.email.match(strRegExPattern)){
+                    searched_array.push(list_element);
+                }
+              }
+              this.setState({searchedAdminList: searched_array})
+          }
+        }
+        else{
+          this.handleFindAllAdmins();
+        }
+    }
+
     returnMultiplexAdminList(){
-            let rowNodes = this.state.multiplexAdminList.map((item, index) => {
+            let rowNodes = this.state.searchedAdminList.map((item, index) => {
                 return (
                     <tr>
                         <th scope="row">{index + 1}</th>
@@ -137,8 +159,19 @@ class MultiplexAdmin extends Component {
     render() {
         return(
             <div >
+                <div class="row">
+                    <div class="col-lg-2">
+                        <h4 class="c-grey-900 mB-20">All Multiplex Admins</h4>
+                    </div>
+                    <div class="col-lg-10">
+                    <div id = "search_bar">
+                        <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search Multiplex By Name" onChange = {this.handleSearchBar.bind(this)}/>
+                        </div>
+                    </div>
+                    </div>
+                </div>
                 
-                <h4 class="c-grey-900 mB-20">All Multiplex Admins</h4>
                 {this.returnMultiplexAdminList()}
                 <div>
                     <div>

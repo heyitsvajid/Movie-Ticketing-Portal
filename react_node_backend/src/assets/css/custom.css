@@ -1001,3 +1001,12 @@ select#mpaa_ratings {
 #date-picker{
   width: 170%;
 }
+
+.data-header{
+  margin-top: -4%;
+}
+
+div#search_bar {
+  margin-top: -1%;
+  width: 65%;
+}

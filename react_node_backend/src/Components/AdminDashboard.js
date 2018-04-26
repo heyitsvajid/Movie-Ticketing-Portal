@@ -484,7 +484,7 @@ class AdminDashboard extends Component {
     returnMovie() {
         return (
             <div class="container-fluid">
-            <h3>Movie Dashboard</h3>
+            <h3 class="data-header">Movie Dashboard</h3>
             <br/>
             <div class="row">
                 <div class="col-md-12">
@@ -499,7 +499,7 @@ class AdminDashboard extends Component {
     returnShowTimings() {
         return (
             <div class="container-fluid">
-            <h3>Show Timings Dashboard</h3>
+            <h3 class="data-header">Show Timings Dashboard</h3>
             <br/>
             <div class="row">
                 <div class="col-md-12">
@@ -515,7 +515,7 @@ class AdminDashboard extends Component {
     returnMultiplexAdmin() {
         return (
             <div class="container-fluid">
-            <h3>Multiplex Admin Dashboard</h3>
+            <h3 class="data-header">Multiplex Admin Dashboard</h3>
             <br/>
             <div class="row">
                 <div class="col-md-12">
@@ -532,7 +532,7 @@ class AdminDashboard extends Component {
     returnMultiplex() {
         return (
             <div class="container-fluid">
-            <h3>Multiplex Dashboard</h3>
+            <h3 class="data-header">Multiplex Dashboard</h3>
             <br/>
             <div class="row">
                 <div class="col-md-12">
