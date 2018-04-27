@@ -1124,8 +1124,10 @@ exports.logout = function (req, res) {
 };
 
 exports.getClicksPerPage = function (req, res) {
+    var pageNumbers = {"Fandango Home": 0, "MovieShowTime": 1}
 
-    var pageClicks = {"Fandango Home": 0, "MovieShowTime": 0};
+    var pageClicks = [{pageName: "Fandango Home", count: 0}, {pageName: "MovieShowTime", count: 0}]
+    // var pageClicks = [{"Fandango Home": 0, "MovieShowTime": 0}];
     var lineReader = require('readline').createInterface({
         input: require('fs').createReadStream('./logging/useranalytics.log')
     });
@@ -1139,6 +1141,6 @@ exports.getClicksPerPage = function (req, res) {
         }
     }).on('close', function () {
         res.json(pageClicks)
-    });    
+    });
 };
 
