@@ -71,6 +71,8 @@ class SignIn extends Component {
                     if(response.data.errorMsg === '') {
                         //alert("User logging in...");
                         localStorage.setItem('userid', response.data.data.id );
+                        localStorage.setItem('email', response.data.data.email );
+                        localStorage.setItem('first_name', response.data.data.first_name ); 
                         console.log( 'Userid from localStorage : ', localStorage.getItem('userid'));
                         this.setState({
                             username: response.data.data.email,
