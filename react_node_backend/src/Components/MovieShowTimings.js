@@ -13,7 +13,7 @@ class Layout extends Component {
         processedmultiplexList:[],
         showTimingList: [],
         selectedDate:new Date().getTime(),
-        search:''
+        search:localStorage.getItem('search')
     }
   }
 

@@ -8,7 +8,7 @@ class Header extends Component {
     super(props);
     this.state = {
         isLoggedIn: false,
-        searchQuery: ''
+        searchQuery: localStorage.getItem('search')
     }
 
       this.handleLogout = this.handleLogout.bind(this);
@@ -17,6 +17,7 @@ class Header extends Component {
   }
   
   componentWillMount(){
+    localStorage.removeItem('search');
       axios.get(envURL + 'isLoggedIn', {withCredentials: true})
           .then((response) => {
               console.log("After checking the session", response.data);
@@ -52,14 +53,22 @@ class Header extends Component {
 
   handleSearch() {
       console.log("search clicked", this.state.searchQuery);
-      this.props.onSearchData(this.state.searchQuery);       
-      var data = {
-          searchQuery: this.state.searchQuery
+    debugger
+      if(window.location.href.includes('/movies')){
+        this.props.onSearchData(this.state.searchQuery);
+      }else{
+        localStorage.setItem('search',this.state.searchQuery)
+        this.props.history.push('/movies');
+      
       }
-      axios.post(envURL + 'searchQuery', data, {withCredentials: true})
-          .then((response) => {
-              console.log("After search results in Header compoent...", response.data);
-          })
+ 
+      // var data = {
+      //     searchQuery: this.state.searchQuery
+      // }
+      // axios.post(envURL + 'searchQuery', data, {withCredentials: true})
+      //     .then((response) => {
+      //         console.log("After search results in Header compoent...", response.data);
+      //     })
 
   }
 
