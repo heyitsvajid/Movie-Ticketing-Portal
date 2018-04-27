@@ -19,13 +19,16 @@ var MovieSchema = new Schema({
     movie_logo:  {type: String}  ,
     movie_length: {type: Number},
     movie_definition: { type: String},
+    synopsis:{type: String,required:true},
     review_ratings: [{
         rating:{ type: Number },
         review:{ type: String },
         user_id:{ type: Number },
         user_name:{ type: String },
         likes_count:{ type: Number,default: 0},
-        title:{ type: String,default:'Untitled' }
+        title:{ type: String,default:'Untitled' },
+        date_added:{type:Date, default: Date.now},
+
     }],
     number_clicks:{ type: Number, default: 0 },
     date_added:{type:Date, default: Date.now},
