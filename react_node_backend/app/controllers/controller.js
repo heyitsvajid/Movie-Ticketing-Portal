@@ -850,6 +850,25 @@ exports.completePayment = function (req, res) {
 //     });
 // }
 
+exports.deleteBillingDetail = ( req, res) => {
+    console.log("In Node Backend, Delete Billing detail", req.body);
+    let request_id = { request_id : 8, id : req.body.id };
+    kafka.make_request( 'fetchBillingDetails', request_id, (err, result) => {
+        console.log('Kafka Response:');
+        console.log(result);
+        if (err) {
+            console.log('Controller : Error Occurred : ');
+            console.log(err);
+            res.json(result);
+        }
+        else {
+            console.log("Billing Details Deleted");
+            res.json({result: result});
+            return;
+        }
+    } )
+};
+
 exports.getAllBillingDetails = function (req, res) {
     console.log("Fetch Billing Details : node backend");
     var request_id = { request_id: 1 };

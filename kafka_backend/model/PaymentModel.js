@@ -241,6 +241,33 @@ function getTicketConfirmation( msg, callback ) {
     })
 }
 
+function deleteBillingDetail( msg, callback ) {
+    console.log("In Delete Billing  ", msg);
+    pool.connect((err, db) => {
+        if(err) {
+            console.log("Error in PaymentModel request while connecting to DB");
+            errHandler(err);
+        }
+        else {
+            console.log("Connected to MYSQL in request of PaymentModel");
+            let id = msg.data.id;
+            let sql = 'delete from billing_information where id = ? ';
+            console.log(sql);
+            db.query( sql, id ,  ( err, result) => {
+                if(err) {
+                    console.log("Billing Details not found");
+                    errHandler(err);
+                    callback(null, null);
+                }
+                else {
+                    console.log(result);
+                    callback(null, result);
+                }
+            })
+        }
+    })
+}
+
 module.exports = {
     complete_Payment : complete_Payment,
     fetchBillingDetails : fetchBillingDetails,
@@ -250,6 +277,7 @@ module.exports = {
     getCityRevenuePerYear : getCityRevenuePerYear,
     getMovieRevenuePerYear : getMovieRevenuePerYear,
     getTicketConfirmation : getTicketConfirmation,
+    deleteBillingDetail : deleteBillingDetail,
     errHandler: errHandler
     //  deleteUser: deleteUser
   };

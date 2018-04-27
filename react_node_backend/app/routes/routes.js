@@ -105,6 +105,10 @@ module.exports = function (app) {
     //Click Analytics
   app.post('/logUserClick', api_controller.logUserClick)
 
+    // Deleting Billing Detail
+    app.post('/deletebillingdetail', api_controller.deleteBillingDetail );
+
+
 };
 
 
