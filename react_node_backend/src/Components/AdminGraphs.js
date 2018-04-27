@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { envURL, reactURL } from '../config/environment';
-import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts';
+import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ComposedChart, Area, Line, AreaChart, LineChart} from 'recharts';
 import '../assets/css/admingraphs.css';
 
 
@@ -15,7 +15,10 @@ class AdminGraphs extends Component {
             cityRevenue: [],
             cityRevenuePerSelectedYear: [],
             monthRevenue: [],
-            lastMonthMultiplexRevenue: []
+            lastMonthMultiplexRevenue: [],
+            userClickAnalytics: [],
+            movieList: [],
+            movieReviewGraph: []
         }
         this.getMovieRevenuePerYear = this.getMovieRevenuePerYear.bind(this);
         this.populateSelectBoxForMovieRevenueYears = this.populateSelectBoxForMovieRevenueYears.bind(this);
@@ -23,7 +26,8 @@ class AdminGraphs extends Component {
         this.handleYearChangeForCity = this.handleYearChangeForCity.bind(this);
         this.getMultiplexSoldTicketsPerMonth = this.getMultiplexSoldTicketsPerMonth.bind(this);
         this.filterCurrentMonth = this.filterCurrentMonth.bind(this);
-
+        this.getUserClickDetails = this.getUserClickDetails.bind(this);
+        this.loadMoviesRatings = this.loadMoviesRatings.bind(this)
     }
 
     componentWillMount() {
@@ -31,6 +35,48 @@ class AdminGraphs extends Component {
         this.getMovieRevenuePerYear();
         this.getCityRevenuePerYear();
         this.getMultiplexSoldTicketsPerMonth();
+        this.getUserClickDetails();
+        this.loadMoviesRatings();
+    }
+
+    loadMoviesRatings() {
+        var finalArrayToShowInGraph = [];
+        let findAllMovieAPI = envURL + 'findAllMovie';
+        axios.get(findAllMovieAPI)
+            .then(res => {
+                if (res.data.successMsg != '') {
+                    console.log('Fetching all movies');
+                    console.log(res.data.data);
+                    var resultArray = res.data.data;
+                    for(var i = 0; i < resultArray.length; i++) {
+                        if( resultArray[i].review_ratings.length > 0 ) {
+                            var ratingsArray = resultArray[i].review_ratings;
+                            var tempRating = 0;
+                            for( var k = 0; k < ratingsArray.length; k++ ) {
+                                tempRating += ratingsArray[k].rating;
+                            }
+                            var averageRating = tempRating/ratingsArray.length;
+                            var finalObject = {
+                                averageRating: Number(averageRating.toFixed(2)),
+                                movie_name: resultArray[i].title
+                            }
+                            finalArrayToShowInGraph.push(finalObject);
+                        }
+                    }
+
+                    console.log("FinalArray in movie ratings", finalArrayToShowInGraph);
+
+                    this.setState({
+                        movieList: res.data.data ? res.data.data : [],
+                        movieReviewGraph: finalArrayToShowInGraph
+                    })
+                } else {
+                    console.error('Error Fetching all movie');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+            });
     }
 
 
@@ -152,6 +198,17 @@ class AdminGraphs extends Component {
             })
     }
 
+    getUserClickDetails() {
+        axios.get(envURL + 'getClicksPerPage', null, { withCredentials: true })
+            .then((response) => {
+                console.log("User logging data", response.data);
+                this.setState({
+                    userClickAnalytics: response.data
+                })
+
+            })
+    }
+
 
 
     render() {
@@ -213,8 +270,36 @@ class AdminGraphs extends Component {
                 </BarChart>
 
 
+                <h1>UserClicks</h1>
+                <ComposedChart width={730} height={250} data={this.state.userClickAnalytics}>
+                    <XAxis dataKey="pageName" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <CartesianGrid stroke="#f5f5f5" />
+                    <Area type="monotone" dataKey="count" fill="#8884d8" stroke="#8884d8" />
+                    {/*<Bar dataKey="coun" barSize={20} fill="#413ea0" />*/}
+                </ComposedChart>
 
 
+                <h1>Top Movie Rating's</h1>
+
+                <AreaChart width={730} height={250} data={ this.state.movieReviewGraph }
+                           margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                    <defs>
+                        <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
+                            <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
+                        </linearGradient>
+
+                    </defs>
+                    <XAxis dataKey="movie_name" />
+                    <YAxis />
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <Tooltip />
+                    <Area type="monotone" dataKey="averageRating" stroke="#8884d8" fillOpacity={1} fill="url(#colorUv)" />
+
+                </AreaChart>
 
 
 
