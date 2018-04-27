@@ -11,9 +11,9 @@ class Layout extends Component {
         multiplexList: [],
         movieList:[],
         processedmultiplexList:[],
-        movieList: [],
         showTimingList: [],
         selectedDate:new Date().getTime(),
+        search:''
     }
   }
 
@@ -51,54 +51,106 @@ class Layout extends Component {
   }
 
   processDataAsSelectedDate(){
-    let updateMultiplexList = [];
-    let findAllMultiplexAPI = envURL + 'findAllMultiplex';
-                    axios.get(findAllMultiplexAPI)
-                        .then(res => {
-                            if (res.data.successMsg != '') {
-                                console.log('Fetching all multiplex');
-                                console.log(res.data.data);
 
-                                var multiplexes = res.data.data.length>0?res.data.data:[];
-                                    multiplexes.forEach(item => {
-                                        var groups = {};
-                                        for (var i = 0; i < item.show_timings.length; i++) {
-                                                var groupName = item.show_timings[i].movie._id;
-                                                if (!groups[groupName]) {
-                                                groups[groupName] = [];
-                                            }
-                                            let selectedDate = new Date(this.state.selectedDate);
-                                            let showDate = new Date(item.show_timings[i].sort_field);                                          
-                                            if(selectedDate.getDate()==showDate.getDate()
-                                            && selectedDate.getDay()==showDate.getDay()
-                                            && selectedDate.getYear()==showDate.getYear()){
-                                                groups[groupName].push(item.show_timings[i]);
-                                            }    
-                                    }
-                                    let myArray=[];
-                                    for (var groupName in groups) {
-                                    let sortedShows = groups[groupName];
-                                    sortedShows.sort(function(a, b){
-                                        return a.sort_field == b.sort_field ? 0 : +(a.sort_field > b.sort_field) || -1;
-                                      });
-                                      myArray.push({movie_id: groupName, shows:sortedShows});
-                                    }
-                                    var multiplex = item;
-                                    multiplex.show_timings=myArray;
-                                    updateMultiplexList.push(multiplex);                                            
+    if (this.state.search) {
+        var data = {
+            searchQuery: this.state.search
+        }
+        let updateMultiplexList = [];
 
-                            });
-                            this.setState({
-                                processedmultiplexList:updateMultiplexList
-                            })     
-                            } else {
-                                console.error('Error Fetching all multiplex');
+        axios.post(envURL + 'searchQuery', data, { withCredentials: true })
+            .then((res) => {
+                console.log("After search results in Header compoent...", res.data);
+                if (res.data.successMsg != '') {
+                    console.log('Fetching all multiplex as per search');
+                    console.log(res.data.data);
+
+                    var multiplexes = res.data.data.length > 0 ? res.data.data : [];
+                    multiplexes.forEach(item => {
+                        var groups = {};
+                        for (var i = 0; i < item.show_timings.length; i++) {
+                            var groupName = item.show_timings[i].movie._id;
+                            if (!groups[groupName]) {
+                                groups[groupName] = [];
                             }
-                        })
-                        .catch(err => {
-                            console.error(err);
-                        });
-                           
+                            let selectedDate = new Date(this.state.selectedDate);
+                            let showDate = new Date(item.show_timings[i].sort_field);
+                            if (selectedDate.getDate() == showDate.getDate()
+                                && selectedDate.getDay() == showDate.getDay()
+                                && selectedDate.getYear() == showDate.getYear()) {
+                                groups[groupName].push(item.show_timings[i]);
+                            }
+                        }
+                        let myArray = [];
+                        for (var groupName in groups) {
+                            let sortedShows = groups[groupName];
+                            sortedShows.sort(function (a, b) {
+                                return a.sort_field == b.sort_field ? 0 : +(a.sort_field > b.sort_field) || -1;
+                            });
+                            myArray.push({ movie_id: groupName, shows: sortedShows });
+                        }
+                        var multiplex = item;
+                        multiplex.show_timings = myArray;
+                        updateMultiplexList.push(multiplex);
+
+                    });
+                    this.setState({
+                        processedmultiplexList: updateMultiplexList
+                    })
+                } else {
+                    console.error('Error Fetching all multiplex');
+                }
+            })
+    } else {
+        let updateMultiplexList = [];
+        let findAllMultiplexAPI = envURL + 'findAllMultiplex';
+        axios.get(findAllMultiplexAPI)
+            .then(res => {
+                if (res.data.successMsg != '') {
+                    console.log('Fetching all multiplex');
+                    console.log(res.data.data);
+
+                    var multiplexes = res.data.data.length > 0 ? res.data.data : [];
+                    multiplexes.forEach(item => {
+                        var groups = {};
+                        for (var i = 0; i < item.show_timings.length; i++) {
+                            var groupName = item.show_timings[i].movie._id;
+                            if (!groups[groupName]) {
+                                groups[groupName] = [];
+                            }
+                            let selectedDate = new Date(this.state.selectedDate);
+                            let showDate = new Date(item.show_timings[i].sort_field);
+                            if (selectedDate.getDate() == showDate.getDate()
+                                && selectedDate.getDay() == showDate.getDay()
+                                && selectedDate.getYear() == showDate.getYear()) {
+                                groups[groupName].push(item.show_timings[i]);
+                            }
+                        }
+                        let myArray = [];
+                        for (var groupName in groups) {
+                            let sortedShows = groups[groupName];
+                            sortedShows.sort(function (a, b) {
+                                return a.sort_field == b.sort_field ? 0 : +(a.sort_field > b.sort_field) || -1;
+                            });
+                            myArray.push({ movie_id: groupName, shows: sortedShows });
+                        }
+                        var multiplex = item;
+                        multiplex.show_timings = myArray;
+                        updateMultiplexList.push(multiplex);
+
+                    });
+                    this.setState({
+                        processedmultiplexList: updateMultiplexList
+                    })
+                } else {
+                    console.error('Error Fetching all multiplex');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+            });
+
+        }                   
   }
   
   componentDidMount(){
@@ -170,11 +222,19 @@ class Layout extends Component {
     </ul> );
   }
 
+  searchList(data) {
+
+    this.setState({
+        search: data
+    }, ()=>{
+        this.processDataAsSelectedDate()
+    })
+}
 
   render() {
     return (
     <div>
-      <Header />
+      <Header onSearchData={this.searchList.bind(this)} />
       <div id="page" role="main">
         <div class="tsp">
             <section class="subnav">
@@ -418,17 +478,18 @@ renderMultiplexShowTimings(){
     
     }
                    
-    onShowTimeClick(e){
+    onShowTimeClick(e) {
         e.preventDefault();
         //alert(e.target.id)
         var arr = e.target.id.split(',');
-        if(arr.length==2){
-            localStorage.setItem('bookShowId',arr[0]);
-            localStorage.setItem('bookMultiplexId',arr[1]);
-            this.props.history.push('/tickets');    
+        if (arr.length ==3) {
+            localStorage.setItem('bookShowId', arr[0]);
+            localStorage.setItem('bookMultiplexId', arr[1]);
+            localStorage.setItem('bookScreenId', arr[2]);
+            this.props.history.push('/tickets');
         }
     }
-
+  
 }
 
 
