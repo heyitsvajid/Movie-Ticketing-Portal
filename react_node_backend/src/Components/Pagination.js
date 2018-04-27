@@ -12,7 +12,7 @@ class Pagination extends Component {
   render() {
     
     return (
-      <div>
+      <div class="text-center">
         <nav aria-label="pagination example" className="pagination-list">
           <ul className="pagination pg-blue">
               <li className="page-item">

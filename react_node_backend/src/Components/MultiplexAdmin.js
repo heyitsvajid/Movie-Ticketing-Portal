@@ -37,7 +37,6 @@ class MultiplexAdmin extends Component {
     }
     handleChange = (e) => {
         e.preventDefault();
-        debugger
         this.setState({
                 [e.target.name] : e.target.value,
                 error : ''

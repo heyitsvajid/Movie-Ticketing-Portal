@@ -1014,6 +1014,11 @@ div#search_bar {
 nav.pagination-list{
   margin-left: 40% !important;
 }
+
 .pagination{
   background-color: white !important;
+}
+
+.footer-movies li:first-child {
+  margin-top: 5px;
 }

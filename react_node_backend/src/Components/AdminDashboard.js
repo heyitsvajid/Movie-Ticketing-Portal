@@ -8,9 +8,7 @@ import MovieForm from './MovieForm'
 import ShowTimingsForm from './ShowTimingsForm'
 import MultiplexAdminForm from './MultiplexAdmin'
 import { envURL } from "../config/environment";
-
-
-
+import AllBillingDetails from './AllBillingDetails';
 
 class AdminDashboard extends Component {
     constructor(props) {
@@ -23,6 +21,7 @@ class AdminDashboard extends Component {
             addDashboard: true,
             addUserTracking: false,
             showTimings: false,
+            showBillingDetails: false,
             isLoggedIn: false,
             adminEmail: '',
             adminId: '',
@@ -83,6 +82,7 @@ class AdminDashboard extends Component {
             addMultiplex: e.currentTarget.value == 4,
             addMultiplexAdmin: e.currentTarget.value == 5,
             showTimings: e.currentTarget.value == 6,
+            showBillingDetails: e.currentTarget.value == 7
 
         })
         console.log(this.state);
@@ -116,6 +116,7 @@ class AdminDashboard extends Component {
         let addMultiplex = 4;
         let addMultiplexAdmin = 5;
         let showTimings = 6;
+        let showBillingDetails = 7
         return (
             // <body class="sticky-footer bg-dark fixed-nav" id="page-top">
             //     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
@@ -255,6 +256,15 @@ class AdminDashboard extends Component {
                                 </a>
                             </li> : ''}
 
+                            {localStorage.getItem('roleId')==3 ?
+                            <li class="nav-item" value={showBillingDetails} onClick={this.handleLinkClick.bind(this)} data-toggle="tooltip" data-placement="right" title="" data-original-title="Link">
+                                <a class="sidebar-link" href="#" value={showBillingDetails} onClick={this.handleLinkClick.bind(this)}>
+                                    <span class="icon-holder">
+                                        <i class="c-orange-500 ti-layout-list-thumb"></i> 
+                                        </span><span class="title">Show Billing Details</span>
+                                </a>
+                            </li> : ''}
+
                             <li class="nav-item"><a class="sidebar-link" href="calendar.html"><span class="icon-holder"><i class="c-deep-orange-500 ti-calendar"></i> </span><span class="title">Calendar</span></a></li>
                             <li class="nav-item"><a class="sidebar-link" href="chat.html"><span class="icon-holder"><i class="c-deep-purple-500 ti-comment-alt"></i> </span><span class="title">Chat</span></a></li>
                             <li class="nav-item"><a class="sidebar-link" href="charts.html"><span class="icon-holder"><i class="c-indigo-500 ti-bar-chart"></i> </span><span class="title">Charts</span></a></li>
@@ -380,6 +390,7 @@ class AdminDashboard extends Component {
                             {this.state.addDashboard ? this.returnDashboard() : ''}
                             {this.state.addUserTracking ? this.returnMultiplex() : ''}
                             {this.state.showTimings ? this.returnShowTimings() : ''}
+                            {this.state.showBillingDetails ? this.returnBillingDetails() : ''}
                             </div>
                         </main>
                         <footer class="bdT ta-c p-30 lh-0 fsz-sm c-grey-600">
@@ -434,6 +445,24 @@ class AdminDashboard extends Component {
         </div>
         )
     }
+
+    returnBillingDetails() {
+        return (
+            <div class="container-fluid">
+            <h3 class="data-header">Movie Dashboard</h3>
+            <br/>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="admin-list bgc-white bd bdrs-3 p-20 mB-20">
+                    <AllBillingDetails />
+                    </div>
+                </div>
+            </div>            
+        </div>
+        )
+    }
+
+
     returnShowTimings() {
         return (
             <div class="container-fluid">

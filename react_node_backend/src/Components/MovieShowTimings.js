@@ -320,7 +320,7 @@ renderMultiplexShowTimings(){
                         <a href="#">
     
                         <img src={imageSource} 
-                        style={{width: 134, height: 186, position: 'absolute', top: this.props.top, left: this.props.left}} alt={movie.title} />
+                        style={{width: 134, height: 167, position: 'absolute', top: this.props.top, left: this.props.left}} alt={movie.title} />
                         </a>
                     </div>
                     <div class="fd-movie__details">

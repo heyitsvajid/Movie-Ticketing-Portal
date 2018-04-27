@@ -33,7 +33,7 @@ class MovieForm extends Component {
             searchedMovieList: [],
             update_id: 0,
             currentPage: 1, 
-            perPageRows: 2
+            perPageRows: 10
         }
     }
     _handleChangeFile(e) {
@@ -196,15 +196,15 @@ e.preventDefault();
         }
       }
     
-      handlePrevPaginationButton(e) {
-        if(this.state.searchedMovieList != [] && this.state.currentPage != 1){
-          this.setState({currentPage: Number(this.state.currentPage - 1)})
-        }
-      }
+    handlePrevPaginationButton(e) {
+    if(this.state.searchedMovieList != [] && this.state.currentPage != 1){
+        this.setState({currentPage: Number(this.state.currentPage - 1)})
+    }
+    }
 
-      handlePageChange(e) {
-        this.setState({currentPage: Number(e.target.dataset.id)})
-      }
+    handlePageChange(e) {
+    this.setState({currentPage: Number(e.target.dataset.id)})
+    }
 
     returnMovieList() {
         let pagination_list, currentTodos=null;

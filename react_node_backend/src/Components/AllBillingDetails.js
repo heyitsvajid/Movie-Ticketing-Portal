@@ -5,6 +5,7 @@ import { envURL, reactURL } from '../config/environment';
 import '../assets/css/style.css'
 import '../assets/css/admin.css'
 import swal from "sweetalert2";
+import Pagination from './Pagination';
 
 class AllBillingDetails extends Component {
 
@@ -12,6 +13,7 @@ class AllBillingDetails extends Component {
         super();
         this.state = {
             billing_details : [],
+            searchedBillingDetails: [],
             adult_tickets : '',
             student_tickets : '',
             child_tickets : '',
@@ -19,21 +21,29 @@ class AllBillingDetails extends Component {
             priceof_adult_tickets : '',
             priceof_student_tickets: '',
             priceof_child_tickets : '',
-            priceof_disabled_tickets : ''
+            priceof_disabled_tickets : '',
+            currentPage: 1, 
+            perPageRows: 20
         };
     }
 
     componentWillMount(){
+        this.getAllBillingDetails();
+    }
+
+    getAllBillingDetails(){
         let url = envURL + 'getAllBillingDetails';
         axios.post( url, null, {withCredentials : true} )
-            .then( (response) => {
-                console.log( "In Get All Billing details, Responce from DB" , response.data);
-                this.setState({
-                    billing_details : response.data.results.billing_information
-                }, () => {
-                    console.log(this.state.billing_details)
-                } )
+        .then( (response) => {
+            console.log( "In Get All Billing details, Responce from DB" , response.data);
+            this.setState({
+                billing_details : response.data.results.billing_information,
+                searchedBillingDetails: response.data.results.billing_information,
+                currentPage: 1
+            }, () => {
+                console.log(this.state.billing_details)
             } )
+        } );
     }
 
     handleDeleteBillingDetail = ( e ) => {
@@ -79,21 +89,78 @@ class AllBillingDetails extends Component {
         }
     };
 
-    render() {
+    handleSearchBar(e){
+        var searched_array = [];
+        if(e.target.value != ""){
+          if(this.state.billing_details.length > 0){
+              for(let i = 0; i < this.state.billing_details.length; i++){
+                var strRegExPattern = new RegExp(e.target.value, 'i');
+                let list_element = this.state.billing_details[i];
+                const multiplex_zipcode = "" + list_element.multiplex_zipcode + "";
+                if(list_element.user_email.match(strRegExPattern) || list_element.movie_name.match(strRegExPattern) || 
+                list_element.multiplex_name.match(strRegExPattern) || multiplex_zipcode.match(strRegExPattern)
+                || list_element.user_name.match(strRegExPattern) ){
+                    searched_array.push(list_element);
+                }
+              }
+              this.setState({searchedBillingDetails: searched_array, currentPage: 1})
+          }
+        }
+        else{
+          this.getAllBillingDetails();
+        }
+    }
 
-        let billingdetailsArray = this.state.billing_details.map( (item, index) => {
+    handleNextPaginationButton(e) {
+        const total_pages = this.state.searchedMovieList.length > 0 ? this.state.searchedMovieList.length/this.state.perPageRows : 0;
+        if(this.state.searchedMovieList != [] && this.state.currentPage != Math.ceil(total_pages)){
+          this.setState({currentPage: Number(this.state.currentPage + 1)})      
+        }
+      }
+    
+    handlePrevPaginationButton(e) {
+        if(this.state.searchedMovieList != [] && this.state.currentPage != 1){
+            this.setState({currentPage: Number(this.state.currentPage - 1)})
+        }
+    }
+
+    handlePageChange(e) {
+        this.setState({currentPage: Number(e.target.dataset.id)})
+    }
+
+    render() {
+        let pagination_list, currentTodos=null;
+        if(this.state.searchedBillingDetails != []){
+            const indexOfLastTodo = this.state.currentPage * this.state.perPageRows;
+            const indexOfFirstTodo = indexOfLastTodo - this.state.perPageRows;
+            currentTodos = this.state.searchedBillingDetails.slice(indexOfFirstTodo, indexOfLastTodo);
+            const total_pages = this.state.searchedBillingDetails.length > 0 ? this.state.searchedBillingDetails.length/this.state.perPageRows : 0;
+            const page_numbers = [];
+            for (let i = 1; i <= Math.ceil(this.state.searchedBillingDetails.length / this.state.perPageRows); i++) {
+                page_numbers.push(i);
+            }  
+            pagination_list = page_numbers.map(number => {
+                return (
+                <li class="page-item" key= {number} data-id={number} onClick={this.handlePageChange.bind(this)}  ><a data-id={number} class="page-link" href="#">{number}</a></li>
+                );
+            });
+            for(let i = 0; i< currentTodos.length; i++){
+                currentTodos[i].current_index = indexOfFirstTodo + i + 1;
+            }
+        }
+        let billingdetailsArray = currentTodos.map( (item, index) => {
 
             let number_of_tickets = item.adult_tickets + item.child_tickets + item.disabled_tickets + item.student_tickets  ;
 
             return (
                 <tr>
-                    <th scope="row"> {index + 1} </th>
+                    <th scope="row"> {item.current_index} </th>
                     <td> <a href="#myModal" data-toggle="modal" onClick={this.handleDisplayOrder.bind(this, item.id )} > { item.movie_name } </a>  </td>
                     <td> { item.multiplex_name } </td>
                     <td> { item.booking_date } </td>
                     <td> { number_of_tickets } </td>
                     <td>
-                        <button className='btn-danger' onClick={this.handleDeleteBillingDetail.bind(this, item.id)} > Delete </button>
+                        <button className='btn-danger' style={{backgroundColor: '#F15500'}} onClick={this.handleDeleteBillingDetail.bind(this, item.id)} > Delete </button>
                     </td>
 
                 </tr>
@@ -103,9 +170,20 @@ class AllBillingDetails extends Component {
 
         return(
             <div className='AllBillingDetails container-fluid'>
-                <br/>
-                <h1> Billing Details </h1>
+                <div class="row">
+                    <div class="col-lg-2">
+                    <h4 class="c-grey-900 mB-20">Billing Details</h4>
+                    </div>
+                    <div class="col-lg-10">
+                    <div id = "search_bar">
+                        <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search Movie By Name" onChange={this.handleSearchBar.bind(this)}/>
+                        </div>
+                    </div>
+                    </div>
+                </div>
                 <hr/>
+
                 <table class="table table-striped">
                     <thead>
                     <tr>
@@ -114,14 +192,15 @@ class AllBillingDetails extends Component {
                         <th scope="col"> Multiplex Name</th>
                         <th scope="col"> Booking Date</th>
                         <th scope="col"> Number of Tickets</th>
-                        <th scope="col"> Delete </th>
+                        <th scope="col"> Action </th>
                     </tr>
                     </thead>
                     <tbody>
                         {billingdetailsArray}
                     </tbody>
                 </table>
-
+                <Pagination handlePrevPaginationButton = {this.handlePrevPaginationButton.bind(this)} handleNextPaginationButton = {this.handleNextPaginationButton.bind(this)}
+                        handlePageChange = {this.handlePageChange.bind(this)} pagination_list = {pagination_list}/>
                 <div id="myModal" class="modal fade">
                     <div class="modal-dialog purchase-modal">
                         <div class="modal-content">
