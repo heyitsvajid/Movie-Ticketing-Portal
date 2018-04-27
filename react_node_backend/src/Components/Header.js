@@ -30,7 +30,7 @@ class Header extends Component {
 
   handleLogout() {
       //alert("In handleLogout");
-      localStorage.removeItem('userid');
+      localStorage.clear();
       axios.post(envURL + 'logout', null, { withCredentials: true })
           .then((response) => {
               console.log(response.data);
@@ -52,6 +52,7 @@ class Header extends Component {
 
   handleSearch() {
       console.log("search clicked", this.state.searchQuery);
+      this.props.onSearchData(this.state.searchQuery);       
       var data = {
           searchQuery: this.state.searchQuery
       }
