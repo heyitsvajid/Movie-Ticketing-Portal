@@ -65,7 +65,6 @@ class TicketConfirmation extends Component {
             });
   }
   getTicketDetails(){
-    debugger
     this.setState({
         a_tickets : localStorage.getItem("a_tickets"),
         c_tickets : localStorage.getItem("c_tickets"),

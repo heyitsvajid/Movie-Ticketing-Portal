@@ -8,6 +8,7 @@ import '../assets/css/admin.css'
 import { envURL, reactURL } from '../config/environment';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css"
+import Pagination from './Pagination';
 
 var moment = require('moment');
 
@@ -19,6 +20,7 @@ class ShowTimingsForm extends Component {
             multiplex: { screens: [] },
             movieList: [],
             showTimingList: [],
+            searchedShowTimingList: [],
             screenOptions: [],
             movieOptions: [],
             update: false,
@@ -30,6 +32,9 @@ class ShowTimingsForm extends Component {
             disabled: 0,
             student:0,
             update_id: 0,
+            currentPage: 1, 
+            perPageRows: 5
+            
         }
     }
 
@@ -58,6 +63,7 @@ class ShowTimingsForm extends Component {
 
     handleSubmit(e) {
         e ? e.preventDefault() : ''
+        debugger
         if (!this.state.movie_id || !this.state.screen_number || !this.state.date_time || !this.state.adult) {
             swal({
                 type: 'error',
@@ -142,7 +148,9 @@ class ShowTimingsForm extends Component {
                         if (adminId == element.multiplex_owner_id) {
                             this.setState({
                                 multiplex: element,
-                                showTimingList: element.show_timings
+                                showTimingList: element.show_timings,
+                                searchedShowTimingList: element.show_timings,
+                                currentPage: 1
                             })
                             return;
                         }
@@ -164,37 +172,77 @@ class ShowTimingsForm extends Component {
         console.log(this.state)
     }
 
+    handleNextPaginationButton(e) {
+        const total_pages = this.state.searchedShowTimingList.length > 0 ? this.state.searchedShowTimingList.length/this.state.perPageRows : 0;
+        if(this.state.searchedShowTimingList != [] && this.state.currentPage != Math.ceil(total_pages)){
+          this.setState({currentPage: Number(this.state.currentPage + 1)})      
+        }
+      }
+    
+      handlePrevPaginationButton(e) {
+        if(this.state.searchedShowTimingList != [] && this.state.currentPage != 1){
+          this.setState({currentPage: Number(this.state.currentPage - 1)})
+        }
+      }
+
+      handlePageChange(e) {
+        this.setState({currentPage: Number(e.target.dataset.id)})
+      }
+
     returnShowTimingsList() {
-        let rowNodes = this.state.showTimingList.map((item, index) => {
+        let pagination_list, currentTodos=null;
+        if(this.state.searchedShowTimingList != []){
+            const indexOfLastTodo = this.state.currentPage * this.state.perPageRows;
+            const indexOfFirstTodo = indexOfLastTodo - this.state.perPageRows;
+            currentTodos = this.state.searchedShowTimingList.slice(indexOfFirstTodo, indexOfLastTodo);
+            const total_pages = this.state.searchedShowTimingList.length > 0 ? this.state.searchedShowTimingList.length/this.state.perPageRows : 0;
+            const page_numbers = [];
+            for (let i = 1; i <= Math.ceil(this.state.searchedShowTimingList.length / this.state.perPageRows); i++) {
+                page_numbers.push(i);
+            }  
+            pagination_list = page_numbers.map(number => {
+                return (
+                <li class="page-item" key= {number} data-id={number} onClick={this.handlePageChange.bind(this)}  ><a data-id={number} class="page-link" href="#">{number}</a></li>
+                );
+            });
+            for(let i = 0; i< currentTodos.length; i++){
+                currentTodos[i].current_index = indexOfFirstTodo + i + 1;
+            }
+        }
+        let rowNodes = currentTodos.map((item, index) => {
             return (
                 <tr>
-                    <th scope="row">{index + 1}</th>
+                    <th scope="row">{item.current_index}</th>
                     <td>{item.movie.title}</td>
                     <td>{item.date_time}</td>
                     <td>{item.seats_left}</td>
-                    <td><input type="button" class="btn-link"
+                    <td><input type="button" class="dashboard-form-btn link-style nav-link btn-info action-link"
                         value="Update" required="" id={item._id} onClick={this.handleShowTimingsUpdate.bind(this)} />
-                        <input type="button" class="btn-link"
-                            value="add review" required="" onClick={this.addReview.bind(this)} />
 
                     </td>
                 </tr>
             )
         });
         return (
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Movie</th>
-                        <th scope="col">Show Time</th>
-                        <th scope="col">Seats Left</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {rowNodes}
-                </tbody>
-            </table>
+            <div>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Movie</th>
+                            <th scope="col">Show Time</th>
+                            <th scope="col">Seats Left</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {rowNodes}
+                    </tbody>
+                </table>
+                <Pagination handlePrevPaginationButton = {this.handlePrevPaginationButton.bind(this)} handleNextPaginationButton = {this.handleNextPaginationButton.bind(this)}
+                handlePageChange = {this.handlePageChange.bind(this)} pagination_list = {pagination_list}/>
+            </div>
+            
         );
 
     }
@@ -252,17 +300,17 @@ class ShowTimingsForm extends Component {
             .catch(err => {
                 console.error(err);
             });
-        this.setState({
-            update: false,
-            screen_number: '',
-            date_time: '',
-            movie_id: '',
-            update_id: 0,
-            adult: 0,
-            child: 0,
-            disabled: 0,
-            student:0,
-        });
+        // this.setState({
+        //     update: false,
+        //     screen_number: '',
+        //     date_time: '',
+        //     movie_id: '',
+        //     update_id: 0,
+        //     adult: 0,
+        //     child: 0,
+        //     disabled: 0,
+        //     student:0,
+        // });
         var that = this;
         setTimeout(function () {
             that.loadShowTimings()
@@ -289,17 +337,48 @@ class ShowTimingsForm extends Component {
         });
 
     }
+
+    handleSearchBar(e){
+        var searched_array = [];
+        if(e.target.value != ""){
+          if(this.state.showTimingList.length > 0){
+              for(let i = 0; i < this.state.showTimingList.length; i++){
+                var strRegExPattern = new RegExp(e.target.value, 'i');
+                let list_element = this.state.showTimingList[i]
+                if(list_element.movie.title.match(strRegExPattern)){
+                    searched_array.push(list_element);
+                }
+              }
+              this.setState({searchedShowTimingList: searched_array, currentPage: 1})
+          }
+        }
+        else{
+          this.loadShowTimings();
+        }
+    }
+    
     render() {
         return (
             <div>
-                <h4 class="c-grey-900 mB-20">{this.state.multiplex.name} All Show Timings</h4>
-                <hr />
+                <div class="row">
+                    <div class="col-lg-4">
+                    <h4 class="c-grey-900 mB-20">{this.state.multiplex.name} All Show Timings</h4>
+                    </div>
+                    <div class="col-lg-8">
+                    <div id = "search_bar">
+                        <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search ShowTimings By Movie Name" onChange = {this.handleSearchBar.bind(this)}/>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <hr/>
                 {this.returnShowTimingsList()}
                 <br />
                 <hr class='mt-5 mb-5' />
                 <h3>{this.state.update ? 'Update' : 'Add New'} Show </h3>
                 <hr />
-                <div class="row gap-20 masonry pos-r" style={{position: 'relative', height: '1086px'}}>
+                <div class="row gap-20 masonry pos-r" style={{position: 'relative', height: '750px'}}>
                     <div class="masonry-item col-md-6" style={{position: 'absolute', top: '0px'}}>
                         <div class="bgc-white p-20 bd">
                             <div class="mT-30">

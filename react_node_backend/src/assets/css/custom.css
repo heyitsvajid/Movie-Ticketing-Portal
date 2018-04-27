@@ -1010,3 +1010,10 @@ div#search_bar {
   margin-top: -1%;
   width: 65%;
 }
+
+nav.pagination-list{
+  margin-left: 40% !important;
+}
+.pagination{
+  background-color: white !important;
+}

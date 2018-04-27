@@ -1104,3 +1104,22 @@ exports.logout = function (req, res) {
     return;
 };
 
+exports.getClicksPerPage = function (req, res) {
+
+    var pageClicks = {"Fandango Home": 0, "MovieShowTime": 0};
+    var lineReader = require('readline').createInterface({
+        input: require('fs').createReadStream('./logging/useranalytics.log')
+    });
+
+    lineReader.on('line', function (line) {
+        var jsonConvert = JSON.parse(line);
+        if(jsonConvert["message"]["pageClick"] != undefined){
+            if(pageClicks["" + jsonConvert["message"]["pageClick"]["pageName"] +""] != undefined){
+                pageClicks["" + jsonConvert["message"]["pageClick"]["pageName"] +""] += 1;
+            }
+        }
+    }).on('close', function () {
+        res.json(pageClicks)
+    });    
+};
+

@@ -140,22 +140,23 @@ class Layout extends Component {
   }
 
   renderDateCorousal(){
-      let today = new Date();
-      let days = [1,2,3,4,5,6,7,8,9,10,11,12,13];
-      let month = ['Jan','Fab','Mar','Apr','May','Jun','Jul','Aug','Sep','Aug','Nov','Dec']
-      let weekday=['Mon','Tue','Wed','Thur','Fri','Sat','Sun']
-    let otherNodes = days.map((item) => {
-        let otherDay = new Date;
-        otherDay.setDate(today.getDate() + item); 
-        return (
-            <li class="date-picker__date" id={otherDay.getTime()} onClick={this.handleDateClick.bind(this)}>
-            <a href="?date=2018-04-19" class="date-picker__link">
-            <span class="date-picker__date-weekday">{weekday[otherDay.getDay()]}</span>
-            <span class="date-picker__date-month">{month[otherDay.getMonth()]}</span>
-            <span class="date-picker__date-day">{otherDay.getDate()}</span>
-            </a>
-      </li>      )
-    });
+        let today = new Date();
+        let days = [1,2,3,4,5,6,7,8,9,10,11,12,13];
+        let month = ['Jan','Fab','Mar','Apr','May','Jun','Jul','Aug','Sep','Aug','Nov','Dec']
+        let weekday=['Mon','Tue','Wed','Thur','Fri','Sat','Sun']
+        let otherNodes = days.map((item) => {
+            let otherDay = new Date;
+            otherDay.setDate(today.getDate() + item); 
+            return (
+                <li class="date-picker__date" id={otherDay.getTime()} onClick={this.handleDateClick.bind(this)}>
+                    <a href="?date=2018-04-19" class="date-picker__link">
+                        <span class="date-picker__date-weekday">{weekday[otherDay.getDay()]}</span>
+                        <span class="date-picker__date-month">{month[otherDay.getMonth()]}</span>
+                        <span class="date-picker__date-day">{otherDay.getDate()}</span>
+                    </a>
+                </li>      
+            )
+        });
     return (
         <ul id="scroll-date-picker__list" class="carousel-items" >
         <li class="date-picker__date date-picker__date--selected" id={today.getTime()} onClick={this.handleDateClick.bind(this)}>
@@ -208,22 +209,6 @@ class Layout extends Component {
             </section>
             <section class="row">
               <div class="width-75 tablet-width-100">
-                  {/* <div class="date-picker__location">
-                    <div class="date-picker__error js-date-picker__error hide"></div>
-                    <div class="date-picker__message js-date-picker-msg hide">
-                        <h3 class="date-picker__message-title heading-size-l heading-style-1">
-                          <i class="icon icon-location-white"></i>
-                          Looking for movie tickets? Tell us where you are.
-                        </h3>
-                    </div>
-                    <span class="date-picker__location-text">ENTER CITY, STATE OR ZIP CODE</span>
-                    <input
-                        class="date-picker__location-input js-date-input"
-                        placeholder="City, State or Zip Code"
-                        type="text"
-                        />
-                    <a href="#" class="date-picker__location-submit js-date-picker-btn">GO</a>
-                  </div> */}
                   <div class="date-picker__wrap">
                     <section class="date-picker carousel js-movie-calendar carousel-style-strip" data-jcarousel="true">
                     {this.renderDateCorousal()}
@@ -272,13 +257,8 @@ class Layout extends Component {
                      
                   </select>
                   <div class="fd-showtimes js-theaterShowtimes-loading">
-                    {/* <div class="printer-friendly">
-                        <a class="cta" href="//www.fandango.com/theaterlistings-prn.aspx?location=95101&amp;pn=1&amp;sdate=4-18-2018&amp;tid=AAFRF,AAFQQ,AASUR,AATUL,AAQND,AAPCG,AAFQS,AAWTK,AANCI,AACFK">
-                            Printer Friendly
-                        </a>
-                    </div> */}
+
                     {this.renderMultiplexShowTimings()}
-                    {/* <div class="csspinner js-spinner"></div> */}
                     <div class="hide fd-showtimes__error-msg js-fd-showtimes__error-msg"></div>
                   </div>
                   <section class="more-theaters-links">

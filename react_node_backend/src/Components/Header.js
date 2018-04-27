@@ -320,7 +320,7 @@ class Header extends Component {
               </li>
               <li id="theatersTab" class="tablet-width-30 nonstandard-width">
                 <section class="has-dropdown">
-                  <h3><a id="local-movies-link" class = "header-links" href="/movietimes">Movie Times + Tickets</a></h3>
+                  <h3><a id="local-movies-link" class = "header-links" href="/movies">Movie Times + Tickets</a></h3>
                   <div class="mega-menu">
                     <div class="row">
                       <div id="theatersList" class="width-75 tablet-width-100">
