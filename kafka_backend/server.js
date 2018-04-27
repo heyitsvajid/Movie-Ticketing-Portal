@@ -7,6 +7,7 @@ var MultiplexModel = require('./model/MultiplexModel');
 var MovieModel = require('./model/MovieModal');
 var UserModal = require('./model/UserModal');
 var PaymentModel = require('./model/PaymentModel');
+var AnalyticsModel = require('./model/AnalyticsModal');
 
 //Kafka Topics
 var user_topic = 'user_request';
@@ -17,6 +18,7 @@ var showtiming_topic = 'showtiming_request';
 var review_topic = 'review_request';
 var complete_payment = 'completePayment';
 var fetchBillingDetails = 'fetchBillingDetails';
+var logUserTrack_topic = 'logUserTrack_topic';
 
 
 //Producer
@@ -35,7 +37,7 @@ var multiplexadmin_consumer = connection.getConsumer('multiplexadmin_request');
 var review_consumer = connection.getConsumer(review_topic);
 var completePayment = connection.getConsumer(complete_payment);
 var fetchBillingDetails = connection.getConsumer(fetchBillingDetails);
-
+var logUserTrack_consumer = connection.getConsumer(logUserTrack_topic);
 
 //User Consumer
 user_consumer.on('message', function (message) {
@@ -961,7 +963,88 @@ fetchBillingDetails.on('message', function (message) {
         }
 });
 
-
+//Movie Consumer
+ 
+logUserTrack_consumer.on('message', function (message) {
+    console.log('Kafka Server logUserTrack_consumer : message received');
+    var request_data = JSON.parse(message.value);
+    console.log(request_data);
+    if (request_data.data.request_code == 1) {
+        AnalyticsModel.findAllTracks(function (err, res) {
+            var resultObject = {
+                successMsg: '',
+                errorMsg: '',
+                data: {}
+            }
+            console.log('Kafka Server : after handle');
+            console.log(res);
+            if(err){
+                resultObject.successMsg= '';
+                resultObject.errorMsg= 'Error fetching all tracks';
+            }else{
+                resultObject.successMsg= 'Fetching all user tracks';
+                resultObject.errorMsg= '';
+                resultObject.data=res;         
+            }
+            let payloads = utility.createPayload(request_data, resultObject);
+            console.log('is producer ready : ' + producer.ready);
+            producer.send(payloads, function (err, data) {
+                utility.log(data, err);
+            });
+            return;
+        });
+    }
+    else if (request_data.data.request_code == 2) {
+        AnalyticsModel.addUserTrack(request_data.data,function (err, res) {
+            var resultObject = {
+                successMsg: '',
+                errorMsg: '',
+                data: {}
+            }
+            console.log('Kafka Server : after handle');
+            console.log(res);
+            if(err){
+                resultObject.successMsg= '';
+                resultObject.errorMsg= 'Error adding track';
+            }else{
+                resultObject.successMsg= 'USer Track added successfully';
+                resultObject.errorMsg= '';
+                resultObject.data=res;         
+            }
+            let payloads = utility.createPayload(request_data, resultObject);
+            console.log('is producer ready : ' + producer.ready);
+            producer.send(payloads, function (err, data) {
+                utility.log(data, err);
+            });    
+        });
+        return;    
+    }
+    else if (request_data.data.request_code == 3) {
+        AnalyticsModel.findByUserId(request.data._id,function (err, res) {
+            var resultObject = {
+                successMsg: '',
+                errorMsg: '',
+                data: {}
+            }
+            console.log('Kafka Server : after handle');
+            console.log(res);
+            if(err  || !res){
+                resultObject.successMsg= '';
+                resultObject.errorMsg= 'Error fetching track for user';
+            }else{
+                resultObject.successMsg= 'Track found';
+                resultObject.errorMsg= '';
+                resultObject.data=res;         
+            }
+            let payloads = utility.createPayload(request_data, resultObject);
+            console.log('is producer ready : ' + producer.ready);
+            producer.send(payloads, function (err, data) {
+                utility.log(data, err);
+            });    
+        });
+        return;    
+    }
+});
 
 console.log('server is running');
 process.on("SIGINT", function () {

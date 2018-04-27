@@ -101,6 +101,8 @@ module.exports = function (app) {
   app.post('/getCardDetailsPerUser', api_controller.getCardDetailsPerUser);
 
 
+    //Click Analytics
+    app.post('/logUserClick', api_controller.logUserClick)
 
 };
 

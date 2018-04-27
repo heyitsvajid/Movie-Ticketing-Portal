@@ -7,10 +7,12 @@ var passport = require('../config/passport.js');
 var kafka = require('../kafka/client');
 var redisClient = require('../config/redis').getClient();
 
+var winston = require('../config/winston');
+
 //Creating New Multiplex Admin
-exports.createMultiplexAdmin =  ( req, res ) => {
+exports.createMultiplexAdmin = (req, res) => {
     console.log("In Node Backend, Creating new multiplex admin", req.body);
-    let data = { data: req.body, request_code: 1};
+    let data = { data: req.body, request_code: 1 };
     kafka.make_request('multiplexadmin_request', data, (err, result) => {
         console.log("###########################3");
         console.log(err);
@@ -21,7 +23,7 @@ exports.createMultiplexAdmin =  ( req, res ) => {
             errorMsg: '',
             data: {}
         };
-        if(err) {
+        if (err) {
             console.log(err);
             resultObject.errorMsg = 'Error creating Multiplex Admin';
             res.json(resultObject);
@@ -36,9 +38,9 @@ exports.createMultiplexAdmin =  ( req, res ) => {
 };
 
 //Finding all multiplex admins
-exports.findAllMultiplexAdmins =  ( req, res ) => {
+exports.findAllMultiplexAdmins = (req, res) => {
     console.log("In Node Backend, finding all multiplex admin", req.body);
-    let data = { data: req.body, request_code: 3};
+    let data = { data: req.body, request_code: 3 };
     kafka.make_request('multiplexadmin_request', data, (err, result) => {
         console.log(result);
         var resultObject = {
@@ -46,7 +48,7 @@ exports.findAllMultiplexAdmins =  ( req, res ) => {
             errorMsg: '',
             data: {}
         };
-        if(err) {
+        if (err) {
             console.log(err);
             resultObject.errorMsg = 'Error in finding all Multiplex Admins';
             res.json(resultObject);
@@ -61,7 +63,7 @@ exports.findAllMultiplexAdmins =  ( req, res ) => {
 };
 
 //Finding multiplex admin by ID
-exports.findMultiplexAdminbyId =  ( req, res ) => {
+exports.findMultiplexAdminbyId = (req, res) => {
     console.log("In Node Backend, finding multiplex admin by ID", req.body);
     let data = { data: req.body, request_code: 2 };
     kafka.make_request('multiplexadmin_request', data, (err, result) => {
@@ -71,7 +73,7 @@ exports.findMultiplexAdminbyId =  ( req, res ) => {
             errorMsg: '',
             data: {}
         };
-        if(err) {
+        if (err) {
             console.log(err);
             resultObject.errorMsg = 'Error in finding Multiplex Admin by ID';
             res.json(resultObject);
@@ -86,18 +88,18 @@ exports.findMultiplexAdminbyId =  ( req, res ) => {
 };
 
 // Get Profile Details
-exports.getProfileDetails = ( req, res ) => {
-    console.log("Node Backend : Get Profile Details " , req.body );
-    var data= {
-        id :  req.body.userid,
-        request_code : 3 // Get Profile Details
+exports.getProfileDetails = (req, res) => {
+    console.log("Node Backend : Get Profile Details ", req.body);
+    var data = {
+        id: req.body.userid,
+        request_code: 3 // Get Profile Details
     };
     console.log(data);
 
     kafka.make_request('user_request', data, (err, result) => {
         console.log('Kafka Response in Get Profile :');
         if (err) {
-            console.log( 'After Kafka response : User Profile Not found');
+            console.log('After Kafka response : User Profile Not found');
             console.log(err);
             res.json(result);
         }
@@ -110,20 +112,20 @@ exports.getProfileDetails = ( req, res ) => {
 };
 
 // Update Profile Details Basic Info
-exports.updateProfileDetailsBasicInfo = ( req, res ) => {
-    console.log("Node Backend : Update Profile Details " , req.body );
-    var data= {
-        id :  req.body.id,
-        first_name : req.body.first_name,
-        last_name : req.body.last_name,
-        request_code : 4 // Update Profile Details - Basic Info
+exports.updateProfileDetailsBasicInfo = (req, res) => {
+    console.log("Node Backend : Update Profile Details ", req.body);
+    var data = {
+        id: req.body.id,
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        request_code: 4 // Update Profile Details - Basic Info
     };
     console.log(data);
 
     kafka.make_request('user_request', data, (err, result) => {
-        console.log('Kafka Response in Update Profile - Basic Info :' );
+        console.log('Kafka Response in Update Profile - Basic Info :');
         if (err) {
-            console.log( 'After Kafka response : User Profile Not Updated');
+            console.log('After Kafka response : User Profile Not Updated');
             console.log(err);
             res.json(result);
         }
@@ -136,19 +138,19 @@ exports.updateProfileDetailsBasicInfo = ( req, res ) => {
 };
 
 // Update Profile Details Email
-exports.updateProfileDetailsEmail = ( req, res ) => {
-    console.log("Node Backend : Update Profile Details Email " , req.body );
-    var data= {
-        id :  req.body.id,
-        email : req.body.email,
-        request_code : 5 // Update Profile Details - Email
+exports.updateProfileDetailsEmail = (req, res) => {
+    console.log("Node Backend : Update Profile Details Email ", req.body);
+    var data = {
+        id: req.body.id,
+        email: req.body.email,
+        request_code: 5 // Update Profile Details - Email
     };
     console.log(data);
 
     kafka.make_request('user_request', data, (err, result) => {
-        console.log('Kafka Response in Update Profile - Email :' );
+        console.log('Kafka Response in Update Profile - Email :');
         if (err) {
-            console.log( 'After Kafka response : User Profile Email Not Updated');
+            console.log('After Kafka response : User Profile Email Not Updated');
             console.log(err);
             res.json(result);
         }
@@ -162,20 +164,20 @@ exports.updateProfileDetailsEmail = ( req, res ) => {
 
 
 // Update Profile Details Password
-exports.updateProfileDetailsPassword = ( req, res ) => {
-    console.log("Node Backend : Update Profile Details Password " , req.body );
-    var data= {
-        id :  req.body.id,
-        currentPassword : req.body.currentPassword,
-        updatedPassword : req.body.updatedPassword,
-        request_code : 6 // Update Profile Details - Password
+exports.updateProfileDetailsPassword = (req, res) => {
+    console.log("Node Backend : Update Profile Details Password ", req.body);
+    var data = {
+        id: req.body.id,
+        currentPassword: req.body.currentPassword,
+        updatedPassword: req.body.updatedPassword,
+        request_code: 6 // Update Profile Details - Password
     };
     console.log(data);
 
     kafka.make_request('user_request', data, (err, result) => {
-        console.log('Kafka Response in Update Profile - Password :' );
+        console.log('Kafka Response in Update Profile - Password :');
         if (err) {
-            console.log( 'After Kafka response : User Profile Password Not Updated');
+            console.log('After Kafka response : User Profile Password Not Updated');
             console.log(err);
             res.json(result);
         }
@@ -189,19 +191,19 @@ exports.updateProfileDetailsPassword = ( req, res ) => {
 
 
 //disable user account
-exports.disableAccount = ( req, res ) => {
-    console.log("Node Backend : disableAccount " , req.body );
-    var data= {
-        id :  req.body.id,
+exports.disableAccount = (req, res) => {
+    console.log("Node Backend : disableAccount ", req.body);
+    var data = {
+        id: req.body.id,
         email: req.body.email,
-        request_code : 7 // disableAccount
+        request_code: 7 // disableAccount
     };
     console.log(data);
 
     kafka.make_request('user_request', data, (err, result) => {
-        console.log('Kafka Response in disableAccount :', result );
+        console.log('Kafka Response in disableAccount :', result);
         if (result.errorMsg !== '') {
-            console.log( 'After Kafka response : disableAccount failed');
+            console.log('After Kafka response : disableAccount failed');
             console.log(err);
             res.json(result);
         }
@@ -215,26 +217,26 @@ exports.disableAccount = ( req, res ) => {
 
 
 //search
-exports.searchQuery =  ( req, res ) => {
+exports.searchQuery = (req, res) => {
     console.log("In Node Backend, searching by state, zip, moviename, city", req.body);
-     let data = { data: req.body, request_code: 5 };
-     var redisHashKey = req.body.searchQuery;
-     var resultObject = {
+    let data = { data: req.body, request_code: 5 };
+    var redisHashKey = req.body.searchQuery;
+    var resultObject = {
         successMsg: '',
         errorMsg: '',
         data: {}
-     };
+    };
 
     //implementation of redis for search string
     //checking whether the search key already exists with redis
     redisClient.get(redisHashKey, (err, reply) => {
-        if(err) {
+        if (err) {
             console.log("Error connecting to redis in searchQuery controller");
-        } else if(reply === null) { //we could not find the key in redis as the key is expired
+        } else if (reply === null) { //we could not find the key in redis as the key is expired
 
             //making request to kafka to get the search results as the key does not exist
             kafka.make_request('multiplex_request', data, (err, result) => {
-                console.log("After the kafka search results",result);
+                console.log("After the kafka search results", result);
 
                 //creating the resultObject
                 resultObject.successMsg = result.successMsg;
@@ -268,7 +270,7 @@ exports.searchQuery =  ( req, res ) => {
 
 
 //Movie Reviews
-exports.addMovieReview= function (req, res) {
+exports.addMovieReview = function (req, res) {
     console.log("addMovieReview_request : node backend");
     let data = { data: req.body, request_code: 1 };
     console.log(data);
@@ -309,7 +311,7 @@ exports.addShowTimings = function (req, res) {
     });
 }
 
-exports.updateShowTimings= function (req, res) {
+exports.updateShowTimings = function (req, res) {
     console.log("updateShowTimings_request : node backend");
     let data = { data: req.body, request_code: 2 };
 
@@ -453,7 +455,7 @@ exports.updateMultiplex = function (req, res) {
 }
 
 
-exports.findMultiplexById =  ( req, res ) => {
+exports.findMultiplexById = (req, res) => {
     console.log("In Node Backend, finding multiplex by ID", req.body);
     let data = { data: req.body, request_code: 4 };
     kafka.make_request('multiplex_request', data, (err, result) => {
@@ -463,7 +465,7 @@ exports.findMultiplexById =  ( req, res ) => {
             errorMsg: '',
             data: {}
         };
-        if(err || result==null) {
+        if (err || result == null) {
             console.log(err);
             resultObject.errorMsg = 'Error in finding Multiplex Admin by ID';
             res.json(resultObject);
@@ -500,7 +502,7 @@ exports.findAllMovie = function (req, res) {
     });
 }
 
-exports.findMovieById =  ( req, res ) => {
+exports.findMovieById = (req, res) => {
     console.log("In Node Backend, finding movie by ID", req.body);
     let data = { data: req.body, request_code: 5 };
     kafka.make_request('movie_request', data, (err, result) => {
@@ -510,7 +512,7 @@ exports.findMovieById =  ( req, res ) => {
             errorMsg: '',
             data: {}
         };
-        if(err || result==null) {
+        if (err || result == null) {
             console.log(err);
             resultObject.errorMsg = 'Error in finding movie by ID';
             res.json(resultObject);
@@ -625,7 +627,7 @@ exports.updateMovie = function (req, res) {
     })
 }
 
-exports.addMovieCharacter= function (req, res) {
+exports.addMovieCharacter = function (req, res) {
     // Post Project API
     console.log('addMovieCharacter API Called');
     let form = new multiparty.Form();
@@ -697,11 +699,11 @@ exports.login = function (req, res, next) {
             errorMsg: 'Error Signing user in',
             data: {}
         }
-        if(err || user == false) {
+        if (err || user == false) {
             resultObject.successMsg = '';
             resultObject.errorMsg = 'Error Signing user in';
         }
-        else if(user) {
+        else if (user) {
             resultObject.successMsg = user.successMsg;
             resultObject.errorMsg = user.errorMsg;
             resultObject.data = user.data;
@@ -713,8 +715,13 @@ exports.login = function (req, res, next) {
             //    })
             //ends
 
-
+            req.session.previousTime = new Date().getTime();
+            req.session.pageTime = [];
+            req.session.pages = [];
+            req.session.lastPage = "Fandango Home";
+            req.session.flag = true;
             req.session.email = resultObject.data.email;
+
             req.session.userid = resultObject.data.id;
             req.session.first_name = resultObject.data.first_name;
             req.session.last_name = resultObject.data.last_name;
@@ -739,20 +746,20 @@ exports.login = function (req, res, next) {
 exports.signup = function (req, res) {
     console.log("signup_request : node backend");
 
-    var data={
-        first_name : req.body.first_name,
-        email : req.body.username,
-        password : req.body.password,
-        role_number : req.body.role_number,
-        request_code : 2 //signup_request
+    var data = {
+        first_name: req.body.first_name,
+        email: req.body.username,
+        password: req.body.password,
+        role_number: req.body.role_number,
+        request_code: 2 //signup_request
     };
     console.log(data);
 
-    kafka.make_request( 'user_request', data , function (err, results) {
+    kafka.make_request('user_request', data, function (err, results) {
         console.log('Kafka Response:');
         console.log(results);
         if (err) {
-            console.log( 'Controller : Error Occurred : ');
+            console.log('Controller : Error Occurred : ');
             console.log(err);
             res.json(results);
         }
@@ -768,7 +775,7 @@ exports.signup = function (req, res) {
 exports.isLoggedIn = function (req, res) {
     console.log('Check Login');
 
-    if(req.session.email) {
+    if (req.session.email) {
         console.log("Session is still valid", req.session);
         var data = {
             id: req.session.userid,
@@ -784,11 +791,11 @@ exports.isLoggedIn = function (req, res) {
             disable: req.session.disable,
             role_number: req.session.role_number
         }
-        res.json({"session": "valid" , "result": data});
+        res.json({ "session": "valid", "result": data });
     }
     else {
         console.log("Session is invalid");
-        res.json({"session": "invalid" , "result": []});
+        res.json({ "session": "invalid", "result": [] });
     }
 
     //passport authentication by venky starts
@@ -807,7 +814,7 @@ exports.isLoggedIn = function (req, res) {
 exports.completePayment = function (req, res) {
     console.log("completePayment : node backend");
     let data = req.body;
-    console.log(data+ "Hello");
+    console.log(data + "Hello");
     kafka.make_request('completePayment', data, function (err, results) {
         console.log('Kafka Response:');
         console.log(results);
@@ -817,7 +824,7 @@ exports.completePayment = function (req, res) {
             res.json(results);
         }
         else {
-            res.json({results: results});
+            res.json({ results: results });
             return;
         }
     });
@@ -845,7 +852,7 @@ exports.completePayment = function (req, res) {
 
 exports.getAllBillingDetails = function (req, res) {
     console.log("Fetch Billing Details : node backend");
-    var request_id = {request_id : 1};
+    var request_id = { request_id: 1 };
     kafka.make_request('fetchBillingDetails', request_id, function (err, results) {
         console.log('Kafka Response:');
         console.log(results);
@@ -855,7 +862,7 @@ exports.getAllBillingDetails = function (req, res) {
             res.json(results);
         }
         else {
-            res.json({results: results});
+            res.json({ results: results });
             return;
         }
     });
@@ -865,7 +872,7 @@ exports.getBillingDetailsPerUser = function (req, res) {
     console.log("Fetch Billing Details per User : node backend");
     console.log(req.body.user_email)
     console.log("UserName:" + req.body);
-    var request_id = {request_id : 2, user_email : "Jay"};
+    var request_id = { request_id: 2, user_email: "Jay" };
     kafka.make_request('fetchBillingDetails', request_id, function (err, results) {
         console.log('Kafka Response:');
         console.log(results);
@@ -876,7 +883,7 @@ exports.getBillingDetailsPerUser = function (req, res) {
         }
         else {
             console.log(results)
-            res.json({results: results});
+            res.json({ results: results });
             return;
         }
     });
@@ -886,7 +893,7 @@ exports.getCardDetailsPerUser = function (req, res) {
     console.log("Fetch Billing Details per User : node backend");
     console.log(req.body.user_email)
     console.log("UserName:" + req.body);
-    var request_id = {request_id : 3, user_email : "Jay"};
+    var request_id = { request_id: 3, user_email: "Jay" };
     kafka.make_request('fetchBillingDetails', request_id, function (err, results) {
         console.log('Kafka Response:');
         console.log(results);
@@ -897,7 +904,7 @@ exports.getCardDetailsPerUser = function (req, res) {
         }
         else {
             console.log(results)
-            res.json({results: results});
+            res.json({ results: results });
             return;
         }
     });
@@ -907,7 +914,7 @@ exports.getMultiplexSoldTicketsPerMonth = function (req, res) {
     console.log("Fetch Billing Details per User : node backend");
     console.log(req.body.multiplex_id)
     console.log("UserName:" + req.body);
-    var request_id = {request_id : 4, multiplex_id : "2"};
+    var request_id = { request_id: 4, multiplex_id: "2" };
     kafka.make_request('fetchBillingDetails', request_id, function (err, results) {
         console.log('Kafka Response:');
         console.log(results);
@@ -918,7 +925,7 @@ exports.getMultiplexSoldTicketsPerMonth = function (req, res) {
         }
         else {
             console.log(results)
-            res.json({results: results});
+            res.json({ results: results });
             return;
         }
     });
@@ -928,7 +935,7 @@ exports.getCityRevenuePerYear = function (req, res) {
     console.log("Fetch Billing Details per User : node backend");
     console.log(req.body.multiplex_id)
     console.log("UserName:" + req.body);
-    var request_id = {request_id : 5, multiplex_id : "2"};
+    var request_id = { request_id: 5, multiplex_id: "2" };
     kafka.make_request('fetchBillingDetails', request_id, function (err, results) {
         console.log('Kafka Response:');
         console.log(results);
@@ -939,7 +946,7 @@ exports.getCityRevenuePerYear = function (req, res) {
         }
         else {
             console.log(results)
-            res.json({results: results});
+            res.json({ results: results });
             return;
         }
     });
@@ -949,7 +956,7 @@ exports.getMovieRevenuePerYear = function (req, res) {
     console.log("Fetch Billing Details per User : node backend");
     console.log(req.body.multiplex_id)
     console.log("UserName:" + req.body);
-    var request_id = {request_id : 6, multiplex_id : "2"};
+    var request_id = { request_id: 6, multiplex_id: "2" };
     kafka.make_request('fetchBillingDetails', request_id, function (err, results) {
         console.log('Kafka Response:');
         console.log(results);
@@ -960,7 +967,7 @@ exports.getMovieRevenuePerYear = function (req, res) {
         }
         else {
             console.log(results)
-            res.json({results: results});
+            res.json({ results: results });
             return;
         }
     });
@@ -968,7 +975,7 @@ exports.getMovieRevenuePerYear = function (req, res) {
 
 exports.getTicketConfirmation = function (req, res) {
     console.log("Fetching Ticket Confirmation : node backend");
-    var request_id = {request_id : 7, billing_id : "52"};
+    var request_id = { request_id: 7, billing_id: "52" };
     kafka.make_request('fetchBillingDetails', request_id, function (err, results) {
         console.log('Kafka Response:');
         console.log(results);
@@ -978,10 +985,62 @@ exports.getTicketConfirmation = function (req, res) {
             res.json(results);
         }
         else {
-            res.json({results: results});
+            res.json({ results: results });
             return;
         }
     });
+}
+//User Analytics:
+exports.logUserClick = function (req, res) {
+    console.log('Logging for user :' + req.session.email);
+    let username = req.session.email;
+    console.log(req.body);
+    if (req.session.email) {
+        req.body.pageClick.email = username;
+    }
+    console.log("Adding Log");
+    winston.info({ pageClick: req.body.pageClick });
+
+    //Reading Log
+    var lineReader = require('readline').createInterface({
+        input: require('fs').createReadStream('./logging/useranalytics.log')
+    });
+
+    lineReader.on('line', function (line) {
+        var jsonConvert = JSON.parse(line);
+        console.log('Line from file:', jsonConvert);
+    });
+
+    try {
+        if (req.session.email !== null && req.session.email !== undefined && req.session.email !== 'admin@fandango.com') {
+            let nwTime = new Date().getTime();
+            if (req.session.flag) {
+                req.session.flag = false;
+            }
+            else {
+                console.log('Session Flag: ' + req.session.flag);
+                let prvTime = req.session.previousTime;
+                let timeSpentOnPage = nwTime - prvTime;
+
+                req.session.previousTime = nwTime;
+                console.log('Time Spent On Page ' + req.session.lastPage + ' : ' + timeSpentOnPage)
+                //Add code for user inactivity period
+                req.session.pages.push(req.session.lastPage);
+                req.session.pageTime.push(timeSpentOnPage);
+                req.session.lastPage = req.body.pageClick.pageName;
+                console.log(req.session);
+            }
+        } else {
+            res.json("No Username provided")
+        }
+    }
+    catch (err) {
+        console.log(err);
+    }
+
+    res.send("Log added for " + username + " for page - " + req.body.pageClick.pageName + " at " + req.body.pageClick.timeStamp);
+
+
 }
 
 
@@ -989,11 +1048,59 @@ exports.getTicketConfirmation = function (req, res) {
 exports.logout = function (req, res) {
     console.log('Destroying Session');
     console.log('Session Destroyed');
-    //req.logout();
-    req.session.destroy();
 
-    res.json({"session":"logged out"});
+    console.log(req.session.email);
+    console.log(req.session);
+
+    if (req.session.email !== null && req.session.email !== undefined) {
+
+        let nwTime = new Date().getTime();
+        let prvTime = req.session.previousTime;
+        let timeSpentOnPage = nwTime - prvTime;
+        req.session.pages.push(req.session.lastPage);
+        req.session.pageTime.push(timeSpentOnPage);
+
+
+        let track = {
+            user_id: req.session.userid,
+            email: req.session.email,
+            name: req.session.first_name,
+            session: [{
+                pages: req.session.pages,
+                pageTime: req.session.pageTime
+            }]
+        };
+        console.log(" -- Tree -- " + track);
+        winston.info(track);
+        try {
+            let data = { data: track, request_code: 2 };
+            console.log(data);
+            kafka.make_request('logUserTrack_topic', data, function (err, results) {
+                console.log('Kafka Response:');
+                console.log(results);
+                if (err) {
+                    console.log('Controller : Error Occurred : ');
+                    console.log(err);
+                    res.json(results);
+                }
+                else {
+                    console.log("Added track data to mongoDB");
+                    req.session.destroy();
+                    req.logout();
+                    console.log('Session Destroyed');
+                    res.status(200).send();
+                }
+            });
+        }
+        catch (err) {
+            console.log();
+        }
+
+    }
+    else {
+        console.log('Session does not exist');
+        res.status(400).send();
+    }
     return;
 };
-
 

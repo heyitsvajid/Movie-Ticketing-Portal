@@ -5,10 +5,23 @@ import { Link } from 'react-router-dom';
 import LatestMovies from './LatestMovies';
 import MovieSlider from './MovieSlider';
 import Header from './Header';
+var LogAPI = require('../utils/logging');
 
 
 class Index extends Component {
+  componentWillMount(){
+    debugger;
+    let click = {
+      pageClick: {
+          email: "anonymous",
+          pageName: "Fandango Home",
+          timeStamp: new Date().getTime()
+      }
+  };
+  console.log(click);
+  LogAPI.logUserClicks(click);
 
+}
     render() {
         return (
             <div>
