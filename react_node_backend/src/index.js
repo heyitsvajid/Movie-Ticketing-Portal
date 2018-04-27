@@ -21,6 +21,8 @@ import SignUp from "./Components/SignUp";
 import CheckoutTest from './Components/CheckoutTest'
 import TicketConfirmation from './Components/TicketConfirmation'
 import PurchaseHistory from './Components/PurchaseHistory'
+import AdminGraphs from "./Components/AdminGraphs";
+import AllBillingDetails from "./Components/AllBillingDetails";
 
 const store = createStore(allReducers);
 
@@ -41,6 +43,8 @@ ReactDOM.render(
         <Route exact path="/co" component={CheckoutTest} />
         <Route exact path="/confirmation" component={TicketConfirmation} />
         <Route exact path="/orders" component={PurchaseHistory} />
+        <Route exact path="/admingraphs" component={AdminGraphs} />
+        <Route exact path="/allbillingdetails" component={AllBillingDetails} />
       </div>
     </Router>
   </Provider>,

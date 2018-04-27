@@ -26,6 +26,7 @@ function validationErr(err, res) {
 function createNewMovie(movie, path, callback) {
   MovieModel.create({
     title: movie.title[0],
+    synopsis: movie.synopsis[0],
     trailer_link: movie.trailer_link[0],
     release_date: movie.release_date[0],
     mpaa_ratings: movie.mpaa_ratings[0],

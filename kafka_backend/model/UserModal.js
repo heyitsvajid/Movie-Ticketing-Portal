@@ -227,7 +227,7 @@ function login_request( msg, callback ) {
             console.log("Connected to MYSQL in login_request in usermodal");
             var sql = 'select * from user where email = ' + mysql.escape(email);
             db.query(sql, (err, result) => {
-
+                db.release();
                 if(err) {
                     console.log("Error in UserModal login_request while retrieving user from MySQLDB");
                     errHandler(err);
@@ -241,31 +241,31 @@ function login_request( msg, callback ) {
                             if(doesMatch) {
 
                                 //remove the user from disbaledusers collection from mongodb
-                                MongoClient.connect(mongoURL, function(err, db) {
-                                    if (err) { console.log("Error connecting to mongodb in disabling user..."); errHandler(err); }
-                                    else {
-                                        console.log("Connected to mongodb in login_request to check and delete from disabledusers collection");
-                                        var dbo = db.db("fandango");
-                                        var disabledUser = { email: email };
-                                        dbo.collection("disabledusers").findOneAndDelete(disabledUser, function(err, res) {
-                                            if (err) { console.log("Error deleting user from mongodb in disabledusers..."); errHandler(err); }
-                                            else {
-                                                console.log("1 document deleted and that is:", res);
-                                                db.close();
-                                            }
-                                        });
-                                    }
-                                });
+                                // MongoClient.connect(mongoURL, function(err, db) {
+                                //     if (err) { console.log("Error connecting to mongodb in disabling user..."); errHandler(err); }
+                                //     else {
+                                //         console.log("Connected to mongodb in login_request to check and delete from disabledusers collection");
+                                //         var dbo = db.db("fandango");
+                                //         var disabledUser = { email: email };
+                                //         dbo.collection("disabledusers").findOneAndDelete(disabledUser, function(err, res) {
+                                //             if (err) { console.log("Error deleting user from mongodb in disabledusers..."); errHandler(err); }
+                                //             else {
+                                //                 console.log("1 document deleted and that is:", res);
+                                //                 db.close();
+                                //             }
+                                //         });
+                                //     }
+                                // });
 
                                 //update mysql disbalility
-                                var sqlUpdateDisability = 'update user set disable = 0 where email = ' + mysql.escape(email);
-                                db.query(sqlUpdateDisability, (err, result1) => {
-                                    db.release();
-                                    if(err) console.log("Error updating the user's disability...");
-                                    else {
-                                        console.log("Successfully activated the user");
-                                    }
-                                });
+                                //var sqlUpdateDisability = 'update user set disable = 0 where email = ' + mysql.escape(email);
+                                // db.query(sqlUpdateDisability, (err, result1) => {
+                                //     db.release();
+                                //     if(err) console.log("Error updating the user's disability...");
+                                //     else {
+                                //         console.log("Successfully activated the user");
+                                //     }
+                                // });
                                 callback(null, result[0]);
                             } else {
                                 console.log("Password Mismatch");
@@ -508,30 +508,32 @@ function disable_account_request( msg, callback) {
             errHandler(err);
         } else {
             console.log("Connected to MYSQL in disable_account_request in usermodal");
-            var sql = "update user set disable = 1 where id = " + mysql.escape(id);
+            var sql = "delete from user where id = " + mysql.escape(id);
             db.query(sql, (err, result) => {
+                db.release();
                 if(err) {
                     console.log("Error in UserModal disable_account_request while update query to DB");
                     errHandler(err);
                 }
                 else {
                     console.log("Result after disable_account_request from DB..", result);
+                    callback(null, 'Account Deleted Successfully');
                     //updated the user in mysql side, now inserting into mongodb
-                    MongoClient.connect(mongoURL, function(err, db) {
-                        if (err) { console.log("Error connecting to mongodb in disabling user..."); errHandler(err); }
-                        else {
-                            var dbo = db.db("fandango");
-                            var disabledUser = { id: id, email: email };
-                            dbo.collection("disabledusers").insertOne(disabledUser, function(err, res) {
-                                if (err) { console.log("Error inserting in mongodb in disabledusers..."); errHandler(err); }
-                                else {
-                                    console.log("1 document inserted");
-                                    db.close();
-                                    callback(null, "Account Disabled");
-                                }
-                            });
-                        }
-                    });
+                    // MongoClient.connect(mongoURL, function(err, db) {
+                    //     if (err) { console.log("Error connecting to mongodb in disabling user..."); errHandler(err); }
+                    //     else {
+                    //         var dbo = db.db("fandango");
+                    //         var disabledUser = { id: id, email: email };
+                    //         dbo.collection("disabledusers").insertOne(disabledUser, function(err, res) {
+                    //             if (err) { console.log("Error inserting in mongodb in disabledusers..."); errHandler(err); }
+                    //             else {
+                    //                 console.log("1 document inserted");
+                    //                 db.close();
+                    //                 callback(null, "Account Disabled");
+                    //             }
+                    //         });
+                    //     }
+                    // });
 
                 }
             });

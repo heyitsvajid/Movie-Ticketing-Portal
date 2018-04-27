@@ -961,6 +961,33 @@ fetchBillingDetails.on('message', function (message) {
                 return;
             });
         }
+        else if(request_id==8){
+            console.log("In Request_id : "+ request_id);
+            PaymentModel.deleteBillingDetail(billing_data,function ( err, res) {
+                var resultObject = {
+                    successMsg: '',
+                    errorMsg: '',
+                    data: {}
+                };
+                console.log('Kafka Server : after handle');
+                console.log(res );
+                if(err){
+                    resultObject.successMsg= '';
+                    resultObject.errorMsg= 'Error deleting billing details';
+                }else{
+                    resultObject.successMsg= 'Billing details successfully deleted.';
+                    resultObject.errorMsg= '';
+                    resultObject.data=res;
+                }
+                console.log(resultObject );
+                let payloads = utility.createPayload(billing_data,res,resultObject);
+                console.log('is producer ready : ' + producer.ready);
+                producer.send(payloads, function (err, data) {
+                    utility.log(data, err);
+                });
+                return;
+            });
+        }
 });
 
 //Movie Consumer

@@ -72,7 +72,7 @@ class Footer extends Component {
     });
 
     return (
-      <ul class="inline-items panel footer-coming-soon--list">
+      <ul class="footer-movies inline-items panel footer-coming-soon--list">
       { moviesNode }
       </ul>
     )

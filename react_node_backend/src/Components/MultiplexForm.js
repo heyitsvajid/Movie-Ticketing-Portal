@@ -7,6 +7,7 @@ import { withRouter } from 'react-router-dom'
 import '../assets/css/admin.css'
 import Creatable from './CreatableDemo'
 import { envURL, reactURL } from '../config/environment';
+import Pagination from './Pagination';
 
 
 class MultiplexForm extends Component {
@@ -28,8 +29,11 @@ class MultiplexForm extends Component {
             row_count: '',
             screens: [],
             multiplexList: [],
+            searchedMultiplexList: [],
             multiplexAdminList:[],
-            update_id: 0
+            update_id: 0,
+            currentPage: 1, 
+            perPageRows: 5
         }
     }
     _handleChangeFile(e) {
@@ -72,6 +76,7 @@ class MultiplexForm extends Component {
             })
         }
         else{
+            debugger
             if (!this.state.name || !this.state.address || !this.state.state_name || !this.state.city || !this.state.zipcode
                 || !this.state.multiplex_owner_id || !this.state.amenities || !this.state.screens.length > 0 || !this.state.file) {
                 swal({
@@ -167,7 +172,9 @@ class MultiplexForm extends Component {
                     console.log('Fetching all multiplex');
                     console.log(res.data.data);
                     this.setState({
-                        multiplexList: res.data.data ? res.data.data : []
+                        multiplexList: res.data.data ? res.data.data : [],
+                        searchedMultiplexList: res.data.data ? res.data.data : [],
+                        currentPage: 1
                     })
                 } else {
                     console.error('Error Fetching all multiplex');
@@ -207,11 +214,48 @@ class MultiplexForm extends Component {
         this.setState({ [name]: value })
         console.log(this.state)
     }
+
+    handleNextPaginationButton(e) {
+        const total_pages = this.state.searchedMultiplexList.length > 0 ? this.state.searchedMultiplexList.length/this.state.perPageRows : 0;
+        if(this.state.searchedMultiplexList != [] && this.state.currentPage != Math.ceil(total_pages)){
+          this.setState({currentPage: Number(this.state.currentPage + 1)})      
+        }
+      }
+    
+      handlePrevPaginationButton(e) {
+        if(this.state.searchedMultiplexList != [] && this.state.currentPage != 1){
+          this.setState({currentPage: Number(this.state.currentPage - 1)})
+        }
+      }
+
+      handlePageChange(e) {
+        this.setState({currentPage: Number(e.target.dataset.id)})
+      }
+
     returnMultiplexList() {
-        let rowNodes = this.state.multiplexList.map((item, index) => {
+        let pagination_list, currentTodos=null;
+        if(this.state.searchedMultiplexList != []){
+            const indexOfLastTodo = this.state.currentPage * this.state.perPageRows;
+            const indexOfFirstTodo = indexOfLastTodo - this.state.perPageRows;
+            currentTodos = this.state.searchedMultiplexList.slice(indexOfFirstTodo, indexOfLastTodo);
+            const total_pages = this.state.searchedMultiplexList.length > 0 ? this.state.searchedMultiplexList.length/this.state.perPageRows : 0;
+            const page_numbers = [];
+            for (let i = 1; i <= Math.ceil(this.state.searchedMultiplexList.length / this.state.perPageRows); i++) {
+                page_numbers.push(i);
+            }  
+            pagination_list = page_numbers.map(number => {
+                return (
+                <li class="page-item" key= {number} data-id={number} onClick={this.handlePageChange.bind(this)}  ><a data-id={number} class="page-link" href="#">{number}</a></li>
+                );
+            });
+            for(let i = 0; i< currentTodos.length; i++){
+                currentTodos[i].current_index = indexOfFirstTodo + i + 1;
+            }
+        }
+        let rowNodes = currentTodos.map((item, index) => {
             return (
                 <tr>
-                    <th scope="row">{index + 1}</th>
+                    <th scope="row">{item.current_index}</th>
                     <td>{item.name}</td>
                     <td>{item.screens.length}</td>
                     <td>{item.state}</td>
@@ -223,21 +267,26 @@ class MultiplexForm extends Component {
             )
         });
         return (
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Screen Count</th>
-                        <th scope="col">State</th>
-                        <th scope="col">City</th>
-                        <th scope="col">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {rowNodes}
-                </tbody>
-            </table>
+            <div>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Screen Count</th>
+                            <th scope="col">State</th>
+                            <th scope="col">City</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {rowNodes}
+                    </tbody>
+                </table>
+                <Pagination handlePrevPaginationButton = {this.handlePrevPaginationButton.bind(this)} handleNextPaginationButton = {this.handleNextPaginationButton.bind(this)}
+                handlePageChange = {this.handlePageChange.bind(this)} pagination_list = {pagination_list}/>
+            </div>
+            
         );
 
     }
@@ -354,20 +403,51 @@ class MultiplexForm extends Component {
                 return;
             }
         });
-
     }
+
+    handleSearchBar(e){
+        var searched_array = [];
+        if(e.target.value != ""){
+          if(this.state.multiplexList.length > 0){
+              for(let i = 0; i < this.state.multiplexList.length; i++){
+                var strRegExPattern = new RegExp(e.target.value, 'i');
+                let list_element = this.state.multiplexList[i]
+                if(list_element.name.match(strRegExPattern) || list_element.city.match(strRegExPattern)
+                || list_element.state.match(strRegExPattern)){
+                    searched_array.push(list_element);
+                }
+              }
+              this.setState({searchedMultiplexList: searched_array, currentPage: 1})
+          }
+        }
+        else{
+          this.loadMultiplex();
+        }
+    }
+
     render() {
         return (
             <div>
-                <h4 class="c-grey-900 mB-20">All Multiplex</h4>
-                <hr />
+                <div class="row">
+                    <div class="col-lg-2">
+                        <h4 class="c-grey-900 mB-20">All Multiplex</h4>
+                    </div>
+                    <div class="col-lg-10">
+                    <div id = "search_bar">
+                        <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search Multiplex By Name, City, State" onChange = {this.handleSearchBar.bind(this)}/>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <hr/>
 
                 {this.returnMultiplexList()}
                 <hr class='mt-5 mb-5' />
                 <h3>{this.state.update ? 'Update' : 'Add New'} Multiplex</h3>
                 <hr />
                 
-                <div class="row gap-20 masonry pos-r" style={{position: 'relative', height: '1086px'}}>
+                <div class="row gap-20 masonry pos-r" style={{position: 'relative', height: '986px'}}>
                     <div class="masonry-item col-md-6" style={{position: 'absolute', top: '0px'}}>
                         <div class="bgc-white p-20 bd">
                             <div class="mT-30">
@@ -393,8 +473,60 @@ class MultiplexForm extends Component {
 
                                         <div className="form-group col-md-6">
                                             <label class="dashboard-label">State</label>
-                                            <input class="form-control" type="text" name="state_name"
-                                                placeholder="State" required="" value={this.state.state_name} onChange={this.handleUserInput} />
+                                            <select class="form-control" onChange={this.handleUserInput} id="state" name='state_name' required >
+                                                <option value="AL">Alabama</option>
+                                                <option value="AK">Alaska</option>
+                                                <option value="AZ">Arizona</option>
+                                                <option value="AR">Arkansas</option>
+                                                <option value="CA">California</option>
+                                                <option value="CO">Colorado</option>
+                                                <option value="CT">Connecticut</option>
+                                                <option value="DE">Delaware</option>
+                                                <option value="DC">District Of Columbia</option>
+                                                <option value="FL">Florida</option>
+                                                <option value="GA">Georgia</option>
+                                                <option value="HI">Hawaii</option>
+                                                <option value="ID">Idaho</option>
+                                                <option value="IL">Illinois</option>
+                                                <option value="IN">Indiana</option>
+                                                <option value="IA">Iowa</option>
+                                                <option value="KS">Kansas</option>
+                                                <option value="KY">Kentucky</option>
+                                                <option value="LA">Louisiana</option>
+                                                <option value="ME">Maine</option>
+                                                <option value="MD">Maryland</option>
+                                                <option value="MA">Massachusetts</option>
+                                                <option value="MI">Michigan</option>
+                                                <option value="MN">Minnesota</option>
+                                                <option value="MS">Mississippi</option>
+                                                <option value="MO">Missouri</option>
+                                                <option value="MT">Montana</option>
+                                                <option value="NE">Nebraska</option>
+                                                <option value="NV">Nevada</option>
+                                                <option value="NH">New Hampshire</option>
+                                                <option value="NJ">New Jersey</option>
+                                                <option value="NM">New Mexico</option>
+                                                <option value="NY">New York</option>
+                                                <option value="NC">North Carolina</option>
+                                                <option value="ND">North Dakota</option>
+                                                <option value="OH">Ohio</option>
+                                                <option value="OK">Oklahoma</option>
+                                                <option value="OR">Oregon</option>
+                                                <option value="PA">Pennsylvania</option>
+                                                <option value="RI">Rhode Island</option>
+                                                <option value="SC">South Carolina</option>
+                                                <option value="SD">South Dakota</option>
+                                                <option value="TN">Tennessee</option>
+                                                <option value="TX">Texas</option>
+                                                <option value="UT">Utah</option>
+                                                <option value="VT">Vermont</option>
+                                                <option value="VA">Virginia</option>
+                                                <option value="WA">Washington</option>
+                                                <option value="WV">West Virginia</option>
+                                                <option value="WI">Wisconsin</option>
+                                                <option value="WY">Wyoming</option>
+                                            </select>
+
                                         </div>
                                     </div>
                                     <div class="form-row">

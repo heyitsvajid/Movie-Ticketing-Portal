@@ -10,6 +10,7 @@ import ImageUpload from './Image'
 import { envURL, reactURL } from '../config/environment';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css"
+import Pagination from './Pagination';
 
 var moment = require('moment');
 
@@ -26,10 +27,14 @@ class MovieForm extends Component {
             release_date: moment(),
             mpaa_ratings: '',
             movie_length: '',
+            synopsis: '',
             movie_definition: '',
             movie_characters: [],
             movieList: [],
-            update_id: 0
+            searchedMovieList: [],
+            update_id: 0,
+            currentPage: 1, 
+            perPageRows: 10
         }
     }
     _handleChangeFile(e) {
@@ -62,7 +67,7 @@ class MovieForm extends Component {
     }
 
     handleSubmit(e) {
-e.preventDefault();
+        e.preventDefault();
         if(localStorage.getItem('roleId')!='3'){
             swal({
                 type: 'error',
@@ -83,7 +88,6 @@ e.preventDefault();
             })
             return;
         }
-
         if (!this.state.title || !this.state.trailer_link || !this.state.release_date || !this.state.mpaa_ratings || !this.state.movie_keywords
             || !this.state.file || !this.state.movie_length || !this.state.movie_definition) {
             swal({
@@ -97,6 +101,7 @@ e.preventDefault();
         var movie = {
             title: this.state.title,
             trailer_link: this.state.trailer_link,
+            synopsis: this.state.synopsis,
             release_date: this.state.release_date.format('L'),
             mpaa_ratings: this.state.mpaa_ratings,
             movie_keywords: this.state.movie_keywords,
@@ -134,6 +139,7 @@ e.preventDefault();
             file: '',
             title: '',
             trailer_link: '',
+            synopsis: '',
             release_date: '',
             mpaa_ratings: '',
             movie_keywords: '',
@@ -155,7 +161,9 @@ e.preventDefault();
                     console.log('Fetching all movies');
                     console.log(res.data.data);
                     this.setState({
-                        movieList: res.data.data ? res.data.data : []
+                        movieList: res.data.data ? res.data.data : [],
+                        searchedMovieList: res.data.data ? res.data.data : [],
+                        currentPage: 1
                     })
                 } else {
                     console.error('Error Fetching all movie');
@@ -180,49 +188,88 @@ e.preventDefault();
         const name = e.target.name;
         const value = e.target.value;
         this.setState({ [name]: value })
-        console.log(this.state)
     }
+
+    handleNextPaginationButton(e) {
+        const total_pages = this.state.searchedMovieList.length > 0 ? this.state.searchedMovieList.length/this.state.perPageRows : 0;
+        if(this.state.searchedMovieList != [] && this.state.currentPage != Math.ceil(total_pages)){
+          this.setState({currentPage: Number(this.state.currentPage + 1)})      
+        }
+      }
+    
+    handlePrevPaginationButton(e) {
+    if(this.state.searchedMovieList != [] && this.state.currentPage != 1){
+        this.setState({currentPage: Number(this.state.currentPage - 1)})
+    }
+    }
+
+    handlePageChange(e) {
+    this.setState({currentPage: Number(e.target.dataset.id)})
+    }
+
     returnMovieList() {
-        let rowNodes = this.state.movieList.map((item, index) => {
+        let pagination_list, currentTodos=null;
+        if(this.state.searchedMovieList != []){
+            const indexOfLastTodo = this.state.currentPage * this.state.perPageRows;
+            const indexOfFirstTodo = indexOfLastTodo - this.state.perPageRows;
+            currentTodos = this.state.searchedMovieList.slice(indexOfFirstTodo, indexOfLastTodo);
+            const total_pages = this.state.searchedMovieList.length > 0 ? this.state.searchedMovieList.length/this.state.perPageRows : 0;
+            const page_numbers = [];
+            for (let i = 1; i <= Math.ceil(this.state.searchedMovieList.length / this.state.perPageRows); i++) {
+                page_numbers.push(i);
+            }  
+            pagination_list = page_numbers.map(number => {
+                return (
+                <li class="page-item" key= {number} data-id={number} onClick={this.handlePageChange.bind(this)}  ><a data-id={number} class="page-link" href="#">{number}</a></li>
+                );
+            });
+            for(let i = 0; i< currentTodos.length; i++){
+                currentTodos[i].current_index = indexOfFirstTodo + i + 1;
+            }
+        }
+        
+        let rowNodes = currentTodos.map((item, index) => {
             return (
                 <tr>
-                    <th scope="row">{index + 1}</th>
+                    <th scope="row">{item.current_index}</th>
                     <td>{item.title}</td>
                     <td>{(new Date(item.release_date)).toDateString()}</td>
                     <td>{item.movie_length}</td>
                     <td>{item.movie_definition}</td>
                     <td>{item.movie_characters.length}</td>
                     <td>
-                    {/* <a href = "#" data-id = {this.props.id} className="link-style nav-link btn-info action-link" onClick={this.handleProjectView}>Bid on Project</a> */}
                         <div class = "row">
                             <input type="button" class="dashboard-form-btn link-style nav-link btn-info action-link"
                             value="Update" required="" id={item._id} onClick={this.handleMovieUpdate.bind(this)} />
                             <input type="button" class="add-character-btn dashboard-form-btn link-style nav-link btn-info action-link"
                             value="Add Characters" required="" id={item._id} onClick={this.handleAddCharacters.bind(this)} />
                         </div>
-                        
-                        
                     </td>
                 </tr>
             )
         });
         return (
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Title</th>
-                        <th scope="col">Release Date</th>
-                        <th scope="col">Length</th>
-                        <th scope="col">Definition</th>
-                        <th scope="col">Characters</th>
-                        <th scope="col">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {rowNodes}
-                </tbody>
-            </table>
+            <div>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Release Date</th>
+                            <th scope="col">Length</th>
+                            <th scope="col">Definition</th>
+                            <th scope="col">Characters</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {rowNodes}
+                    </tbody>
+                </table>
+                <Pagination handlePrevPaginationButton = {this.handlePrevPaginationButton.bind(this)} handleNextPaginationButton = {this.handleNextPaginationButton.bind(this)}
+                        handlePageChange = {this.handlePageChange.bind(this)} pagination_list = {pagination_list}/>
+            </div>
+            
         );
 
     }
@@ -322,11 +369,42 @@ e.preventDefault();
         });
 
     }
+
+    handleSearchBar(e){
+        var searched_array = [];
+        if(e.target.value != ""){
+          if(this.state.movieList.length > 0){
+              for(let i = 0; i < this.state.movieList.length; i++){
+                var strRegExPattern = new RegExp(e.target.value, 'i');
+                let list_element = this.state.movieList[i]
+                if(list_element.title.match(strRegExPattern)){
+                    searched_array.push(list_element);
+                }
+              }
+              this.setState({searchedMovieList: searched_array, currentPage: 1})
+          }
+        }
+        else{
+          this.loadMovies();
+        }
+    }
+
     render() {
         return (
             <div>
-                <h4 class="c-grey-900 mB-20">All Movies</h4>
-                <hr />
+                <div class="row">
+                    <div class="col-lg-2">
+                    <h4 class="c-grey-900 mB-20">All Movies</h4>
+                    </div>
+                    <div class="col-lg-10">
+                    <div id = "search_bar">
+                        <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search Movie By Name" onChange = {this.handleSearchBar.bind(this)}/>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <hr/>
 
                 {this.returnMovieList()}
                 <br/>
@@ -335,7 +413,7 @@ e.preventDefault();
                 <hr class='mt-5 mb-5' />
                 <h3>{this.state.update ? 'Update' : 'Add New'} Movie</h3>
                 <hr />
-                <div class="row gap-20 masonry pos-r" style={{position: 'relative', height: '1086px'}}>
+                <div class="row gap-20 masonry pos-r" style={{position: 'relative', height: '700px'}}>
                     <div class="masonry-item col-md-6" style={{position: 'absolute', top: '0px'}}>
                         <div class="bgc-white p-20 bd">
                             <div class="mT-30">
@@ -398,6 +476,12 @@ e.preventDefault();
                                     <div className="form-group">
                                         <label class="dashboard-label">Movie Keywords</label>
                                         <Creatable amenities={this.state.movie_keywords} multiValueChange={this.multiValueChange.bind(this)} />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label class="dashboard-label">Synopsis</label>
+                                        <input class="form-control" type="text" name="synopsis" placeholder="Short Movie Description" 
+                                        required="" value={this.state.synopsis} onChange={this.handleUserInput} />
                                     </div>
 
                                     <div className="form-group">

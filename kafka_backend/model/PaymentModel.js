@@ -144,7 +144,7 @@ function getMultiplexSoldTicketsPerMonth( msg, callback ) {
             errHandler(err);
         } else {
             console.log("Connected to MYSQL in request of PaymentModel");
-            var sql = 'select month(booking_date), multiplex_id, sum(adult_tickets+child_tickets+student_tickets+disabled_tickets) from billing_information group by multiplex_id, month(booking_date);';
+            var sql = 'select month(booking_date) as month, multiplex_id, multiplex_name, sum(adult_tickets+child_tickets+student_tickets+disabled_tickets) as total_revenue from billing_information group by multiplex_id, month(booking_date);';
             console.log(sql)
             db.query(sql, (err, result) => {
                 if(err) {
@@ -170,7 +170,7 @@ function getCityRevenuePerYear( msg, callback ) {
             errHandler(err);
         } else {
             console.log("Connected to MYSQL in request of PaymentModel");
-            var sql = 'select multiplex_city, sum(amount),year(booking_date) from billing_information group by multiplex_city,year(booking_date);';
+            var sql = 'select multiplex_city, sum(amount) as total_revenue, year(booking_date) as year from billing_information group by multiplex_city,year(booking_date);';
             console.log(sql)
             db.query(sql, (err, result) => {
                 if(err) {
@@ -241,6 +241,33 @@ function getTicketConfirmation( msg, callback ) {
     })
 }
 
+function deleteBillingDetail( msg, callback ) {
+    console.log("In Delete Billing  ", msg);
+    pool.connect((err, db) => {
+        if(err) {
+            console.log("Error in PaymentModel request while connecting to DB");
+            errHandler(err);
+        }
+        else {
+            console.log("Connected to MYSQL in request of PaymentModel");
+            let id = msg.data.id;
+            let sql = 'delete from billing_information where id = ? ';
+            console.log(sql);
+            db.query( sql, id ,  ( err, result) => {
+                if(err) {
+                    console.log("Billing Details not found");
+                    errHandler(err);
+                    callback(null, null);
+                }
+                else {
+                    console.log(result);
+                    callback(null, result);
+                }
+            })
+        }
+    })
+}
+
 module.exports = {
     complete_Payment : complete_Payment,
     fetchBillingDetails : fetchBillingDetails,
@@ -250,6 +277,7 @@ module.exports = {
     getCityRevenuePerYear : getCityRevenuePerYear,
     getMovieRevenuePerYear : getMovieRevenuePerYear,
     getTicketConfirmation : getTicketConfirmation,
+    deleteBillingDetail : deleteBillingDetail,
     errHandler: errHandler
     //  deleteUser: deleteUser
   };

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import {withRouter} from 'react-router-dom';
 import axios from 'axios';
+import Pagination from './Pagination';
 import { envURL, reactURL } from '../config/environment';
 import '../assets/css/style.css'
-import swal from "sweetalert2";
 
 class MultiplexAdmin extends Component {
 
@@ -17,14 +17,16 @@ class MultiplexAdmin extends Component {
             address : '',
             profile_image_path : '',
             city : '',
-            state : '' ,
+            state_name : '' ,
             zipcode : '',
             phone_number : '',
             disable : 0 ,
             role_number : 2,
             multiplexAdminList:[],
             searchedAdminList: [],
-            error : ''
+            error : '', 
+            currentPage: 1, 
+            perPageRows: 5
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleCreateUser = this.handleCreateUser.bind(this);
@@ -61,32 +63,20 @@ class MultiplexAdmin extends Component {
             disable : this.state.disable,
             role_number : this.state.role_number
         };
-
-        if (!this.state.zipcode.match(/(^\d{5}$)|(^\d{5}-\d{4}$)/i)) {
-            swal({
-                type: 'error',
-                title: 'Add Multiplex Admin',
-                text: 'Invalid Zipcode',
-            });
-            return;
-        }
-        else {
-            axios.post(url, admin, {withCredentials : true} )
-                .then( (response) => {
-                    console.log("response from Kafka", response.data );
-                    if( response.data.errorMsg !== '' ) {
-                        this.setState({
-                            error : "Email is already used for Multiplex Admin"
-                        })
-                    }
-                    else if( response.data.successMsg !== '' ) {
-                        console.log(response.data);
-                        alert("Multiplex Admin Added Successfully");
-                        window.location.reload(true);
-                    }
-                } );
-        }
-
+        axios.post(url, admin, {withCredentials : true} )
+            .then( (response) => {
+                console.log("response from Kafka", response.data );
+                if( response.data.errorMsg !== '' ) {
+                    this.setState({
+                        error : "Email is already used for Multiplex Admin"
+                    })
+                }
+                else if( response.data.successMsg !== '' ) {
+                    console.log(response.data);
+                    alert("Multiplex Admin Added Successfully");
+                    window.location.reload(true);
+                }
+            } );
 
             var that = this;
             setTimeout(function () {
@@ -103,7 +93,8 @@ class MultiplexAdmin extends Component {
 
                 this.setState({
                     multiplexAdminList:response.data.data?response.data.data:[],
-                    searchedAdminList: response.data.data?response.data.data:[]
+                    searchedAdminList: response.data.data?response.data.data:[],
+                    currentPage: 1
                 })
             } )
     };
@@ -131,7 +122,7 @@ class MultiplexAdmin extends Component {
                     searched_array.push(list_element);
                 }
               }
-              this.setState({searchedAdminList: searched_array})
+              this.setState({searchedAdminList: searched_array, currentPage: 1})
           }
         }
         else{
@@ -139,11 +130,47 @@ class MultiplexAdmin extends Component {
         }
     }
 
-    returnMultiplexAdminList(){
-            let rowNodes = this.state.searchedAdminList.map((item, index) => {
+    handleNextPaginationButton(e) {
+        const total_pages = this.state.searchedAdminList.length > 0 ? this.state.searchedAdminList.length/this.state.perPageRows : 0;
+        if(this.state.searchedAdminList != [] && this.state.currentPage != Math.ceil(total_pages)){
+          this.setState({currentPage: Number(this.state.currentPage + 1)})      
+        }
+      }
+    
+      handlePrevPaginationButton(e) {
+        if(this.state.searchedAdminList != [] && this.state.currentPage != 1){
+          this.setState({currentPage: Number(this.state.currentPage - 1)})
+        }
+      }
+
+      handlePageChange(e) {
+        this.setState({currentPage: Number(e.target.dataset.id)})
+      }
+
+    returnMultiplexAdminList(){     
+            let pagination_list, currentTodos=null;
+            if(this.state.searchedAdminList != []){
+                const indexOfLastTodo = this.state.currentPage * this.state.perPageRows;
+                const indexOfFirstTodo = indexOfLastTodo - this.state.perPageRows;
+                currentTodos = this.state.searchedAdminList.slice(indexOfFirstTodo, indexOfLastTodo);
+                const total_pages = this.state.searchedAdminList.length > 0 ? this.state.searchedAdminList.length/this.state.perPageRows : 0;
+                const page_numbers = [];
+                for (let i = 1; i <= Math.ceil(this.state.searchedAdminList.length / this.state.perPageRows); i++) {
+                    page_numbers.push(i);
+                }  
+                pagination_list = page_numbers.map(number => {
+                    return (
+                    <li class="page-item" key= {number} data-id={number} onClick={this.handlePageChange.bind(this)}  ><a data-id={number} class="page-link" href="#">{number}</a></li>
+                    );
+                });
+                for(let i = 0; i< currentTodos.length; i++){
+                    currentTodos[i].current_index = indexOfFirstTodo + i + 1;
+                }
+            }
+            let rowNodes = currentTodos.map((item, index) => {
                 return (
                     <tr>
-                        <th scope="row">{index + 1}</th>
+                        <th scope="row">{item.current_index}</th>
                         <td>{item.first_name} {item.last_name}</td>
                         <td>{item.email}</td>
                         <td>{item.city}</td>
@@ -153,20 +180,26 @@ class MultiplexAdmin extends Component {
                 )
             });
             return (
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">City</th>
-                            <th scope="col">Zip Code</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {rowNodes}
-                    </tbody>
-                </table>
+                <div>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">City</th>
+                                <th scope="col">Zip Code</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {rowNodes}
+                        </tbody>
+                    </table>
+
+                    <Pagination handlePrevPaginationButton = {this.handlePrevPaginationButton.bind(this)} handleNextPaginationButton = {this.handleNextPaginationButton.bind(this)}
+                    handlePageChange = {this.handlePageChange.bind(this)} pagination_list = {pagination_list}/>
+                </div>
+                
             );            
     }
     render() {
@@ -179,11 +212,12 @@ class MultiplexAdmin extends Component {
                     <div class="col-lg-10">
                     <div id = "search_bar">
                         <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search Multiplex By Name" onChange = {this.handleSearchBar.bind(this)}/>
+                        <input type="text" class="form-control" placeholder="Search Multiplex Admin By Name" onChange = {this.handleSearchBar.bind(this)}/>
                         </div>
                     </div>
                     </div>
                 </div>
+                <hr/>
                 
                 {this.returnMultiplexAdminList()}
                 <div>
@@ -191,7 +225,7 @@ class MultiplexAdmin extends Component {
                         <hr class='mt-5 mb-5' />
                         <h3>Add New Multiplex Admin</h3>
                         <hr />
-                        <div class="row gap-20 masonry pos-r" style={{position: 'relative', height: '1086px'}}>
+                        <div class="row gap-20 masonry pos-r" style={{position: 'relative', height: '700px'}}>
                             <div class="masonry-item col-md-6" style={{position: 'absolute', top: '0px'}}>
                                 <div class="bgc-white p-20 bd">
                                     <div class="mT-30">
@@ -223,12 +257,12 @@ class MultiplexAdmin extends Component {
                                             <div class="form-row">
                                                 <div className="form-group col-md-6">
                                                     <label class="dashboard-label">City</label>
-                                                    <input type="text" placeholder="Enter City" className="form-control" onChange={this.handleChange} id="city" name='city' pattern='[A-Za-z]+[\s]*[A-Za-z]*' title='Please enter valid city' required />
+                                                    <input type="text" placeholder="Enter City" className="form-control" onChange={this.handleChange} id="city" name='city' pattern='[A-Za-z]*' title='Please enter valid city' required />
                                                 </div>
 
                                                 <div className="form-group col-md-6">
-                                                    <label class="dashboard-label" > State : </label>
-                                                    <select class="form-control" onChange={this.handleChange} id="state" name='state' required >
+                                                    <label class="dashboard-label">State</label>
+                                                    <select class="form-control" onChange={this.handleChange} id="state" name='state_name' required >
                                                         <option value="AL">Alabama</option>
                                                         <option value="AK">Alaska</option>
                                                         <option value="AZ">Arizona</option>
@@ -281,17 +315,13 @@ class MultiplexAdmin extends Component {
                                                         <option value="WI">Wisconsin</option>
                                                         <option value="WY">Wyoming</option>
                                                     </select>
-
-                                                    {/*<label class="dashboard-label">State</label>*/}
-                                                    {/*<input type="text" placeholder="Enter State" className="form-control" onChange={this.handleChange} id="state" name='state' pattern='[A-Za-z]*' title='Please enter valid state' required />*/}
-
                                                 </div>
                                             </div>
 
                                             <div class="form-row">
                                                 <div className="form-group col-md-6">
                                                     <label class="dashboard-label">ZipCode</label>
-                                                    <input type="text" placeholder="Enter ZipCode" className="form-control" onChange={this.handleChange} id="zipcode" name='zipcode' required />
+                                                    <input type="text" placeholder="Enter ZipCode" className="form-control" onChange={this.handleChange} id="zipcode" name='zipcode' pattern='[0-9]{5}' title='Please enter 5 Digit Zipcode' required />
                                                 </div>
                                                 <div className="form-group col-md-6">
                                                     <label class="dashboard-label">Phone Number</label>
