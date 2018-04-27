@@ -47,10 +47,10 @@ class AllBillingDetails extends Component {
     }
 
     handleDeleteBillingDetail = ( e ) => {
-        // e.preventDefault();
         console.log("Delete Clicked", e );
         let id = { id : e };
         let url = envURL + 'deletebillingdetail';
+        
         axios.post( url, id, { withCredentials : true } )
             .then( (response) => {
                 console.log("After Deleting Bill, Response ", response.data);
@@ -59,7 +59,7 @@ class AllBillingDetails extends Component {
                     title: 'Bill Detail Deleted Successfully',
                     text: "",
                 });
-                window.location.reload(true)
+                this.getAllBillingDetails();
             })
     };
 
