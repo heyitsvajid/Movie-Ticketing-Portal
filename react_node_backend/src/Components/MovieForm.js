@@ -27,6 +27,7 @@ class MovieForm extends Component {
             release_date: moment(),
             mpaa_ratings: '',
             movie_length: '',
+            synopsis: '',
             movie_definition: '',
             movie_characters: [],
             movieList: [],
@@ -66,7 +67,7 @@ class MovieForm extends Component {
     }
 
     handleSubmit(e) {
-e.preventDefault();
+        e.preventDefault();
         if(localStorage.getItem('roleId')!='3'){
             swal({
                 type: 'error',
@@ -87,7 +88,6 @@ e.preventDefault();
             })
             return;
         }
-
         if (!this.state.title || !this.state.trailer_link || !this.state.release_date || !this.state.mpaa_ratings || !this.state.movie_keywords
             || !this.state.file || !this.state.movie_length || !this.state.movie_definition) {
             swal({
@@ -101,6 +101,7 @@ e.preventDefault();
         var movie = {
             title: this.state.title,
             trailer_link: this.state.trailer_link,
+            synopsis: this.state.synopsis,
             release_date: this.state.release_date.format('L'),
             mpaa_ratings: this.state.mpaa_ratings,
             movie_keywords: this.state.movie_keywords,
@@ -138,6 +139,7 @@ e.preventDefault();
             file: '',
             title: '',
             trailer_link: '',
+            synopsis: '',
             release_date: '',
             mpaa_ratings: '',
             movie_keywords: '',
@@ -186,7 +188,6 @@ e.preventDefault();
         const name = e.target.name;
         const value = e.target.value;
         this.setState({ [name]: value })
-        console.log(this.state)
     }
 
     handleNextPaginationButton(e) {
@@ -475,6 +476,12 @@ e.preventDefault();
                                     <div className="form-group">
                                         <label class="dashboard-label">Movie Keywords</label>
                                         <Creatable amenities={this.state.movie_keywords} multiValueChange={this.multiValueChange.bind(this)} />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label class="dashboard-label">Synopsis</label>
+                                        <input class="form-control" type="text" name="synopsis" placeholder="Short Movie Description" 
+                                        required="" value={this.state.synopsis} onChange={this.handleUserInput} />
                                     </div>
 
                                     <div className="form-group">

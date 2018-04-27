@@ -334,10 +334,7 @@ class MovieDetails extends Component {
               >
               <div class="mop__synopsis-inner">
                   <h2 class="mop__synopsis-title">Blumhouse&#39;s {'title' in this.state.movie? this.state.movie.title: ''} (2018) Synopsis</h2>
-                  <p class="mop__synopsis-content">A harmless game of “Truth or Dare” among friends turns deadly when someone—or something—begins to punish those who tell a lie—or refuse the dare.</p>
-                  {/* <a class="mop__synopsis-link" href="/blumhouses-truth-or-dare-2018-208538/plot-summary">
-                  Read Full Synopsis
-                  </a> */}
+                  <p class="mop__synopsis-content">{'synopsis' in this.state.movie? this.state.movie.synopsis: 'There is no Synopsis present for this movie'}</p>
               </div>
             </div>
             <div class="row ad-unit--shop-ad">
