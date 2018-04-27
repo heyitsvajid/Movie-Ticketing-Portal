@@ -11,6 +11,8 @@ class CheckoutTest extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            bookScreenId:null,
+            bookShowId:null,
             name: null, 
             email: null, 
             adult_total_amount : null,
@@ -67,12 +69,27 @@ class CheckoutTest extends Component {
     }
   
     componentWillMount(){
-        this.getUserDetails()
-        // this.getMovieDetails()
-        this.getMultiplexDetails()
-        this.getTicketDetails()
-        this.getTicketDetails()
-        this.getCardDetails()
+        debugger
+        var showId = localStorage.getItem('bookShowId');
+        var screenId = localStorage.getItem('bookScreenId');
+        //localStorage.removeItem('bookShowId');
+        localStorage.removeItem('bookScreenId');
+        console.log('Fetching multiplex Details');
+        if (showId && screenId) {
+          this.setState({
+            bookScreenId: screenId,
+            bookShowId: showId,
+          })
+          this.getUserDetails()
+          // this.getMovieDetails()
+          this.getMultiplexDetails()
+          this.getTicketDetails()
+          this.getTicketDetails()
+          this.getCardDetails()
+          } else {
+          this.props.history.push('/movies')
+        }
+    
     }
 
     getUserDetails(){
@@ -126,8 +143,8 @@ class CheckoutTest extends Component {
     //             console.error(err);
     //         });
     // }
-    getMultiplexDetails(){
 
+    getMultiplexDetails(){
 
     let findMultiplexByIdAPI = envURL + 'findMultiplexById';
     var multiplexId = localStorage.getItem('bookMultiplexId')
@@ -284,16 +301,15 @@ class CheckoutTest extends Component {
         e.preventDefault();
         let completePayment = envURL + 'completePayment';
         var cardInformation  = {    
-                                    user_email : this.state.email,
+                                    user_email :  localStorage.getItem('email'),
                                     cardNumber : this.state.cardNumber, 
                                     expiryMonth : this.state.expiryMonth,  
                                     expiryYear : this.state.expiryYear,
                                     nameOnCard : this.state.firstName + " " + this.state.lastName, 
                                     card_zipcode : this.state.cardZipCode
-                                    // cvv : this.state.cvv,
                                 }
-        var billingInformation = {  user_email : this.state.email,
-                                    user_name : this.state.name,
+        var billingInformation = {  user_email : localStorage.getItem('email'),
+                                    user_name : localStorage.getItem('first_name'),
                                     amount : ( Number(this.state.adult_total_amount) + Number(this.state.child_total_amount) + Number(this.state.da_total_amount) + Number(this.state.student_total_amount)).toFixed(2),
                                     tax : this.state.tax,
                                     movie_id : this.state.movie_id,
@@ -307,7 +323,10 @@ class CheckoutTest extends Component {
                                     adult_tickets : this.state.a_tickets,
                                     child_tickets : this.state.c_tickets,
                                     disabled_tickets : this.state.da_tickets,
-                                    student_tickets : this.state.s_tickets
+                                    student_tickets : this.state.s_tickets,
+                                    show_id:this.state.bookShowId,
+                                    screen_number: parseInt(this.state.bookScreenId),
+                                    seat_count:this.state.show.seats_left
         }
         var payment_details = {
                                     card_details : cardInformation,
@@ -324,8 +343,18 @@ class CheckoutTest extends Component {
                     localStorage.setItem("billing_id", res.data.results.data.id)
                     localStorage.setItem("cards_last_four_digits", this.state.cardNumber.slice(this.state.cardNumber.length-4, this.state.cardNumber.length))
                     localStorage.setItem("card_expiry", this.state.expiryMonth +"/"+this.state.expiryYear )
-                    if(this.state.paymentSuccess){ window.location.href = reactURL + "confirmation" }
-                    else { alert("Complete the payment to confirm your bookings.") }
+                    if(this.state.paymentSuccess)
+                    { window.location.href = reactURL + "confirmation" }
+                    else 
+                    { 
+                        if(res.data.results.data.count_left<=0){
+                            alert('No Tickets left')
+                        }else{
+                            alert('Only '+res.data.results.data.count_left +' tickets left!')
+                            
+                        }
+
+                    }
             })
             .catch(err => {
                 console.error(err);

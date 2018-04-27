@@ -16,6 +16,9 @@ class TicketBooking extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      bookScreenId:'',
+      bookShowId:'',
+      bookMultiplexId:'',
       multiplex: {},
       show: {},
       movie:{},
@@ -32,13 +35,16 @@ class TicketBooking extends Component {
   }
 
   componentWillMount() {
+    debugger
     let findMultiplexByIdAPI = envURL + 'findMultiplexById';
     var multiplexId = localStorage.getItem('bookMultiplexId')
     var showId = localStorage.getItem('bookShowId');
-    // localStorage.removeItem('bookShowId');
-    // localStorage.removeItem('bookMultiplexId');
+    var screenId = localStorage.getItem('bookScreenId');
+    localStorage.removeItem('bookShowId');
+    localStorage.removeItem('bookMultiplexId');
+    localStorage.removeItem('bookScreenId');
     console.log('Fetching multiplex Details');
-    if (multiplexId && showId) {
+    if (multiplexId && showId && screenId) {
       var payload = {
         _id: multiplexId
       }
@@ -57,7 +63,10 @@ class TicketBooking extends Component {
                   this.setState({
                     show:element,
                     movie:element.movie,
-                    price:element.price
+                    price:element.price,
+                    bookScreenId:screenId,   
+                    bookShowId:showId,
+                    bookMultiplexId:multiplexId,
                   },()=>{
                     console.log(this.state)
                     this.setAddressAndScreen(this.state.show.screen_number)
@@ -109,6 +118,15 @@ class TicketBooking extends Component {
     debugger
     console.log("Saving Ticket and going to next page")
     console.log(this.state)
+    var totalCount = parseInt(this.state.a_tickets)+parseInt(this.state.s_tickets)+
+    parseInt(this.state.da_tickets)+parseInt(this.state.c_tickets)
+    debugger;
+    if(totalCount<=0)
+  {
+    alert('Add tickets to proceed')
+    return;
+  }
+
     localStorage.setItem('a_tickets', this.state.a_tickets)
     localStorage.setItem('adult_total_amount', this.state.adult_total_amount)
     localStorage.setItem('s_tickets', this.state.s_tickets)
@@ -117,6 +135,9 @@ class TicketBooking extends Component {
     localStorage.setItem('da_total_amount', this.state.da_total_amount)
     localStorage.setItem('c_tickets', this.state.c_tickets)
     localStorage.setItem('child_total_amount', this.state.child_total_amount)
+    localStorage.setItem('bookShowId', this.state.bookShowId);
+    localStorage.setItem('bookMultiplexId', this.state.bookMultiplexId);
+    localStorage.setItem('bookScreenId', this.state.bookScreenId);
     this.props.history.push('/co');    
   }
 
