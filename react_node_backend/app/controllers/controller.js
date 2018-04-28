@@ -1169,3 +1169,22 @@ exports.getClicksPerPage = function (req, res) {
     });
 };
 
+exports.getAllSessionDetails = function (req, res) {
+    console.log("findAllMovie_request : node backend");
+    let data = { request_code: 1 };
+
+    console.log(data);
+    kafka.make_request('logUserTrack_topic', data, function (err, results) {
+        console.log('Kafka Response:');
+        console.log(results);
+        if (err) {
+            console.log('Controller : Error Occurred : ');
+            console.log(err);
+            res.json(results);
+        }
+        else {
+            res.json(results);
+            return;
+        }
+    });
+};

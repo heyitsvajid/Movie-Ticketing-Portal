@@ -113,7 +113,8 @@ module.exports = function (app) {
     // Deleting Billing Detail
     app.post('/deletebillingdetail', api_controller.deleteBillingDetail );
 
-
+    app.get('/getAllSessionDetails', api_controller.getAllSessionDetails);
+    
 };
 
 

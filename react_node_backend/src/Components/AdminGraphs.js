@@ -18,7 +18,8 @@ class AdminGraphs extends Component {
             lastMonthMultiplexRevenue: [],
             userClickAnalytics: [],
             movieList: [],
-            movieReviewGraph: []
+            movieReviewGraph: [],
+            userSessionAnalytics:[]
         }
         this.getMovieRevenuePerYear = this.getMovieRevenuePerYear.bind(this);
         this.populateSelectBoxForMovieRevenueYears = this.populateSelectBoxForMovieRevenueYears.bind(this);
@@ -28,6 +29,7 @@ class AdminGraphs extends Component {
         this.filterCurrentMonth = this.filterCurrentMonth.bind(this);
         this.getUserClickDetails = this.getUserClickDetails.bind(this);
         this.loadMoviesRatings = this.loadMoviesRatings.bind(this)
+        this.loadSessionAnalytics=this.loadSessionAnalytics.bind(this);
     }
 
     componentWillMount() {
@@ -37,8 +39,38 @@ class AdminGraphs extends Component {
         this.getMultiplexSoldTicketsPerMonth();
         this.getUserClickDetails();
         this.loadMoviesRatings();
+        this.loadSessionAnalytics()
     }
 
+    loadSessionAnalytics(){
+        let findAllSessionDetails = envURL + 'getAllSessionDetails';
+        axios.get(findAllSessionDetails)
+            .then(res => {
+                if (res.data.successMsg != '') {
+                    console.log('Fetching all SessionDetails');
+                    console.log(res.data.data);
+                    var session = res.data.data[0].session;
+                    let finalData=[]
+
+                    session.forEach((element,index) => {
+                            finalData.push({
+                               page:element.pages[index],
+                               time:parseInt(element.pageTime[index])/1000 
+                            });
+                    });
+
+                    this.setState({
+                        userSessionAnalytics:finalData 
+                    })
+                } else {
+                    console.error('Error Fetching all movie');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    }        
+    
     loadMoviesRatings() {
         var finalArrayToShowInGraph = [];
         let findAllMovieAPI = envURL + 'findAllMovie';
@@ -280,6 +312,19 @@ class AdminGraphs extends Component {
                     <Area type="monotone" dataKey="count" fill="#8884d8" stroke="#8884d8" />
                     {/*<Bar dataKey="coun" barSize={20} fill="#413ea0" />*/}
                 </ComposedChart>
+
+
+                <h1>UserSession</h1>
+                <ComposedChart width={730} height={250} data={this.state.userSessionAnalytics}>
+                    <XAxis dataKey="page" />
+                    <YAxis label={{ value: "Time Spent(sec)", angle: -90, position: 'insideLeft' }}/>
+                    <Tooltip />
+                    <Legend />
+                    <CartesianGrid stroke="#f5f5f5" />
+                    <Area type="monotone" dataKey="time" fill="#8884d8" stroke="#8884d8" />
+                    {/*<Bar dataKey="coun" barSize={20} fill="#413ea0" />*/}
+                </ComposedChart>
+
 
 
                 <h1>Top Movie Rating's</h1>

@@ -13,13 +13,13 @@ var MovieSchema = new Schema({
         name: { type: String },
         image_path: { type: String }
     }],
-    release_date: { type: Date  },
+    release_date: { type: Date },
     mpaa_ratings: [{ type: String}],
     movie_keywords: [{ type: String}],
     movie_logo:  {type: String}  ,
     movie_length: {type: Number},
     movie_definition: { type: String},
-    synopsis:{type: String,required:true},
+    synopsis:{type: String,required:true,default:'Untitled'},
     review_ratings: [{
         rating:{ type: Number },
         review:{ type: String },
