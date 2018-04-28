@@ -1,112 +1,100 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { envURL, reactURL } from '../config/environment';
 
 class Layout extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      movieList:[],
+    }
   }
   
   componentWillMount(){
-  
+    let findAllMovieAPI = envURL + 'findAllMovie';
+    axios.get(findAllMovieAPI)
+      .then(res => {
+        if (res.data.successMsg != '') {
+          console.log('Fetching all movies');
+          console.log(res.data.data);
+          this.setState({
+            movieList: res.data.data ? res.data.data : []
+          })
+        } else {
+          console.error('Error Fetching all movie');
+        }
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  }
+
+  showMovieDetailsPage(e){
+    const movieId = e.target.dataset.movieid;
+    localStorage.setItem("movieID", movieId);
+    window.location.href = reactURL + "movie_details";
+  }
+
+  getReleaseDate(release_date){
+    debugger
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"];
+    let day = new Date(release_date).getDate();
+    let month_name = monthNames[new Date().getMonth()];
+    let year = new Date(release_date).getFullYear()
+    const final_date = "" + month_name + " " + day + ", " + year;
+    return final_date;
+  }
+
+  renderLatestMovies() {
+    let eightMovies = [];
+    var movies = this.state.movieList;
+    if(movies.length>0){
+      for(var i=0;i<8;i++){
+        movies[i] != undefined && new Date(movies[i].release_date) > Date.now() ? eightMovies.push(movies[i]) : eightMovies.push("Coming Soon");
+      }  
+    }
+    let moviesNode = eightMovies.map((item, index) => {
+      var imageSource = item == "Coming Soon" ? require('../assets/static_images/defaut.jpeg') : require('../images/' + item.movie_logo);
+      let movieAnchorTag = null;
+      if(item == "Coming Soon"){
+        movieAnchorTag = <a href="#" class="visual-container">
+            <img class="poster-thumb-size-s visual-thumb" src={imageSource} alt="Coming Soon Poster" />
+          </a>
+      }
+      else{
+        movieAnchorTag =  <a data-movieID = {item._id} href="#" onClick = {this.showMovieDetailsPage.bind(this)} class="visual-container">
+            <img class="poster-thumb-size-s visual-thumb" src={imageSource} alt="Movie Poster" />
+          </a>
+      }
+      debugger
+      const movie_release_date = item == "Coming Soon" ? "" : this.getReleaseDate(item.release_date);
+      const movie_title = item == "Coming Soon" ? item : item.title;
+      return (
+        <li key={item == "Coming Soon" ? "" : item._id}>
+          <div class="fluid poster">
+            { movieAnchorTag}
+            <div>
+              <a class="heading-style-1 movie-header heading-size-s heading__movie-carousel" href="#" data-movieID = {item._id} onClick = {this.showMovieDetailsPage.bind(this)}>{movie_title}</a>
+              <time datetime="Fri, Apr 13">{movie_release_date}</time> 
+            </div>
+          </div>
+        </li>
+      )
+    });
+
+    return (
+      <ol class="carousel-items js-items">
+      { moviesNode }
+      </ol>
+    )
   }
 
   render() {
     return (
     <div>
-      <div id="homeMovieCarousel" class="carousel jcarousel carousel-style-strip">
-        <ol class="carousel-items js-items">
-          <li>
-            <div class="fluid poster">
-              <a href="/rampage-2018-207628/movie-overview" class="visual-container">
-              <img class="poster-thumb-size-s visual-thumb" src="//images.fandango.com/ImageRenderer/200/0/redesign/static/img/default_poster.png/0/images/masterrepository/Fandango/207628/RMPGE_VERT_ONLINE_TEASER_DOM_2764x4096_master.jpg" alt="Rampage (2018) poster" />
-              </a>
-              <div>
-                <a class="heading-style-1 movie-header heading-size-s heading__movie-carousel" href="/rampage-2018-207628/movie-overview">Rampage (2018)</a>
-                <time datetime="Fri, Apr 13">Fri, Apr 13</time>
-              </div>
-            </div>
-          </li>
-          <li>
-            <div class="fluid poster">
-              <a href="/a-quiet-place-207769/movie-overview" class="visual-container">
-              <img class="poster-thumb-size-s visual-thumb" src="//images.fandango.com/ImageRenderer/200/0/redesign/static/img/default_poster.png/0/images/masterrepository/Fandango/207769/AQuietPlace2018.jpg" alt="A Quiet Place poster" />
-              </a>
-              <div>
-                <a class="heading-style-1 movie-header heading-size-s heading__movie-carousel" href="/a-quiet-place-207769/movie-overview">A Quiet Place</a>
-                <time datetime="Fri, Apr 6">Fri, Apr 6</time>
-              </div>
-            </div>
-          </li>
-          <li>
-            <div class="fluid poster">
-              <a href="/ready-player-one-204139/movie-overview" class="visual-container">
-              <img class="poster-thumb-size-s visual-thumb" src="//images.fandango.com/ImageRenderer/200/0/redesign/static/img/default_poster.png/0/images/masterrepository/Fandango/204139/RPO_new_MAIN_VERT_DOM_2764x.jpg" alt="Ready Player One poster" />
-              </a>
-              <div>
-                <a class="heading-style-1 movie-header heading-size-s heading__movie-carousel" href="/ready-player-one-204139/movie-overview">Ready Player One</a>
-                <time datetime="Thu, Mar 29">Thu, Mar 29</time>
-              </div>
-            </div>
-          </li>
-          <li>
-            <div class="fluid poster">
-              <a href="/blumhouses-truth-or-dare-2018-208538/movie-overview" class="visual-container">
-              <img class="poster-thumb-size-s visual-thumb" src="//images.fandango.com/ImageRenderer/200/0/redesign/static/img/default_poster.png/0/images/masterrepository/Fandango/208538/TruthOrDare2018.jpg" alt="Blumhouse&#39;s Truth or Dare (2018) poster" />
-              </a>
-              <div>
-                <a class="heading-style-1 movie-header heading-size-s heading__movie-carousel" href="/blumhouses-truth-or-dare-2018-208538/movie-overview">Blumhouse&#39;s Truth or Dare (2018)</a>
-                <time datetime="Fri, Apr 13">Fri, Apr 13</time>
-              </div>
-            </div>
-          </li>
-          <li>
-            <div class="fluid poster">
-              <a href="/blockers-206654/movie-overview" class="visual-container">
-              <img class="poster-thumb-size-s visual-thumb" src="//images.fandango.com/ImageRenderer/200/0/redesign/static/img/default_poster.png/0/images/masterrepository/Fandango/206654/Blockers-Full.jpg" alt="Blockers poster" />
-              </a>
-              <div>
-                <a class="heading-style-1 movie-header heading-size-s heading__movie-carousel" href="/blockers-206654/movie-overview">Blockers</a>
-                <time datetime="Fri, Apr 6">Fri, Apr 6</time>
-              </div>
-            </div>
-          </li>
-          <li>
-            <div class="fluid poster">
-              <a href="/isle-of-dogs-205852/movie-overview" class="visual-container">
-              <img class="poster-thumb-size-s visual-thumb" src="//images.fandango.com/ImageRenderer/200/0/redesign/static/img/default_poster.png/0/images/masterrepository/Fandango/205852/IOD-rated-one-sheet.jpg" alt="Isle of Dogs poster" />
-              </a>
-              <div>
-                <a class="heading-style-1 movie-header heading-size-s heading__movie-carousel" href="/isle-of-dogs-205852/movie-overview">Isle of Dogs</a>
-                <time datetime="Fri, Mar 23">Fri, Mar 23</time>
-              </div>
-            </div>
-          </li>
-          <li>
-            <div class="fluid poster">
-              <a href="/avengers-infinity-war-199925/movie-overview" class="visual-container">
-              <img class="poster-thumb-size-s visual-thumb" src="//images.fandango.com/ImageRenderer/200/0/redesign/static/img/default_poster.png/0/images/masterrepository/Fandango/199925/AvengersInfinityWar-postera.jpg" alt="Avengers: Infinity War poster" />
-              </a>
-              <div>
-                <a class="heading-style-1 movie-header heading-size-s heading__movie-carousel" href="/avengers-infinity-war-199925/movie-overview">Avengers: Infinity War</a>
-                <time datetime="Fri, Apr 27">Fri, Apr 27</time>
-              </div>
-            </div>
-          </li>
-          <li>
-            <div class="fluid poster">
-              <a href="/chappaquiddick-206369/movie-overview" class="visual-container">
-              <img class="poster-thumb-size-s visual-thumb" src="//images.fandango.com/ImageRenderer/200/0/redesign/static/img/default_poster.png/0/images/masterrepository/Fandango/206369/Chappaquiddick_final.jpg" alt="Chappaquiddick poster" />
-              </a>
-              <div>
-                <a class="movie-header heading-style-1 heading-size-s heading__movie-carousel" href="/chappaquiddick-206369/movie-overview">Chappaquiddick</a>
-                <time datetime="Fri, Apr 6">Fri, Apr 6</time>
-              </div>
-            </div>
-          </li>
-          
-          
-        </ol>
-        
+      <div id="homeMovieCarousel" class="upcoming-movies carousel jcarousel carousel-style-strip">
+        {this.renderLatestMovies()}
       </div>
     </div>
     )
