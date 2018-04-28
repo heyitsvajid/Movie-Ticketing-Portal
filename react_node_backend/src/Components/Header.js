@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import {envURL} from "../config/environment";
 import { withRouter } from 'react-router-dom';
+import { debug } from 'util';
 
 class Header extends Component {
   constructor(props) {
@@ -53,7 +54,6 @@ class Header extends Component {
 
   handleSearch() {
       console.log("search clicked", this.state.searchQuery);
-    debugger
       if(window.location.href.includes('/movies')){
         this.props.onSearchData(this.state.searchQuery);
       }else{

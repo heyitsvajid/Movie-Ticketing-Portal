@@ -25,13 +25,14 @@ class MovieForm extends Component {
             title: '',
             trailer_link: '',
             release_date: moment(),
-            mpaa_ratings: '',
+            mpaa_ratings: 'G',
             movie_length: '',
             synopsis: '',
-            movie_definition: '',
+            movie_definition: 'HD',
             movie_characters: [],
             movieList: [],
             searchedMovieList: [],
+            movie_keywords: [],
             update_id: 0,
             currentPage: 1, 
             perPageRows: 10
@@ -39,6 +40,7 @@ class MovieForm extends Component {
     }
     _handleChangeFile(e) {
         e.preventDefault();
+        document.getElementById("file_error").innerHTML = "";
         let reader = new FileReader();
         let file = e.target.files[0];
         // eslint-disable-next-line
@@ -76,81 +78,130 @@ class MovieForm extends Component {
             })
         }
         else{
-
-        e ? e.preventDefault() : ''
-        var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
-        var regex = new RegExp(expression);
-        if (!(this.state.trailer_link.match(regex))) {
-            swal({
-                type: 'error',
-                title: 'Add Movie',
-                text: 'Invalid Url',
-            })
-            return;
-        }
-        if (!this.state.title || !this.state.trailer_link || !this.state.release_date || !this.state.mpaa_ratings || !this.state.movie_keywords
-            || !this.state.file || !this.state.movie_length || !this.state.movie_definition) {
-            swal({
-                type: 'error',
-                title: 'Add Movie',
-                text: 'Provide all fields.',
-            })
-            return;
-        }
-        let createNewMovieAPI = envURL + 'createNewMovie';
-        var movie = {
-            title: this.state.title,
-            trailer_link: this.state.trailer_link,
-            synopsis: this.state.synopsis,
-            release_date: this.state.release_date.format('L'),
-            mpaa_ratings: this.state.mpaa_ratings,
-            movie_keywords: this.state.movie_keywords,
-            movie_length: this.state.movie_length,
-            movie_definition: this.state.movie_definition,
-        }
-
-        const formData = new FormData();
-        formData.append('file', this.state.file);
-        for (var key in movie) {
-            formData.append(key, movie[key]);
-        }
-        const config = {
-            headers: {
-                'content-type': 'multipart/form-data'
+            let titleErrorPresent = !this.validateTitleFormat(this.state.title) ? true : false; 
+            let trailerLinkErrorPresent = !this.validateTrailerLinkFormat(this.state.trailer_link) ? true : false;
+            let movieTimeErrorPresent = !this.validateMovieTimeFormat(this.state.movie_length) ? true : false;
+            let keywordsErrorPresent = !this.validateKeywordsFormat(this.state.movie_keywords) ? true : false;
+            let checkFilePresent = !this.validateFile(this.state.file) ? true : false;
+            let synopsisErrorPresent = !this.validateSynopsisFormat(this.state.synopsis) ? true : false;
+            debugger
+            if (titleErrorPresent || trailerLinkErrorPresent || movieTimeErrorPresent || keywordsErrorPresent
+                || synopsisErrorPresent) {
+                // swal({
+                //     type: 'error',
+                //     title: 'Add Movie',
+                //     text: 'Provide all fields.',
+                // })
+                return;
             }
-        }
-        post(createNewMovieAPI, formData, config).then(function (res) {
-            if (res.data.errorMsg != '') {
-                swal({
-                    type: 'error',
-                    title: 'Add Movie',
-                    text: res.data.errorMsg,
-                })
-            } else if (res.data.successMsg != '') {
-                swal({
-                    type: 'success',
-                    title: 'Add Movie',
-                    text: res.data.successMsg,
-                })
+            let createNewMovieAPI = envURL + 'createNewMovie';
+            var movie = {
+                title: this.state.title,
+                trailer_link: this.state.trailer_link,
+                synopsis: this.state.synopsis,
+                release_date: this.state.release_date.format('L'),
+                mpaa_ratings: this.state.mpaa_ratings,
+                movie_keywords: this.state.movie_keywords,
+                movie_length: this.state.movie_length,
+                movie_definition: this.state.movie_definition,
             }
-        });
-        this.setState({
-            update: false,
-            file: '',
-            title: '',
-            trailer_link: '',
-            synopsis: '',
-            release_date: '',
-            mpaa_ratings: '',
-            movie_keywords: '',
-            movie_length: '',
-            movie_definition: '',
-            update_id: 0
-        });
-        var that = this;
-        setTimeout(function () {
-            that.loadMovies()
-        }, 2000);}
+
+            const formData = new FormData();
+            formData.append('file', this.state.file);
+            for (var key in movie) {
+                formData.append(key, movie[key]);
+            }
+            const config = {
+                headers: {
+                    'content-type': 'multipart/form-data'
+                }
+            }
+            post(createNewMovieAPI, formData, config).then(function (res) {
+                if (res.data.errorMsg != '') {
+                    swal({
+                        type: 'error',
+                        title: 'Add Movie',
+                        text: res.data.errorMsg,
+                    })
+                } else if (res.data.successMsg != '') {
+                    swal({
+                        type: 'success',
+                        title: 'Add Movie',
+                        text: res.data.successMsg,
+                    })
+                }
+            });
+            this.setState({
+                update: false,
+                file: '',
+                title: '',
+                trailer_link: '',
+                synopsis: '',
+                release_date: '',
+                mpaa_ratings: '',
+                movie_keywords: '',
+                movie_length: '',
+                movie_definition: '',
+                update_id: 0
+            });
+            var that = this;
+            setTimeout(function () {
+                that.loadMovies()
+            }, 2000);
+        }
+    }
+
+    validateTitleFormat(title){
+        if(title.trim() == ""){
+          document.getElementById("title_error").innerHTML = "Please enter movie name";
+          return false;
+        }
+        return true;
+    }
+
+    validateMovieTimeFormat(movie_length){
+        if(movie_length.trim() == ""){
+          document.getElementById("movie_length_error").innerHTML = "Please enter movie length";
+          return false;
+        }
+        return true;
+    }
+
+    validateFile(file){
+        if(file == ""){
+          document.getElementById("file_error").innerHTML = "Please enter File";
+          return false;
+        }
+        return true;
+    }
+    
+    validateKeywordsFormat(keywords){
+        if(keywords.length == 0){
+          document.getElementById("keywords_error").innerHTML = "Please enter keywords";
+          return false;
+        }
+        return true;
+    }
+
+    validateSynopsisFormat(synopsis){
+        if(synopsis == ""){
+          document.getElementById("synopsis_error").innerHTML = "Please enter synopsis";
+          return false;
+        }
+        return true;
+    }
+
+    validateTrailerLinkFormat(trailer_link){
+        const regex = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+        if(trailer_link == ""){
+          document.getElementById("trailer_link_error").innerHTML = "Please enter trailer link";
+          return false;
+        }
+        else if(!regex.test(String(trailer_link).toLowerCase())){
+          document.getElementById("trailer_link_error").innerHTML = "Please enter valid trailer link";
+          return false;
+        }
+        return true;
     }
 
     loadMovies() {
@@ -176,6 +227,7 @@ class MovieForm extends Component {
 
     multiValueChange(val) {
         var multiValues = []
+        document.getElementById("keywords_error").innerHTML = "";
         val.forEach(element => {
             multiValues.push(element.value)
         });
@@ -187,6 +239,7 @@ class MovieForm extends Component {
     handleUserInput = (e) => {
         const name = e.target.name;
         const value = e.target.value;
+        document.getElementById(e.target.name + "_error").innerHTML = "";
         this.setState({ [name]: value })
     }
 
@@ -198,13 +251,13 @@ class MovieForm extends Component {
       }
     
     handlePrevPaginationButton(e) {
-    if(this.state.searchedMovieList != [] && this.state.currentPage != 1){
-        this.setState({currentPage: Number(this.state.currentPage - 1)})
-    }
+        if(this.state.searchedMovieList != [] && this.state.currentPage != 1){
+            this.setState({currentPage: Number(this.state.currentPage - 1)})
+        }
     }
 
     handlePageChange(e) {
-    this.setState({currentPage: Number(e.target.dataset.id)})
+        this.setState({currentPage: Number(e.target.dataset.id)})
     }
 
     returnMovieList() {
@@ -413,7 +466,7 @@ class MovieForm extends Component {
                 <hr class='mt-5 mb-5' />
                 <h3>{this.state.update ? 'Update' : 'Add New'} Movie</h3>
                 <hr />
-                <div class="row gap-20 masonry pos-r" style={{position: 'relative', height: '700px'}}>
+                <div class="row gap-20 masonry pos-r" style={{position: 'relative', height: '800px'}}>
                     <div class="masonry-item col-md-6" style={{position: 'absolute', top: '0px'}}>
                         <div class="bgc-white p-20 bd">
                             <div class="mT-30">
@@ -422,12 +475,14 @@ class MovieForm extends Component {
                                     <div className="form-group">
                                         <label class="dashboard-label">Title</label>
                                         <input class="form-control" type="text" name="title" placeholder="Enter Movie Name" required="" value={this.state.title} onChange={this.handleUserInput} />
+                                        <div id = "title_error" class= "error"></div>
                                     </div>
 
                                     <div className="form-group">
                                         <label class="dashboard-label">Trailer Link</label>
                                         <input class="form-control" type="text" name="trailer_link" placeholder="Address Line" 
                                         required="" value={this.state.trailer_link} onChange={this.handleUserInput} />
+                                        <div id = "trailer_link_error" class= "error"></div>
                                     </div>
 
                                     <div class="form-row">
@@ -435,6 +490,7 @@ class MovieForm extends Component {
                                             <label class="dashboard-label">Movie Length</label>
                                             <input class="form-control" type="number" name="movie_length"
                                             placeholder="Length in Minutes" required="" value={this.state.movie_length} onChange={this.handleUserInput} />
+                                            <div id = "movie_length_error" class= "error"></div>                                            
                                         </div>
 
                                         <div className="form-group col-md-6">
@@ -476,17 +532,20 @@ class MovieForm extends Component {
                                     <div className="form-group">
                                         <label class="dashboard-label">Movie Keywords</label>
                                         <Creatable amenities={this.state.movie_keywords} multiValueChange={this.multiValueChange.bind(this)} />
+                                        <div id = "keywords_error" class= "error"></div>  
                                     </div>
 
                                     <div className="form-group">
                                         <label class="dashboard-label">Synopsis</label>
                                         <input class="form-control" type="text" name="synopsis" placeholder="Short Movie Description" 
                                         required="" value={this.state.synopsis} onChange={this.handleUserInput} />
+                                        <div id = "synopsis_error" class= "error"></div>
                                     </div>
 
                                     <div className="form-group">
                                         <label class="dashboard-label">Movie Logo</label>
                                         <input id="file-upload" type="file" onChange={ this._handleChangeFile.bind(this) } />
+                                        <div id = "file_error" class= "error"></div>
                                     </div>
 
                                     <div class="form-row">

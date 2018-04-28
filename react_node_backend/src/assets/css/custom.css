@@ -1041,3 +1041,14 @@ button#footer-fanmail-submit {
 .upcoming-movies{
   margin-top: 2%;
 }
+
+.error{
+	color: red;
+  font-size: 13px;
+  margin-top: -10px;
+  margin-left: 2px;
+}
+
+#keywords_error{
+  margin-top: 8px !important;
+}

@@ -17,7 +17,7 @@ class MultiplexAdmin extends Component {
             address : '',
             profile_image_path : '',
             city : '',
-            state_name : '' ,
+            state_name : 'AL' ,
             zipcode : '',
             phone_number : '',
             disable : 0 ,
@@ -37,6 +37,7 @@ class MultiplexAdmin extends Component {
     }
     handleChange = (e) => {
         e.preventDefault();
+        document.getElementById(e.target.name + "_error").innerHTML = "";
         this.setState({
                 [e.target.name] : e.target.value,
                 error : ''
@@ -63,6 +64,21 @@ class MultiplexAdmin extends Component {
             disable : this.state.disable,
             role_number : this.state.role_number
         };
+
+        let firstNameErrorPresent = !this.validateFirstNameFormat(this.state.first_name) ? true : false; 
+        let lastNameErrorPresent = !this.validateLastNameFormat(this.state.last_name) ? true : false;
+        let emailErrorPresent = !this.validateEmailFormat(this.state.email) ? true : false;
+
+        let addressErrorPresent = !this.validateAddressFormat(this.state.address) ? true : false;
+        let cityErrorPresent = !this.validateCityFormat(this.state.city) ? true : false;
+        let stateErrorPresent = !this.validateStateFormat(this.state.state_name) ? true : false;
+        let zipcodeErrorPresent = !this.validateZipcodeFormat(this.state.zipcode) ? true : false;
+        let passwordErrorPresent = !this.validatePasswordFormat(this.state.password) ? true : false;
+        let phoneNumberErrorPresent = !this.validatePhoneNumberFormat(this.state.phone_number) ? true : false;
+        
+        if(firstNameErrorPresent || lastNameErrorPresent || emailErrorPresent || addressErrorPresent || cityErrorPresent || 
+            stateErrorPresent || zipcodeErrorPresent || passwordErrorPresent || phoneNumberErrorPresent){ return;}
+
         axios.post(url, admin, {withCredentials : true} )
             .then( (response) => {
                 console.log("response from Kafka", response.data );
@@ -84,6 +100,99 @@ class MultiplexAdmin extends Component {
             }, 2000);
     
     };
+
+    validateFirstNameFormat(first_name){
+        if(first_name.trim() == ""){
+          document.getElementById("first_name_error").innerHTML = "Please enter first name";
+          return false;
+        }
+        return true;
+    }
+
+    validateLastNameFormat(last_name){
+        if(last_name.trim() == ""){
+          document.getElementById("last_name_error").innerHTML = "Please enter last name";
+          return false;
+        }
+        return true;
+    }
+
+    validateEmailFormat(email){
+        const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if(email == ""){
+          document.getElementById("email_error").innerHTML = "Please enter your email";
+          return false;
+        }
+        else if(!regex.test(String(email).toLowerCase())){
+          document.getElementById("email_error").innerHTML = "Please enter valid email address";
+          return false;
+        }
+        return true;
+    }
+
+    validateAddressFormat(address){
+        if(address.trim() == ""){
+          document.getElementById("address_error").innerHTML = "Please enter address";
+          return false;
+        }
+        return true;
+    }
+    
+    validateCityFormat(city){
+        if(city.trim() == ""){
+          document.getElementById("city_error").innerHTML = "Please enter city";
+          return false;
+        }
+        return true;
+    }
+
+    validateStateFormat(state_name){
+        if(state_name.trim() == ""){
+          document.getElementById("state_name_error").innerHTML = "Please enter state";
+          return false;
+        }
+        return true;
+    }
+
+    validateZipcodeFormat(zipcode){
+        const regex = /(^\d{5}$)|(^\d{5}-\d{4}$)/;
+        if(zipcode.trim() == ""){
+          document.getElementById("zipcode_error").innerHTML = "Please enter zipcode";
+          return false;
+        }
+        else if(!regex.test(String(zipcode).toLowerCase())){
+          document.getElementById("zipcode_error").innerHTML = "Please enter valid Zipcode";
+          return false;
+        }
+        return true;
+    }
+
+    validatePasswordFormat(password){
+        if(password.trim() == ""){
+          document.getElementById("password_error").innerHTML = "Please enter password";
+          return false;
+        }
+        else if(password.trim().length < 8){
+          document.getElementById("password_error").innerHTML = "Password should be of 8 characters or more";
+          return false;
+        }
+        return true;
+    }
+    
+    validatePhoneNumberFormat(contact_no){
+        const regex = /^\(?([0-9]{3})\)?[-.●]?([0-9]{3})[-.●]?([0-9]{4})$/;
+        if(contact_no == ""){
+          document.getElementById("phone_number_error").innerHTML = "Please enter Contact Number";
+          return false;
+        }
+        else if(!regex.test(String(contact_no).toLowerCase())){
+          document.getElementById("phone_number_error").innerHTML = "Please enter valid Contact Number";
+          return false;
+        }
+        return true;
+      }
+
+
 
     handleFindAllAdmins = () => {
         let url = envURL+'findallmultiplexadmin';
@@ -234,35 +343,41 @@ class MultiplexAdmin extends Component {
                                             <div class="form-row">
                                                 <div className="form-group col-md-6">
                                                     <label class="dashboard-label">First Name</label>
-                                                    <input type="text" onChange={this.handleChange} placeholder="Enter First Name" className="form-control" id="first_name" name='first_name' pattern='[A-Za-z]*' title='Please enter valid name' required />
+                                                    <input type="text" onChange={this.handleChange} placeholder="Enter First Name" className="form-control" id="first_name" name='first_name' pattern='[A-Za-z]*' title='Please enter valid name' />
+                                                    <div id = "first_name_error" class= "error"></div>
                                                 </div>
 
                                                 <div className="form-group col-md-6">
                                                     <label class="dashboard-label">Last Name</label>
-                                                    <input type="text" onChange={this.handleChange} placeholder="Enter Last Name" className="form-control" id="last_name" name='last_name' pattern='[A-Za-z]*' title='Please enter valid name' required />
+                                                    <input type="text" onChange={this.handleChange} placeholder="Enter Last Name" className="form-control" id="last_name" name='last_name' pattern='[A-Za-z]*' title='Please enter valid name' />
+                                                    <div id = "last_name_error" class= "error"></div>
                                                 </div>
                                             </div>
                                             <div className="form-group">
                                                 <label class="dashboard-label">Email</label>
-                                                <input type="email" placeholder="Enter Email" onChange={this.handleChange} className="form-control" id="email" name='email' />
+                                                <input type="text" placeholder="Enter Email" onChange={this.handleChange} className="form-control" id="email" name='email' />
+                                                <div id = "email_error" class= "error"></div>
                                             </div>
                                             <div className="form-group">
                                                 <label class="dashboard-label">Password</label>
-                                                <input type="password" placeholder="Enter Password" className="form-control" onChange={this.handleChange} id="pwd" name='password' required />
+                                                <input type="password" placeholder="Enter Password" className="form-control" onChange={this.handleChange} id="pwd" name='password' />
+                                                <div id = "password_error" class= "error"></div>
                                             </div>
                                             <div className="form-group">
                                                 <label class="dashboard-label">Address</label>
-                                                <input type="text" placeholder="Enter Address" className="form-control" onChange={this.handleChange} id="address" name='address' required />
+                                                <input type="text" placeholder="Enter Address" className="form-control" onChange={this.handleChange} id="address" name='address' />
+                                                <div id = "address_error" class= "error"></div>
                                             </div>
                                             <div class="form-row">
                                                 <div className="form-group col-md-6">
                                                     <label class="dashboard-label">City</label>
-                                                    <input type="text" placeholder="Enter City" className="form-control" onChange={this.handleChange} id="city" name='city' pattern='[A-Za-z]*' title='Please enter valid city' required />
+                                                    <input type="text" placeholder="Enter City" className="form-control" onChange={this.handleChange} id="city" name='city' pattern='[A-Za-z]*' title='Please enter valid city' />
+                                                    <div id = "city_error" class= "error"></div>
                                                 </div>
 
                                                 <div className="form-group col-md-6">
                                                     <label class="dashboard-label">State</label>
-                                                    <select class="form-control" onChange={this.handleChange} id="state" name='state_name' required >
+                                                    <select class="form-control" onChange={this.handleChange} id="state" name='state_name' >
                                                         <option value="AL">Alabama</option>
                                                         <option value="AK">Alaska</option>
                                                         <option value="AZ">Arizona</option>
@@ -315,17 +430,20 @@ class MultiplexAdmin extends Component {
                                                         <option value="WI">Wisconsin</option>
                                                         <option value="WY">Wyoming</option>
                                                     </select>
+                                                    <div id = "state_name_error" class= "error"></div>
                                                 </div>
                                             </div>
 
                                             <div class="form-row">
                                                 <div className="form-group col-md-6">
                                                     <label class="dashboard-label">ZipCode</label>
-                                                    <input type="text" placeholder="Enter ZipCode" className="form-control" onChange={this.handleChange} id="zipcode" name='zipcode' pattern='[0-9]{5}' title='Please enter 5 Digit Zipcode' required />
+                                                    <input type="text" placeholder="Enter ZipCode" className="form-control" onChange={this.handleChange} id="zipcode" name='zipcode' title='Please enter 5 Digit Zipcode' />
+                                                    <div id = "zipcode_error" class= "error"></div>
                                                 </div>
                                                 <div className="form-group col-md-6">
                                                     <label class="dashboard-label">Phone Number</label>
-                                                    <input type="text" placeholder="Enter Phone Number" className="form-control" onChange={this.handleChange} id="phone_number" name='phone_number' pattern='[0-9]{10}' title='Please enter 10 Digit Phone Number' required />
+                                                    <input type="text" placeholder="Enter Phone Number" className="form-control" onChange={this.handleChange} id="phone_number" name='phone_number' title='Please enter 10 Digit Phone Number' />
+                                                    <div id = "phone_number_error" class= "error"></div>
                                                 </div>
                                             </div>
 

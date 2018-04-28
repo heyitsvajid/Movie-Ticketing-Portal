@@ -506,7 +506,7 @@ class AccountSettings extends Component {
                             <div class="large-8 columns">
                                 <label >Enter Reason to Leave us</label>
                                 <br/>
-                                <small>You will be able to recover your account whenever you wish to login back!</small>
+                                <small></small>
                                 <br/>
                                 <br/>
                                 <input name="ctl00$ctl00$GlobalBody$Body$LeaveComment" type="text"

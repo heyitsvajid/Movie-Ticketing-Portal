@@ -125,9 +125,6 @@ class MovieDetails extends Component {
                   {item == "Coming Soon" ? "Coming Soon": item.name}
                   </span>
                   </a>
-                  {/* <span class="carousel-cast-crew__sub-title">
-                  Carter
-                  </span> */}
                 </div>
             </div>
           </li>

@@ -10,7 +10,6 @@ var LogAPI = require('../utils/logging');
 
 class Index extends Component {
   componentWillMount(){
-    debugger;
     let click = {
       pageClick: {
           email: "anonymous",

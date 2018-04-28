@@ -7,7 +7,7 @@ import MultiplexForm from './MultiplexForm'
 import MovieForm from './MovieForm'
 import ShowTimingsForm from './ShowTimingsForm'
 import MultiplexAdminForm from './MultiplexAdmin'
-import { envURL } from "../config/environment";
+import { envURL, reactURL } from "../config/environment";
 import AllBillingDetails from './AllBillingDetails';
 
 class AdminDashboard extends Component {
@@ -514,21 +514,19 @@ class AdminDashboard extends Component {
 
     handleLogout() {
         //alert("In handleLogout");
+        localStorage.clear();
         axios.post(envURL + 'logout', null, { withCredentials: true })
             .then((response) => {
                 console.log(response.data);
-                if(response.data.session === 'logged out') {
+                // if(response.data.session === 'logged out') {
                     this.setState({
                         isLoggedIn: false
                     }, () => {
-                        localStorage.clear();
                         this.props.history.push('/');
                     })
-                }
+                // }
             })
     }
-  
-
 }
 
 export default withRouter(AdminDashboard);

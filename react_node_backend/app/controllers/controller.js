@@ -1193,22 +1193,24 @@ exports.getClicksPerPage = function (req, res) {
     });
 };
 
-exports.getAllSessionDetails = function (req, res) {
-    console.log("findAllMovie_request : node backend");
-    let data = { request_code: 1 };
-
-    console.log(data);
-    kafka.make_request('logUserTrack_topic', data, function (err, results) {
-        console.log('Kafka Response:');
-        console.log(results);
-        if (err) {
-            console.log('Controller : Error Occurred : ');
-            console.log(err);
-            res.json(results);
+exports.getClicksPerPage = function (req, res) {
+    var pageNumbers = {"Fandango Home": 0, "Account Settings": 1, "Check Out": 2, "Log In": 3,
+                        "Sign Up": 4, "Movie Detail": 5, "Purchase History": 6, "Ticket Booking": 7, "Ticket Confirmation": 8}
+    var pageClicks = [{pageName: "Fandango Home", count: 0}, {pageName: "Account Settings", count: 0}, {pageName: "Check Out", count: 0},
+                     {pageName: "Log In", count: 0}, {pageName: "Sign Up", count: 0}, {pageName: "Movie Detail", count: 0},
+                     {pageName: "Purchase History", count: 0}, {pageName: "Ticket Booking", count: 0}, {pageName: "Ticket Confirmation", count: 0}]
+    var lineReader = require('readline').createInterface({
+        input: require('fs').createReadStream('./logging/useranalytics.log')
+    });
+    lineReader.on('line', function (line) {
+        var jsonConvert = JSON.parse(line);
+        if(jsonConvert["message"]["pageClick"] != undefined){
+            var page_number = pageNumbers["" + jsonConvert["message"]["pageClick"]["pageName"] +""];
+            if(pageClicks[page_number] != undefined){
+                pageClicks[page_number].count += 1;
+            }
         }
-        else {
-            res.json(results);
-            return;
-        }
+    }).on('close', function () {
+        res.json(pageClicks)
     });
 };
