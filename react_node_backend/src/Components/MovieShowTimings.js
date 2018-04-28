@@ -369,7 +369,7 @@ renderMultiplexShowTimings(){
                 return(
                     <li class="fd-movie__btn-list-item" >
                       <a class="btn showtime-btn showtime-btn--available"
-                      id={show._id+','+multiplex._id} onClick={this.onShowTimeClick.bind(this)} >{new Date(show.sort_field).getHours()+':'+new Date(show.sort_field).getMinutes()}</a>
+                      id={show._id+','+multiplex._id+ ',' +show.screen_number } onClick={this.onShowTimeClick.bind(this)} >{new Date(show.sort_field).getHours()+':'+new Date(show.sort_field).getMinutes()}</a>
                     </li>
                     )
             });
@@ -480,6 +480,7 @@ renderMultiplexShowTimings(){
                    
     onShowTimeClick(e) {
         e.preventDefault();
+        debugger;
         //alert(e.target.id)
         var arr = e.target.id.split(',');
         if (arr.length ==3) {
