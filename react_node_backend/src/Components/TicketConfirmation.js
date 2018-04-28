@@ -31,9 +31,18 @@ class TicketConfirmation extends Component {
   }
 
   componentWillMount(){
-    this.getUserDetails()
-    this.getBillingDetails()
-    this.getTicketDetails()
+    var multiplexId = localStorage.getItem('bookMultiplexId')
+    var showId = localStorage.getItem('bookShowId');
+    localStorage.removeItem('bookShowId');
+    localStorage.removeItem('bookMultiplexId');
+    console.log('Fetching multiplex Details');
+    if (multiplexId && showId) {
+      this.getUserDetails()
+      this.getBillingDetails()
+      this.getTicketDetails()
+    } else {
+      this.props.history.push('/movies')
+    }
   }
 
   getUserDetails(){
@@ -80,16 +89,18 @@ class TicketConfirmation extends Component {
         // disabled_tickets : localStorage.getItem("da_tickets"),
         // ticketPrice : localStorage.getItem("ticketPrice"),
         total : Number(localStorage.getItem("adult_total_amount").split("$")[1]) + Number(localStorage.getItem("student_total_amount").split("$")[1]) + Number(localStorage.getItem("da_total_amount").split("$")[1]) + Number(localStorage.getItem("child_total_amount").split("$")[1])
-    })
-    localStorage.removeItem("a_tickets", "c_tickets", "da_tickets","s_tickets","adult_total_amount","student_total_amount","da_total_amount","child_total_amount" )
-    // localStorage.removeItem("card_expiry")
-    // localStorage.removeItem("card_expiry")
-    // localStorage.removeItem("card_expiry")
-    // localStorage.removeItem("card_expiry")
-    // localStorage.removeItem("card_expiry")
-    // localStorage.removeItem("card_expiry")
-    // localStorage.removeItem("card_expiry")
-    debugger
+    }
+    , () => {
+      localStorage.removeItem("a_tickets")
+      localStorage.removeItem("c_tickets")
+      localStorage.removeItem("da_tickets")
+      localStorage.removeItem("s_tickets")
+      localStorage.removeItem("adult_total_amount")
+      localStorage.removeItem("student_total_amount")
+      localStorage.removeItem("da_total_amount")
+      localStorage.removeItem("child_total_amount")
+    }
+  )
 }
 
   handlePrint(e){

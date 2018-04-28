@@ -37,7 +37,7 @@ class TicketBooking extends Component {
   componentWillMount() {
     debugger
     let findMultiplexByIdAPI = envURL + 'findMultiplexById';
-    var multiplexId = localStorage.getItem('bookMultiplexId')
+    var multiplexId = localStorage.getItem('bookMultiplexId');
     var showId = localStorage.getItem('bookShowId');
     var screenId = localStorage.getItem('bookScreenId');
     localStorage.removeItem('bookShowId');
@@ -126,7 +126,9 @@ class TicketBooking extends Component {
     alert('Add tickets to proceed')
     return;
   }
-
+    localStorage.setItem('bookShowId', this.state.bookShowId);
+    localStorage.setItem('bookMultiplexId', this.state.bookMultiplexId);
+    localStorage.setItem('bookScreenId', this.state.bookScreenId);
     localStorage.setItem('a_tickets', this.state.a_tickets)
     localStorage.setItem('adult_total_amount', this.state.adult_total_amount)
     localStorage.setItem('s_tickets', this.state.s_tickets)
@@ -135,9 +137,6 @@ class TicketBooking extends Component {
     localStorage.setItem('da_total_amount', this.state.da_total_amount)
     localStorage.setItem('c_tickets', this.state.c_tickets)
     localStorage.setItem('child_total_amount', this.state.child_total_amount)
-    localStorage.setItem('bookShowId', this.state.bookShowId);
-    localStorage.setItem('bookMultiplexId', this.state.bookMultiplexId);
-    localStorage.setItem('bookScreenId', this.state.bookScreenId);
     this.props.history.push('/co');    
   }
 

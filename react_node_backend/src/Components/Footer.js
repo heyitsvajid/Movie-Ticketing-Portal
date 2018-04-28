@@ -43,7 +43,7 @@ class Footer extends Component {
     var movies = this.state.movieList;
     if(movies.length>0){
       for(var i=0;i<8;i++){
-        debugger
+        // debugger
         movies[i] != undefined && new Date(movies[i].release_date) > Date.now() ? eightMovies.push(movies[i]) : eightMovies.push("Coming Soon");
       }  
     }

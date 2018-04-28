@@ -84,9 +84,10 @@ class CheckoutTest extends Component {
           // this.getMovieDetails()
           this.getMultiplexDetails()
           this.getTicketDetails()
-          this.getTicketDetails()
+        //   this.getTicketDetails()
           this.getCardDetails()
-          } else {
+        }
+           else {
           this.props.history.push('/movies')
         }
     
@@ -117,6 +118,15 @@ class CheckoutTest extends Component {
             // disabled_tickets : localStorage.getItem("da_tickets"),
             // ticketPrice : localStorage.getItem("ticketPrice"),
             // total : Number(this.state.adult_total_amount) + Number(this.state.child_total_amount) + Number(this.state.da_total_amount) + Number(this.state.student_total_amount)
+        }, () => {
+                        localStorage.removeItem("a_tickets")
+                        localStorage.removeItem("c_tickets")
+                        localStorage.removeItem("da_tickets")
+                        localStorage.removeItem("s_tickets")
+                        localStorage.removeItem("adult_total_amount")
+                        localStorage.removeItem("student_total_amount")
+                        localStorage.removeItem("da_total_amount")
+                        localStorage.removeItem("child_total_amount")
         })
     }
 
@@ -299,6 +309,14 @@ class CheckoutTest extends Component {
     completePayment(e){
         debugger
         e.preventDefault();
+                        localStorage.setItem('a_tickets', this.state.a_tickets)
+                        localStorage.setItem('adult_total_amount', this.state.adult_total_amount)
+                        localStorage.setItem('s_tickets', this.state.s_tickets)
+                        localStorage.setItem('student_total_amount', this.state.student_total_amount)
+                        localStorage.setItem('da_tickets', this.state.da_tickets)
+                        localStorage.setItem('da_total_amount', this.state.da_total_amount)
+                        localStorage.setItem('c_tickets', this.state.c_tickets)
+                        localStorage.setItem('child_total_amount', this.state.child_total_amount)
         let completePayment = envURL + 'completePayment';
         var cardInformation  = {    
                                     user_email :  localStorage.getItem('email'),
@@ -332,19 +350,34 @@ class CheckoutTest extends Component {
                                     card_details : cardInformation,
                                     billing_details : billingInformation
         }
+                        
         axios.post(completePayment, payment_details)
             .then(res => {
                     debugger
                     console.log('Payment Completed');
                     console.log(res.data.results);
-                    this.setState({
-                        paymentSuccess : res.data.results.data.payment_successfull
-                    })
-                    localStorage.setItem("billing_id", res.data.results.data.id)
-                    localStorage.setItem("cards_last_four_digits", this.state.cardNumber.slice(this.state.cardNumber.length-4, this.state.cardNumber.length))
-                    localStorage.setItem("card_expiry", this.state.expiryMonth +"/"+this.state.expiryYear )
-                    if(this.state.paymentSuccess)
-                    { window.location.href = reactURL + "confirmation" }
+                    // this.setState({
+                    //     paymentSuccess : res.data.results.data.payment_successfull
+                    // })
+                    // window.location.href = reactURL + "confirmation" 
+                    if(true)
+                    { 
+                        // localStorage.setItem("billing_id", res.data.results.data.id)
+                        localStorage.setItem("cards_last_four_digits", this.state.cardNumber.slice(this.state.cardNumber.length-4, this.state.cardNumber.length))
+                        localStorage.setItem("card_expiry", this.state.expiryMonth +"/"+this.state.expiryYear )
+                        // localStorage.removeItem('bookShowId')
+                        // localStorage.removeItem('bookMultiplexId')
+                        // localStorage.setItem('a_tickets', this.state.a_tickets)
+                        // localStorage.setItem('adult_total_amount', this.state.adult_total_amount)
+                        // localStorage.setItem('s_tickets', this.state.s_tickets)
+                        // localStorage.setItem('student_total_amount', this.state.student_total_amount)
+                        // localStorage.setItem('da_tickets', this.state.da_tickets)
+                        // localStorage.setItem('da_total_amount', this.state.da_total_amount)
+                        // localStorage.setItem('c_tickets', this.state.c_tickets)
+                        // localStorage.setItem('child_total_amount', this.state.child_total_amount)
+                        debugger
+                        window.location.href = reactURL + "confirmation" 
+                    }
                     else 
                     { 
                         if(res.data.results.data.count_left<=0){
@@ -668,9 +701,9 @@ class CheckoutTest extends Component {
                                       <h2 id="theaterName">{this.state.multiplexName}</h2>
                                   </li>
                                   <li id="theaterAddress"><a id="maplink" href="http://www.fandango.com/maps/drivingdirections.aspx?category=ticketboxoffice_secure&label=Towne 3 Cinemas&icontitles=yes&streetaddress=&zip=&iconid=213&level=8&state=&height=295&country=CA&city=&tid=AAFRF&mouse_mode=center&width=400" target="_blank"  class="emptyCheck">{this.state.multiplexAddress}</a> </li>
-                                  <li class="auditorium">
+                                  {/* <li class="auditorium">
                                       <h2 id="auditoriumInfo" class="emptyCheck">Auditorium: {this.state.screenNumber} </h2>
-                                  </li>
+                                  </li> */}
                                   <li class="theaterNotes">
                                       <h2 class="emptyCheck" id="notesHeader"></h2>
                                       <div class="emptyCheck" id="notesBody"></div>
