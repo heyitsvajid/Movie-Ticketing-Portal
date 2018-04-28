@@ -404,10 +404,7 @@ class AccountSettings extends Component {
                         <label> New Password </label>
                         <input type="password" id="newPassword" onChange={this.handleChange} class="vip-password-field" />
                     </div>
-                    {/* <div class="large-9 columns">
-                        <label class="" for="confPassword">Confirm Password</label>
-                        <input type="password" id="confPassword" class="vip-password-field" />
-                    </div> */}
+
                     <div class="large-3 columns right-25 password-save">
                         <a id="save-password" class="btn save-button" onClick={ this.handleSavePasswordUpdate }>Save</a>
                     </div>

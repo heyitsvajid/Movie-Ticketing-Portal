@@ -43,6 +43,8 @@ class TicketConfirmation extends Component {
       cards_last_four_digits : localStorage.getItem("cards_last_four_digits"),
       card_expiry : localStorage.getItem("card_expiry")
     })
+    localStorage.removeItem("cards_last_four_digits")
+    localStorage.removeItem("card_expiry")
   }
 
   getBillingDetails(){
@@ -79,6 +81,15 @@ class TicketConfirmation extends Component {
         // ticketPrice : localStorage.getItem("ticketPrice"),
         total : Number(localStorage.getItem("adult_total_amount").split("$")[1]) + Number(localStorage.getItem("student_total_amount").split("$")[1]) + Number(localStorage.getItem("da_total_amount").split("$")[1]) + Number(localStorage.getItem("child_total_amount").split("$")[1])
     })
+    localStorage.removeItem("a_tickets", "c_tickets", "da_tickets","s_tickets","adult_total_amount","student_total_amount","da_total_amount","child_total_amount" )
+    // localStorage.removeItem("card_expiry")
+    // localStorage.removeItem("card_expiry")
+    // localStorage.removeItem("card_expiry")
+    // localStorage.removeItem("card_expiry")
+    // localStorage.removeItem("card_expiry")
+    // localStorage.removeItem("card_expiry")
+    // localStorage.removeItem("card_expiry")
+    debugger
 }
 
   handlePrint(e){

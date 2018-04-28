@@ -762,6 +762,7 @@ completePayment.on('message', function (message) {
 fetchBillingDetails.on('message', function (message) {
     // console.log('Kafka Server Complete Payment: Card Information Received');
     var billing_data = JSON.parse(message.value);
+    console.log("Fetching Card Details")
     console.log(billing_data)
     console.log("Hello compare request id")
     console.log(billing_data.data.request_id);
@@ -964,6 +965,33 @@ fetchBillingDetails.on('message', function (message) {
         else if(request_id==8){
             console.log("In Request_id : "+ request_id);
             PaymentModel.deleteBillingDetail(billing_data,function ( err, res) {
+                var resultObject = {
+                    successMsg: '',
+                    errorMsg: '',
+                    data: {}
+                };
+                console.log('Kafka Server : after handle');
+                console.log(res );
+                if(err){
+                    resultObject.successMsg= '';
+                    resultObject.errorMsg= 'Error deleting billing details';
+                }else{
+                    resultObject.successMsg= 'Billing details successfully deleted.';
+                    resultObject.errorMsg= '';
+                    resultObject.data=res;
+                }
+                console.log(resultObject );
+                let payloads = utility.createPayload(billing_data,res,resultObject);
+                console.log('is producer ready : ' + producer.ready);
+                producer.send(payloads, function (err, data) {
+                    utility.log(data, err);
+                });
+                return;
+            });
+        }
+        else if(request_id==9){
+            console.log("In Request_id : "+ request_id);
+            PaymentModel.getCardDetails(billing_data,function ( err, res) {
                 var resultObject = {
                     successMsg: '',
                     errorMsg: '',

@@ -132,10 +132,14 @@ function fetchBillingDetailsPerUser(msg, callback) {
                     errHandler(err);
                     console.log("Transaction not found");
                     callback(null, null);
-                } else {
-                    var billing_information = { billing_information: result }
-                    callback(null, billing_information);
-
+                } else if(result.length > 0) {
+                    console.log("Transactions found : ", result.length);
+                    var billing_information = {billing_information : result}
+                    callback(null, billing_information);  
+                } else{
+                    console.log("0 Transactions available for this user: ", result.length);
+                    var billing_information = {billing_information : 0}
+                    callback(null, billing_information);  
                 }
             })
 
@@ -274,7 +278,34 @@ function getTicketConfirmation(msg, callback) {
     })
 }
 
-function deleteBillingDetail(msg, callback) {
+function getCardDetails( msg, callback ) {
+    console.log("In fetching total revenue per city per year", msg);
+    pool.connect((err, db) => {
+        if(err) {
+            console.log("Error in PaymentModel request while connecting to DB");
+            errHandler(err);
+        } else {
+            console.log("Connected to MYSQL in request of PaymentModel");
+            var sql = 'select * from user_cards_details where id = "' + msg.data.billing_id + '";';
+            console.log(sql)
+            db.query(sql, (err, result) => {
+                if(err) {
+                    console.log("Error in PaymentModel while fetching billing data into MySQLDB");
+                    errHandler(err);
+                    console.log("Transaction not found");
+                    callback(null, null);
+                } else {
+                    console.log(result)
+                    var billing_information = {billing_information : result}
+                    callback(null, billing_information);
+                }
+            })
+
+        }
+    })
+}
+
+function deleteBillingDetail( msg, callback ) {
     console.log("In Delete Billing  ", msg);
     pool.connect((err, db) => {
         if (err) {
@@ -302,15 +333,16 @@ function deleteBillingDetail(msg, callback) {
 }
 
 module.exports = {
-    complete_Payment: complete_Payment,
-    fetchBillingDetails: fetchBillingDetails,
-    fetchBillingDetailsPerUser: fetchBillingDetailsPerUser,
-    getCardDetailsPerUser: getCardDetailsPerUser,
-    getMultiplexSoldTicketsPerMonth: getMultiplexSoldTicketsPerMonth,
-    getCityRevenuePerYear: getCityRevenuePerYear,
-    getMovieRevenuePerYear: getMovieRevenuePerYear,
-    getTicketConfirmation: getTicketConfirmation,
-    deleteBillingDetail: deleteBillingDetail,
+    complete_Payment : complete_Payment,
+    fetchBillingDetails : fetchBillingDetails,
+    fetchBillingDetailsPerUser : fetchBillingDetailsPerUser,
+    getCardDetailsPerUser : getCardDetailsPerUser,
+    getMultiplexSoldTicketsPerMonth : getMultiplexSoldTicketsPerMonth,
+    getCityRevenuePerYear : getCityRevenuePerYear,
+    getMovieRevenuePerYear : getMovieRevenuePerYear,
+    getTicketConfirmation : getTicketConfirmation,
+    deleteBillingDetail : deleteBillingDetail,
+    getCardDetails : getCardDetails,
     errHandler: errHandler
     //  deleteUser: deleteUser
 };

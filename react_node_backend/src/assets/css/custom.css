@@ -1022,3 +1022,22 @@ nav.pagination-list{
 .footer-movies li:first-child {
   margin-top: 5px;
 }
+
+.footer-coming-soon--list{
+  padding-left: 45px !important;
+  padding-right: 50px !important;
+  padding-bottom: 0px !important;
+  /* padding: 23px !important; */
+}
+
+button#footer-fanmail-submit {
+  margin-top: 8%;
+}
+
+#global-footer>section {
+  padding-top: 30px !important;
+}
+
+.upcoming-movies{
+  margin-top: 2%;
+}

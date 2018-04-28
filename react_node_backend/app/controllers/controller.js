@@ -850,24 +850,6 @@ exports.completePayment = function (req, res) {
 //     });
 // }
 
-exports.deleteBillingDetail = ( req, res) => {
-    console.log("In Node Backend, Delete Billing detail", req.body);
-    let request_id = { request_id : 8, id : req.body.id };
-    kafka.make_request( 'fetchBillingDetails', request_id, (err, result) => {
-        console.log('Kafka Response:');
-        console.log(result);
-        if (err) {
-            console.log('Controller : Error Occurred : ');
-            console.log(err);
-            res.json(result);
-        }
-        else {
-            console.log("Billing Details Deleted");
-            res.json({result: result});
-            return;
-        }
-    } )
-};
 
 exports.getAllBillingDetails = function (req, res) {
     console.log("Fetch Billing Details : node backend");
@@ -888,24 +870,27 @@ exports.getAllBillingDetails = function (req, res) {
 }
 
 exports.getBillingDetailsPerUser = function (req, res) {
-    console.log("Fetch Billing Details per User : node backend");
-    console.log(req.body.user_email)
-    console.log("UserName:" + req.body);
-    var request_id = { request_id: 2, user_email: "Jay" };
-    kafka.make_request('fetchBillingDetails', request_id, function (err, results) {
-        console.log('Kafka Response:');
-        console.log(results);
-        if (err) {
-            console.log('Controller : Error Occurred : ');
-            console.log(err);
-            res.json(results);
-        }
-        else {
-            console.log(results)
-            res.json({ results: results });
-            return;
-        }
-    });
+    if(req.session.email) {
+        var request_id = {request_id : 2, user_email : req.session.email};
+        kafka.make_request('fetchBillingDetails', request_id, function (err, results) {
+            console.log('Kafka Response: in fetching Billing details per user');
+            console.log(results);
+            if (err) {
+                console.log('Controller : Error Occurred : ');
+                console.log(err);
+                res.json(results);
+            }
+            else {
+                console.log(results)
+                res.json({results: results});
+                return;
+            }
+        });
+    }
+    else {
+        console.log("Session is invalid");
+        res.json({"session": "invalid" , "result": []});
+    }
 }
 
 exports.getCardDetailsPerUser = function (req, res) {
@@ -1009,6 +994,46 @@ exports.getTicketConfirmation = function (req, res) {
         }
     });
 }
+
+exports.deleteBillingDetail = ( req, res) => {
+    console.log("In Node Backend, Delete Billing detail", req.body);
+    let request_id = { request_id : 8, id : req.body.id };
+    kafka.make_request( 'fetchBillingDetails', request_id, (err, result) => {
+        console.log('Kafka Response:');
+        console.log(result);
+        if (err) {
+            console.log('Controller : Error Occurred : ');
+            console.log(err);
+            res.json(result);
+        }
+        else {
+            console.log("Billing Details Deleted");
+            res.json({result: result});
+            return;
+        }
+    } )
+};
+
+exports.getCardDetails = function (req, res) {
+    console.log("Fetching Ticket Confirmation : node backend");
+    console.log(req.body)
+    var request_id = { request_id: 9, billing_id: req.body.cardTransactionNumber };
+    kafka.make_request('fetchBillingDetails', request_id, function (err, results) {
+        console.log('Kafka Response:');
+        console.log(results);
+        if (err) {
+            console.log('Controller : Error Occurred : ');
+            console.log(err);
+            res.json(results);
+        }
+        else {
+            res.json({ results: results });
+            return;
+        }
+    });
+}
+
+
 //User Analytics:
 exports.logUserClick = function (req, res) {
     console.log('Logging for user :' + req.session.email);
