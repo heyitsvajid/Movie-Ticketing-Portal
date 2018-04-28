@@ -1029,7 +1029,8 @@ exports.getMovieRevenuePerYear = function (req, res) {
 
 exports.getTicketConfirmation = function (req, res) {
     console.log("Fetching Ticket Confirmation : node backend");
-    var request_id = { request_id: 7, billing_id: "52" };
+    console.log(req.body)
+    var request_id = { request_id: 7, billing_id: req.body.id };
     kafka.make_request('fetchBillingDetails', request_id, function (err, results) {
         console.log('Kafka Response:');
         console.log(results);

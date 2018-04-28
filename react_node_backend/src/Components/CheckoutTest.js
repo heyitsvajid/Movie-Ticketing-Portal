@@ -361,6 +361,7 @@ class CheckoutTest extends Component {
                      })
                     if(res.data.results.data.payment_successfull)
                     { 
+                        debugger
                         localStorage.setItem("billing_id", res.data.results.data.id)
                         localStorage.setItem("cards_last_four_digits", this.state.cardNumber.slice(this.state.cardNumber.length-4, this.state.cardNumber.length))
                         localStorage.setItem("card_expiry", this.state.expiryMonth +"/"+this.state.expiryYear )

@@ -59,7 +59,8 @@ class TicketConfirmation extends Component {
   getBillingDetails(){
     debugger
         let getTicketConfirmation = envURL + 'getTicketConfirmation';
-        var payment_details = localStorage.getItem("billing_id")
+        
+        var payment_details = {id:localStorage.getItem("billing_id")}
         axios.post(getTicketConfirmation, payment_details)
             .then(res => {
                     debugger
