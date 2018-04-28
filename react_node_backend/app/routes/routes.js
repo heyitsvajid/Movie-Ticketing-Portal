@@ -33,6 +33,8 @@ module.exports = function (app) {
   //Search based on zip, state, city or movie
   app.post('/searchQuery', api_controller.searchQuery );
 
+    //getting all users that is role_number = 1
+    app.get('/getAllUsersOnly', api_controller.getAllUsersOnly);
 
     //Find All Multiplex
   app.get('/findAllMultiplex', api_controller.findAllMultiplex);

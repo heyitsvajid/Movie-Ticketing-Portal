@@ -216,6 +216,30 @@ exports.disableAccount = (req, res) => {
 };
 
 
+exports.getAllUsersOnly = function (req, res) {
+    console.log("getAllUsersOnly : node backend");
+
+    var data = {
+        request_code: 8 //get all users
+    };
+    console.log("getAllUsersOnly", data);
+
+    kafka.make_request('user_request', data, function (err, results) {
+        console.log('Kafka Response:after getAllUsersOnly');
+        console.log(results);
+        if (err) {
+            console.log('Controller : Error Occurred in getAllUsersOnly ');
+            console.log(err);
+            res.json(results);
+        }
+        else {
+            res.json(results);
+            return;
+        }
+    });
+
+};
+
 //search
 exports.searchQuery = (req, res) => {
     console.log("In Node Backend, searching by state, zip, moviename, city", req.body);

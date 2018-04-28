@@ -245,6 +245,36 @@ user_consumer.on('message', function (message) {
             return;
         });
     }
+    else if(data.data.request_code === 8) {
+        console.log("In Request Code 8 : Get All Normal user only " , data.data );
+        UserModal.getAllNormalUsers_request(data.data, function (err, res) {
+            console.log('Kafka Server : after handle in getAllNormalUsers_request', res);
+            var resultObject = {
+                successMsg: '',
+                errorMsg: '',
+                data: {}
+            };
+
+            if(res !== null) {
+
+                resultObject.successMsg = "Got All Users only";
+                resultObject.errorMsg = '';
+                resultObject.data = res
+            }
+            else {
+                resultObject.successMsg = '';
+                resultObject.errorMsg = 'Error getting users';
+                resultObject.data =  {};
+            }
+            console.log("After formation of resultobject in getAllNormalUsers_request in serverjs",resultObject);
+            var payloads = utility.createPayload(data, resultObject);
+            console.log('is producer ready : ' + producer.ready);
+            producer.send(payloads, function (err, data) {
+                utility.log(data, err) ;
+            } );
+            return;
+        });
+    }
 
 
 });

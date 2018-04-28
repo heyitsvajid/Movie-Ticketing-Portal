@@ -541,6 +541,31 @@ function disable_account_request( msg, callback) {
     });
 };
 
+function getAllNormalUsers_request(msg, callback) {
+    console.log("Inside getAllNormalUsers_request in kafkabackend UserModal", msg);
+
+    pool.connect((err, db) => {
+        if(err) {
+            console.log("Error in UserModal getAllNormalUsers_request while connecting to DB");
+            errHandler(err);
+        } else {
+            console.log("Connected to MYSQL in getAllNormalUsers_request in usermodal");
+            var sql = "select * from user where role_number = 1";
+            db.query(sql, (err, result) => {
+                db.release();
+                if(err) {
+                    console.log("Error in UserModal getAllNormalUsers_request while update query to DB");
+                    errHandler(err);
+                }
+                else {
+                    console.log("Result after getAllNormalUsers_request from DB..", result);
+                    callback(null, result);
+                }
+            });
+        }
+    });
+}
+
 //==============================================================================
 /**
 * Export module
@@ -556,6 +581,7 @@ module.exports = {
     update_email_profile_request : update_email_profile_request,
     update_password_profile_request : update_password_profile_request,
     disable_account_request : disable_account_request,
+    getAllNormalUsers_request: getAllNormalUsers_request,
     errHandler: errHandler
     //  deleteUser: deleteUser
   };

@@ -144,7 +144,7 @@ class AllBillingDetails extends Component {
                 <li class="page-item" key= {number} data-id={number} onClick={this.handlePageChange.bind(this)}  ><a data-id={number} class="page-link" href="#">{number}</a></li>
                 );
             });
-            for(let i = 0; i< currentTodos.length; i++){
+            for(let i = 0; i< currentTodos.length; i++) {
                 currentTodos[i].current_index = indexOfFirstTodo + i + 1;
             }
         }
