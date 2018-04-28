@@ -350,19 +350,18 @@ class CheckoutTest extends Component {
                                     card_details : cardInformation,
                                     billing_details : billingInformation
         }
-                        
+                        debugger;
         axios.post(completePayment, payment_details)
             .then(res => {
                     debugger
                     console.log('Payment Completed');
                     console.log(res.data.results);
-                    // this.setState({
-                    //     paymentSuccess : res.data.results.data.payment_successfull
-                    // })
-                    // window.location.href = reactURL + "confirmation" 
-                    if(true)
+                     this.setState({
+                         paymentSuccess : res.data.results.data.payment_successfull
+                     })
+                    if(res.data.results.data.payment_successfull)
                     { 
-                        // localStorage.setItem("billing_id", res.data.results.data.id)
+                        localStorage.setItem("billing_id", res.data.results.data.id)
                         localStorage.setItem("cards_last_four_digits", this.state.cardNumber.slice(this.state.cardNumber.length-4, this.state.cardNumber.length))
                         localStorage.setItem("card_expiry", this.state.expiryMonth +"/"+this.state.expiryYear )
                         // localStorage.removeItem('bookShowId')
@@ -386,7 +385,6 @@ class CheckoutTest extends Component {
                             alert('Only '+res.data.results.data.count_left +' tickets left!')
                             
                         }
-
                     }
             })
             .catch(err => {

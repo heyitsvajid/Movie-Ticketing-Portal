@@ -19,21 +19,22 @@ function complete_Payment(msg, callback) {
             console.log("Error in PaymentModel request while connecting to DB");
             errHandler(err);
         } else {
-            var checkCountSQL = 'select show_id,sum(adult_tickets+child_tickets+disabled_tickets+student_tickets) as count from billing_information where show_id!="" group by show_id'
+            var checkCountSQL = 'select show_id,sum(adult_tickets+child_tickets+disabled_tickets+student_tickets) as count from billing_information where show_id="' +billing_information.show_id +  '" group by show_id'
             var card_details = msg.data.card_details;
             db.query(checkCountSQL, (err, result) => {
                 if (err) {
                     console.log("Error in PaymentModel while inserting data into MySQLDB");
                     errHandler(err);
                 } else {
-                    console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$')
                     console.log('Show Id :' + billing_information.show_id)
                     console.log('Total Seats ' + billing_information.seat_count)
                     console.log('totalCount : ' + totalCount)
                     console.log(result)
+                    if(result.length==1){
                     result.forEach(show => {
                         if (show.show_id == billing_information.show_id) {
                             if (billing_information.seat_count >= show.count + totalCount) {
+
 
                                 console.log('Enough Seats. Allow Bookings')
                                 console.log(card_details)
@@ -71,12 +72,38 @@ function complete_Payment(msg, callback) {
                                 // callback(null, result[0]);
                                 callback(null, payment_successfull);
                             }
-
-                        } else {
-                            console.log("Payment has not been done");
-                            callback(null, null);
                         }
-                    });
+                    });}else{
+                        console.log('No seats booked yet. Allow Bookings')
+                        console.log(card_details)
+                        console.log("Connected to MYSQL in request of PaymentModel");
+                        var sql = 'insert into user_cards_details(user_email, cardNumber, expiryMonth, expiryYear, nameOnCard, card_zipcode) values("' + card_details.user_email + '","' + card_details.cardNumber + '","' + Number(card_details.expiryMonth) + '","' + Number(card_details.expiryYear) + '","' + card_details.nameOnCard + '","' + Number(card_details.card_zipcode) + '");';
+                        console.log(sql)
+                        db.query(sql, (err, result) => {
+                            // db.release();
+                            console.log(result.insertId)
+                            if (err) {
+                                console.log("Error in PaymentModel while inserting data into MySQLDB");
+                                errHandler(err);
+                            } else {
+                                console.log("Printing Billing Information")
+                                console.log(billing_information)
+                                var transaction_card_id = result.insertId;
+                                var sql = 'insert into billing_information(transaction_card_id, user_email, user_name, amount, tax, movie_id, movie_name, multiplex_id, multiplex_name, multiplex_address, multiplex_city, multiplex_zipcode, adult_tickets, child_tickets, disabled_tickets, student_tickets, show_time,show_id,screen_number) values("' + transaction_card_id + '","' + billing_information.user_email + '","' + billing_information.user_name + '","' + billing_information.amount + '","' + billing_information.tax + '","' + billing_information.movie_id + '","' + billing_information.movie_name + '","' + billing_information.multiplex_id + '","' + billing_information.multiplex_name + '","' + billing_information.multiplex_address + '","' + billing_information.multiplex_city + '","' + billing_information.multiplex_zipcode + '","' + billing_information.adult_tickets + '","' + billing_information.child_tickets + '","' + billing_information.disabled_tickets + '","' + billing_information.student_tickets + '","' + billing_information.show_time + '","' + billing_information.show_id + '","' + billing_information.screen_number + '");';
+                                db.query(sql, (err, rows) => {
+                                    if (rows.affectedRows > 0) {
+                                        console.log(rows);
+                                        var payment_successfull = { payment_successfull: true, id: rows.insertId }
+                                        callback(null, payment_successfull);
+                                    } else {
+                                        console.log("Payment has not been done");
+                                        callback(null, null);
+                                    }
+                                })
+
+                            }
+                        })
+                    }
                     console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$')
 
 
