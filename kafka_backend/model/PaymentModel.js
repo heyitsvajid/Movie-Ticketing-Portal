@@ -234,7 +234,7 @@ function getCityRevenuePerYear(msg, callback) {
             errHandler(err);
         } else {
             console.log("Connected to MYSQL in request of PaymentModel");
-            var sql = 'select multiplex_city, sum(amount) as total_revenue, year(booking_date) as year from billing_information group by multiplex_city,year(booking_date) order by total_revenue DESC LIMIT 10;';
+            var sql = 'select multiplex_city, sum(amount) as total_revenue, year(booking_date) as year from billing_information group by multiplex_city,year(booking_date);';
             console.log(sql)
             db.query(sql, (err, result) => {
                 if (err) {
