@@ -35,7 +35,6 @@ class TicketConfirmation extends Component {
     var showId = localStorage.getItem('bookShowId');
     localStorage.removeItem('bookShowId');
     localStorage.removeItem('bookMultiplexId');
-    console.log('Fetching multiplex Details');
     if (multiplexId && showId) {
       this.getUserDetails()
       this.getBillingDetails()
@@ -57,20 +56,16 @@ class TicketConfirmation extends Component {
   }
 
   getBillingDetails(){
-    debugger
         let getTicketConfirmation = envURL + 'getTicketConfirmation';
-        
         var payment_details = {id:localStorage.getItem("billing_id")}
         axios.post(getTicketConfirmation, payment_details)
             .then(res => {
-                    debugger
-                    console.log('Payment Completed');
-                    console.log(res.data.results.billing_information[0]);
                     this.setState({
                         ticket_details : res.data.results.billing_information[0],
                         movieDate : res.data.results.billing_information[0].show_time.split(" ")[0] + " " + res.data.results.billing_information[0].show_time.split(" ")[1] + " " + res.data.results.billing_information[0].show_time.split(" ")[2] + " " + res.data.results.billing_information[0].show_time.split(" ")[3],
                         movieTime : res.data.results.billing_information[0].show_time.split(" ")[4] + " " + res.data.results.billing_information[0].show_time.split(" ")[5]
-                    })
+                    }, () => {localStorage.removeItem("billing_id") }
+                  )
             })
             .catch(err => {
                 console.error(err);
@@ -82,15 +77,12 @@ class TicketConfirmation extends Component {
         c_tickets : localStorage.getItem("c_tickets"),
         da_tickets : localStorage.getItem("da_tickets"),
         s_tickets : localStorage.getItem("s_tickets"),
-        adult_total_amount : localStorage.getItem("adult_total_amount").split("$")[1],
-        student_total_amount : localStorage.getItem("student_total_amount").split("$")[1],
-        da_total_amount : localStorage.getItem("da_total_amount").split("$")[1],
-        child_total_amount : localStorage.getItem("child_total_amount").split("$")[1],
-        // totalTickets : this.state.adult_tickets+this.state.child_tickets+this.state.disabled_tickets+this.state.student_tickets,
-        // disabled_tickets : localStorage.getItem("da_tickets"),
-        // ticketPrice : localStorage.getItem("ticketPrice"),
-        total : Number(localStorage.getItem("adult_total_amount").split("$")[1]) + Number(localStorage.getItem("student_total_amount").split("$")[1]) + Number(localStorage.getItem("da_total_amount").split("$")[1]) + Number(localStorage.getItem("child_total_amount").split("$")[1])
-    }
+        adult_total_amount : localStorage.getItem("adult_total_amount"),
+        student_total_amount : localStorage.getItem("student_total_amount"),
+        da_total_amount : localStorage.getItem("da_total_amount"),
+        child_total_amount : localStorage.getItem("child_total_amount"),
+        total : Number(localStorage.getItem("adult_total_amount")) + Number(localStorage.getItem("student_total_amount")) + Number(localStorage.getItem("da_total_amount")) + Number(localStorage.getItem("child_total_amount"))
+      }
     , () => {
       localStorage.removeItem("a_tickets")
       localStorage.removeItem("c_tickets")
@@ -109,7 +101,7 @@ class TicketConfirmation extends Component {
   }
 
   render() {
-    debugger
+    
     return (
       <div class="ticketBoxoffice">
         <div id="siteContainer">
@@ -291,7 +283,6 @@ class TicketConfirmation extends Component {
     );
   }
   setAddressAndScreen(id){
-    debugger;
 
     this.state.multiplex.screens.forEach(element => {
         if(element._id==id){

@@ -41,8 +41,8 @@ class CheckoutTest extends Component {
             multiplexState : null,
             multiplexZipCode : null,
             cardNumber : null,
-            expiryMonth : null,
-            expiryYear : null,
+            expiryMonth : "0",
+            expiryYear : "0",
             firstName : null,
             lastName : null,
             cardZipCode : null,
@@ -80,13 +80,15 @@ class CheckoutTest extends Component {
             bookScreenId: screenId,
             bookShowId: showId,
           })
-          this.getUserDetails()
-          // this.getMovieDetails()
-          this.getMultiplexDetails()
-          this.getTicketDetails()
-        //   this.getTicketDetails()
-          this.getCardDetails()
-        }
+              debugger
+            this.getUserDetails()
+            // this.getMovieDetails()
+            this.getMultiplexDetails()
+            this.getTicketDetails()
+          //   this.getTicketDetails()
+            this.getCardDetails()
+            debugger
+          }
            else {
           this.props.history.push('/movies')
         }
@@ -119,6 +121,7 @@ class CheckoutTest extends Component {
             // ticketPrice : localStorage.getItem("ticketPrice"),
             // total : Number(this.state.adult_total_amount) + Number(this.state.child_total_amount) + Number(this.state.da_total_amount) + Number(this.state.student_total_amount)
         }, () => {
+            debugger
                         localStorage.removeItem("a_tickets")
                         localStorage.removeItem("c_tickets")
                         localStorage.removeItem("da_tickets")
@@ -128,6 +131,7 @@ class CheckoutTest extends Component {
                         localStorage.removeItem("da_total_amount")
                         localStorage.removeItem("child_total_amount")
         })
+        debugger
     }
 
     // getMovieDetails(){
@@ -162,7 +166,7 @@ class CheckoutTest extends Component {
     // localStorage.removeItem('bookShowId');
     // localStorage.removeItem('bookMultiplexId');
     console.log('Fetching multiplex Details');
-    if (multiplexId && showId) {
+    // if (multiplexId && showId) {
       var payload = {
         _id: multiplexId
       }
@@ -217,9 +221,9 @@ class CheckoutTest extends Component {
           console.error(err);
         });
 
-    } else {
-      this.props.history.push('/movies')
-    }
+    // } else {
+    //   this.props.history.push('/movies')
+    // }
 
 /////////////////////////////////////////////////////////////////////
 
@@ -262,30 +266,35 @@ class CheckoutTest extends Component {
         this.setState({
             cardNumber : e.target.value
         })
+        document.getElementById('cardNumber').innerHTML = ""
     }
     handleExpiryMonth(e){
         e.preventDefault()
         this.setState({
             expiryMonth : e.target.value
         })
+        document.getElementById('validMonth').innerHTML = ""
     }
     handleExpiryYear(e){
         e.preventDefault()
         this.setState({
             expiryYear : e.target.value
         })
+        document.getElementById('validYear').innerHTML = ""
     }
     handleFirstName(e){
         e.preventDefault()
         this.setState({
             firstName : e.target.value
         })
+        document.getElementById('firstName').innerHTML = ""
     }
     handleLastName(e){
         e.preventDefault()
         this.setState({
             lastName : e.target.value
         })
+        document.getElementById('lastName').innerHTML = ""
     }
     // handleCvv(e){
     //     e.preventDefault()
@@ -298,17 +307,38 @@ class CheckoutTest extends Component {
         this.setState({
             cardZipCode : e.target.value
         })
-    }
-    handleCardSave(e){
-        e.preventDefault()
-        this.state({
-
-        })
+        document.getElementById('zipcode').innerHTML = ""
     }
 
     completePayment(e){
         debugger
         e.preventDefault();
+        var visa = /^4[0-9]{12}(?:[0-9]{3})?$/;
+        var mastercard = /^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$/;
+        var amex = /^3[47][0-9]{13}$/;
+        var dinersclub = /^3(?:0[0-5]|[68][0-9])[0-9]{11}$/;
+        var discover =  /^6(?:011|5[0-9]{2})[0-9]{12}$/;
+        var jcb = /^(?:2131|1800|35\d{3})\d{11}$/;
+        var card_number = e.target.value;
+        if (!(visa.test(this.state.cardNumber) || mastercard.test(this.state.cardNumber) || amex.test(this.state.cardNumber) || dinersclub.test(this.state.cardNumber) || discover.test(this.state.cardNumber) || jcb.test(this.state.cardNumber))){
+            document.getElementById('cardNumber').innerHTML = "Enter Valid Card Number"
+        }else if( this.state.expiryMonth === "0" ){
+            document.getElementById('validMonth').innerHTML = "Select Expiry Month"
+        }
+        else if( this.state.expiryYear === "year" || this.state.expiryYear === "0"  ){
+            document.getElementById('validYear').innerHTML = "Select Expiry Year"
+        }
+        else if( this.state.firstName === null ){
+            document.getElementById('firstName').innerHTML = "Enter First Name"
+        }
+        else if( this.state.lastName === null ){
+            document.getElementById('lastName').innerHTML = "Enter Last Name"
+        }
+        else if( this.state.cardZipCode === null || this.state.cardZipCode.length !== 5){
+            document.getElementById('zipcode').innerHTML = "Enter Valid ZipCode"
+        }
+        else{
+            debugger
                         localStorage.setItem('a_tickets', this.state.a_tickets)
                         localStorage.setItem('adult_total_amount', this.state.adult_total_amount)
                         localStorage.setItem('s_tickets', this.state.s_tickets)
@@ -391,6 +421,8 @@ class CheckoutTest extends Component {
             .catch(err => {
                 console.error(err);
             });
+
+        }
     }
 
   render() {
@@ -462,11 +494,12 @@ class CheckoutTest extends Component {
                                     <div class="errorText card remove" id="ccError"></div>
                                     <div class="cvvDetail card fieldContainer display">
                                         <label for="creditCardNoInput" class="card display">Card number</label>
-                                        <input name="ExpressWebCheckout$PaymentView$creditCardNoInput" type="text" id="creditCardNoInput" class="input card display" min="20" maxlength="19" onChange = {this.handleCardNumber} title="Card number" />
+                                        <input name="ExpressWebCheckout$PaymentView$creditCardNoInput" type="text" id="creditCardNoInput" maxLength = "19" class="input card display" min="20" maxlength="19" onChange = {this.handleCardNumber} title="Card number" />
+                                        <div style = {{color : "red"}} id = "cardNumber"></div>
                                     </div>
-                                    <div class="errorText card remove" id="yearError"></div>
+                                    {/* <div class="errorText card remove" id="yearError"></div>
                                     <div class="errorText card remove" id="monthError"></div>
-                                    <div class="errorText card remove" id="expDateError"></div>
+                                    <div class="errorText card remove" id="expDateError"></div> */}
                                     <div class="card fieldContainer display exp-card">
                                         <label id="expLabel" class="card display" for="expMonthDropdown">Expiration date</label>  
                                         <div class="expiry-latest expMonthDropdown">
@@ -502,18 +535,24 @@ class CheckoutTest extends Component {
                                               <option value="2028">28</option>
                                           </select>
                                         </div>
+
+                                        <div style = {{color : "red"}} id = "validMonth"></div>
+                                        <div style = {{color : "red"}} id = "validYear"></div>
                                     </div>
+
                                     <div class="fieldCol2 customerInfo card display">
                                         <div class="fieldContainer  card display">
                                           <div class="errorText remove" id="firstNameError"></div>
                                           <label id="firstNameLabel" class="card name display" for="firstNameInput">First name</label>
                                           <input name="ExpressWebCheckout$PaymentView$firstNameInput" type="text" id="firstNameInput" onChange = {this.handleFirstName} class="input card name display" maxlength="50" title="First Name" />
                                         </div>
+                                        <div style = {{color : "red"}} id = "firstName"></div>
                                         <div class="fieldContainer  card display">
                                           <div class="errorText remove" id="lastNameError"></div>
                                           <label id="lastNameLabel" class="card name display" for="lastNameInput">Last name</label>
                                           <input name="ExpressWebCheckout$PaymentView$lastNameInput" type="text" id="lastNameInput" onChange = {this.handleLastName} class="input card name display" maxlength="50" title="Last Name" />
                                         </div>
+                                        <div style = {{color : "red"}} id = "lastName"></div>
                                     </div>
                                     <div class="fieldContainer card display">
                                         <div class="errorText remove" id="zipError"></div>
@@ -523,6 +562,8 @@ class CheckoutTest extends Component {
                                         <input name="ExpressWebCheckout$PaymentView$saveCreditCardCheckBox" type="checkbox" id="saveCreditCardCheckBox" class="save card inline" />
                                         Save my credit card information
                                         </label> */}
+
+                                        <div style = {{color : "red"}} id = "zipcode"></div>
                                     </div>
                                     <input name="ExpressWebCheckout$PaymentView$braintreeNonceInput" type="text" id="braintreeNonceInput" class="input remove defaultText" title="Braintree Nonce" />
                                   </li>
