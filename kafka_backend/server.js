@@ -275,6 +275,36 @@ user_consumer.on('message', function (message) {
             return;
         });
     }
+    else if(data.data.request_code === 9) {
+        console.log("In Request Code 9 : Checking for Existing Email " , data.data );
+        UserModal.checkfor_existing_email(data.data, function (err, res) {
+            console.log('Kafka Server : after handle in for_existing_email', res);
+            var resultObject = {
+                successMsg: '',
+                errorMsg: '',
+                data: {}
+            };
+
+            if( res.length === 0 ) {
+                resultObject.successMsg = '';
+                resultObject.errorMsg = 'email not present in DB';
+                resultObject.data =  {};
+            }
+            else {
+                resultObject.successMsg = "Got existing_email ";
+                resultObject.errorMsg = '';
+                resultObject.data = res
+            }
+
+            console.log("After formation of resultobject in for_existing_email in serverjs",resultObject);
+            var payloads = utility.createPayload(data, resultObject);
+            console.log('is producer ready : ' + producer.ready);
+            producer.send(payloads, function (err, data) {
+                utility.log(data, err) ;
+            } );
+            return;
+        });
+    }
 
 
 });

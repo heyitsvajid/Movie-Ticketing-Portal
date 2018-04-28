@@ -5,6 +5,7 @@ import axios from 'axios';
 import { withRouter } from 'react-router-dom'
 import { envURL, reactURL } from '../config/environment';
 import LoginSignupHeader from './LoginSignupHeader';
+import swal from 'sweetalert';
 
 class SignUp extends Component {
 
@@ -128,7 +129,7 @@ class SignUp extends Component {
                             })
                         }
                         else {
-                            alert("Account Created Successfully");
+                            swal("Account Created Successfully", "", "success");
                             this.props.history.push('/login')
                         }
                     }

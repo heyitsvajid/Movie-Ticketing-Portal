@@ -137,6 +137,32 @@ exports.updateProfileDetailsBasicInfo = (req, res) => {
     })
 };
 
+// Check for Existing Email
+exports.checkforExistingEmail = (req, res) => {
+    console.log("Node Backend : Checking for Existing Email ", req.body);
+    var data = {
+        id: req.body.id,
+        email: req.body.email,
+        request_code: 9 // Checking for Existing Email
+    };
+    console.log(data);
+
+    kafka.make_request('user_request', data, (err, result) => {
+        console.log('Kafka Response in Update Profile - Email :');
+        if (err) {
+            console.log('After Kafka response : User Profile Email Not Updated');
+            console.log(err);
+            res.json(result);
+        }
+        else {
+            console.log(result);
+            res.json(result);
+            return;
+        }
+    })
+
+};
+
 // Update Profile Details Email
 exports.updateProfileDetailsEmail = (req, res) => {
     console.log("Node Backend : Update Profile Details Email ", req.body);

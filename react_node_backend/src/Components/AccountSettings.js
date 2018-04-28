@@ -106,13 +106,35 @@ class AccountSettings extends Component {
                 id : localStorage.getItem('userid'),
                 email : this.state.newEmail,
             };
-            let url = envURL+'updateprofileemail';
-            axios.post( url, profiledetails, { withCredentials : true} )
-                .then( (response) => {
-                    console.log("Response from Db in Update Profile : ", response.data )
-                    swal("Email Updated Successfully!", "", "success");
-                    window.location.reload(true);
-                } )
+            if( this.state.email === this.state.newEmail ) {
+                console.log("Duplicate Email");
+                this.setState({
+                    error: 'Please enter an Email other than current Email '
+                })
+            }
+            else {
+                let url = envURL + 'checkforexistingemail';
+                axios.post( url, profiledetails, { withCredentials : true} )
+                    .then((response) => {
+                            console.log("In checkforexistingemail ", response.data);
+                            if( response.data.errorMsg === ''  ) {
+                                this.setState({
+                                    error : "Email Already Exists"
+                                })
+                            }
+                            else {
+                                let url = envURL+'updateprofileemail';
+                                axios.post( url, profiledetails, { withCredentials : true} )
+                                    .then( (response) => {
+                                            console.log( "Response from Db in Update Profile : ", response.data );
+                                            swal( "Email Updated Successfully!", "", "success" );
+                                            window.location.reload(true);
+                                        }
+                                    )
+                            }
+                        }
+                    )
+            }
         }
         else {
             this.setState({
@@ -127,9 +149,9 @@ class AccountSettings extends Component {
             id: localStorage.getItem('userid'),
             currentPassword: this.state.oldPassword,
             updatedPassword: this.state.newPassword
-        }
+        };
 
-        if(this.state.newPassword.length > 8 && this.state.oldPassword.length >= 8) {
+        if(this.state.newPassword.length >= 8 && this.state.oldPassword.length >= 8) {
             let url = envURL+'updateprofilepassword';
             axios.post(url, data, { withCredentials: true })
                 .then((response) => {

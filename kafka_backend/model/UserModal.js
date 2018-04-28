@@ -566,6 +566,35 @@ function getAllNormalUsers_request(msg, callback) {
     });
 }
 
+// checkfor_existing_email
+function checkfor_existing_email ( msg, callback ) {
+    console.log("Inside check for_existing_email in kafkabackend UserModal", msg ) ;
+
+    pool.connect((err, db) => {
+        if(err) {
+            console.log("Error in UserModal for_existing_email while connecting to DB");
+            errHandler(err);
+        } else {
+            console.log("Connected to MYSQL in for_existing_email_request in usermodal");
+            let sql = "select * from user where email = ? ";
+            let email = msg.email;
+            db.query(sql, email , (err, result) => {
+                db.release();
+                if(err) {
+                    console.log("Error in UserModal for_existing_email while query to DB");
+                    errHandler(err);
+                }
+                else {
+                    console.log("Result after for_existing_email from DB..", result);
+                    callback(null, result);
+                }
+            });
+        }
+    });
+
+}
+
+
 //==============================================================================
 /**
 * Export module
@@ -582,6 +611,7 @@ module.exports = {
     update_password_profile_request : update_password_profile_request,
     disable_account_request : disable_account_request,
     getAllNormalUsers_request: getAllNormalUsers_request,
+    checkfor_existing_email : checkfor_existing_email,
     errHandler: errHandler
     //  deleteUser: deleteUser
   };
