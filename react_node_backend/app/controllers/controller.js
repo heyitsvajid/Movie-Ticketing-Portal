@@ -1193,6 +1193,27 @@ exports.getClicksPerPage = function (req, res) {
     });
 };
 
+exports.getAllSessionDetails = function (req, res) {
+    console.log("findAllMovie_request : node backend");
+    let data = { request_code: 1 };
+
+    console.log(data);
+    kafka.make_request('logUserTrack_topic', data, function (err, results) {
+        console.log('Kafka Response:');
+        console.log(results);
+        if (err) {
+            console.log('Controller : Error Occurred : ');
+            console.log(err);
+            res.json(results);
+        }
+        else {
+            res.json(results);
+            return;
+        }
+    });
+};
+    
+
 exports.getClicksPerPage = function (req, res) {
     var pageNumbers = {"Fandango Home": 0, "Account Settings": 1, "Check Out": 2, "Log In": 3,
                         "Sign Up": 4, "Movie Detail": 5, "Purchase History": 6, "Ticket Booking": 7, "Ticket Confirmation": 8}
