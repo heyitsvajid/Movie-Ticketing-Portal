@@ -1052,3 +1052,11 @@ button#footer-fanmail-submit {
 #keywords_error{
   margin-top: 8px !important;
 }
+
+.user-session-graph{
+  margin-left: -20% !important;
+}
+
+#admin-pages{
+  overflow: scroll !important;
+}

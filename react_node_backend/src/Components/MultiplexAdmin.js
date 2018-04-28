@@ -3,7 +3,8 @@ import {withRouter} from 'react-router-dom';
 import axios from 'axios';
 import Pagination from './Pagination';
 import { envURL, reactURL } from '../config/environment';
-import '../assets/css/style.css'
+import '../assets/css/style.css';
+import swal from "sweetalert";
 
 class MultiplexAdmin extends Component {
 
@@ -246,15 +247,68 @@ class MultiplexAdmin extends Component {
         }
       }
     
-      handlePrevPaginationButton(e) {
+    handlePrevPaginationButton(e) {
         if(this.state.searchedAdminList != [] && this.state.currentPage != 1){
-          this.setState({currentPage: Number(this.state.currentPage - 1)})
+            this.setState({currentPage: Number(this.state.currentPage - 1)})
         }
-      }
+    }
 
-      handlePageChange(e) {
+    handlePageChange(e) {
         this.setState({currentPage: Number(e.target.dataset.id)})
-      }
+    }
+
+    handleMultiplexAdminDetail = (e) => {
+        console.log("In handleMultiplexAdminDetail, id :", e )
+        let display = this.state.multiplexAdminList;
+        for( let i = 0; i < display.length; i++) {
+            if( display[i].id === e ) {
+                console.log("Found Match", display[i] );
+                this.setState({
+                    UserID : display[i].id,
+                    First_Name : display[i].first_name,
+                    Last_Name : display[i].last_name,
+                    Email : display[i].email,
+                    Phone_Number : display[i].phone_number,
+                    Address : display[i].address,
+                    City : display[i].city,
+                    State : display[i].state,
+                    Zipcode : display[i].zipcode,
+                    Role_Number : display[i].role_number
+                })
+            }
+        }
+    };
+
+    handleDeleteMultiplexAdmin = (e) => {
+        swal({
+            title: "Are you sure?",
+            text: "We regret leaving you!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    let id = { id : e };
+                    let url = envURL + 'disableaccount';
+
+                    axios.post( url, id, { withCredentials : true } )
+                        .then( (response) => {
+                            console.log("After Deleting Bill, Response ", response.data);
+                            swal({
+                                type: 'success',
+                                title: 'Multiplex Admin Deleted Successfully',
+                                text: "",
+                            });
+                            this.handleFindAllAdmins();
+                        })
+
+                }
+            });
+        console.log("In handleDeleteMultiplexAdmin, id :", e );
+
+        
+    };
 
     returnMultiplexAdminList(){     
             let pagination_list, currentTodos=null;
@@ -278,13 +332,25 @@ class MultiplexAdmin extends Component {
             }
             let rowNodes = currentTodos.map((item, index) => {
                 return (
-                    <tr>
-                        <th scope="row">{item.current_index}</th>
-                        <td>{item.first_name} {item.last_name}</td>
-                        <td>{item.email}</td>
-                        <td>{item.city}</td>
-                        <td>{item.zipcode}</td>
+                    // <tr>
+                    //     <th scope="row">{item.current_index}</th>
+                    //     <td>{item.first_name} {item.last_name}</td>
+                    //     <td>{item.email}</td>
+                    //     <td>{item.city}</td>
+                    //     <td>{item.zipcode}</td>
  
+                    // </tr>
+                    <tr>
+                        <th scope="row"> { index + 1 } </th>
+                        {/* <td> <a href = "#mymodal" data-toggle="modal" onClick={this.handleMultiplexAdminDetail.bind(this, item.id )} > { item.id } </a> </td> */}
+                        <td> <a href = "#mymodal" data-toggle="modal" onClick={this.handleMultiplexAdminDetail.bind(this, item.id )} > { item.first_name } </a> </td>
+                        <td> { item.last_name } </td>
+                        <td> { item.email } </td>
+                        <td> { item.phone_number } </td>
+                        <td>
+                            <button className='btn-danger' style={{backgroundColor: '#F15500'}} onClick={this.handleDeleteMultiplexAdmin.bind(this, item.id )} > Delete </button>
+                        </td>
+
                     </tr>
                 )
             });
@@ -292,13 +358,15 @@ class MultiplexAdmin extends Component {
                 <div>
                     <table class="table table-striped">
                         <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Email</th>
-                                <th scope="col">City</th>
-                                <th scope="col">Zip Code</th>
-                            </tr>
+                        <tr>
+                            <th scope="col"> # </th>
+                            {/* <th scope="col"> User ID </th> */}
+                            <th scope="col"> First Name</th>
+                            <th scope="col"> Last Name</th>
+                            <th scope="col"> Email </th>
+                            <th scope="col"> Phone Number </th>
+                            <th scope="col"> Action </th>
+                        </tr>
                         </thead>
                         <tbody>
                             {rowNodes}
@@ -451,6 +519,95 @@ class MultiplexAdmin extends Component {
                                         </form>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="mymodal" class="modal fade">
+                    <div class="modal-dialog purchase-modal">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <section >
+                                    <div id="tqpSection" class="showtime">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-xs-12 modal-invoice-header">
+                                                    <div class="text-center"><br/>
+                                                        <h2 id="transaction-purchase-header"> User Details </h2>
+                                                    </div>
+                                                    <hr/>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-9">
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-heading">
+                                                            <h3 class="text-center summary-header"><strong> Profile </strong></h3>
+                                                        </div>
+                                                        <br/>
+                                                        <div className='row'>
+                                                            <div class="panel-body col-md-6">
+                                                                <div className='container-fluid'>
+                                                                    <strong> User ID : </strong>
+                                                                    { this.state.UserID }
+                                                                </div>
+                                                                <br/>
+                                                                <div className='container-fluid'>
+                                                                    <strong> First Name : </strong>
+                                                                    { this.state.First_Name }
+                                                                </div>
+                                                                <br/>
+                                                                <div className='container-fluid'>
+                                                                    <strong>Last Name : </strong>
+                                                                    { this.state.Last_Name}
+                                                                </div>
+                                                                <br/>
+                                                                <div className='container-fluid'>
+                                                                    <strong> Email : </strong>
+                                                                    { this.state.Email}
+                                                                </div>
+                                                                <br/>
+                                                                <div className='container-fluid'>
+                                                                    <strong> Phone Number : </strong>
+                                                                    { this.state.Phone_Number}
+                                                                </div>
+                                                            </div>
+                                                            <div class="panel-body col-md-6">
+                                                                <div className='container-fluid'>
+                                                                    <strong> Address : </strong>
+                                                                    { this.state.Address}
+                                                                </div>
+                                                                <br/>
+                                                                <div className='container-fluid'>
+                                                                    <strong> City : </strong>
+                                                                    { this.state.City}
+                                                                </div>
+                                                                <br/>
+                                                                <div className='container-fluid'>
+                                                                    <strong> State : </strong>
+                                                                    { this.state.State }
+                                                                </div>
+                                                                <br/>
+                                                                <div className='container-fluid'>
+                                                                    <strong> Zipcode : </strong>
+                                                                    { this.state.Zipcode }
+                                                                </div>
+                                                                <br/>
+                                                                <div className='container-fluid'>
+                                                                    <strong> Role Number : </strong>
+                                                                    { this.state.Role_Number }
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                             </div>
                         </div>
                     </div>

@@ -309,11 +309,11 @@ class Layout extends Component {
                   <select class="mb-5 nearby-theaters__select js-nearby-theaters">
                     <option value="#" disabled>Select Theater</option>
                     {
-                                    this.state.processedmultiplexList.map(function (multiplex) {
-                                        return <option key={multiplex._id}
-                                            value={multiplex._id}>{multiplex.name}</option>;
-                                    })
-                                }
+                        this.state.processedmultiplexList.map(function (multiplex) {
+                            return <option key={multiplex._id}
+                                value={multiplex._id}>{multiplex.name}</option>;
+                        })
+                    }
                      
                   </select>
                   <div class="fd-showtimes js-theaterShowtimes-loading">

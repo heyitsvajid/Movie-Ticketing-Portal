@@ -9,6 +9,7 @@ import ShowTimingsForm from './ShowTimingsForm'
 import MultiplexAdminForm from './MultiplexAdmin'
 import { envURL, reactURL } from "../config/environment";
 import AllBillingDetails from './AllBillingDetails';
+import ListAllUsers from './ListAllUsers'
 
 class AdminDashboard extends Component {
     constructor(props) {
@@ -18,10 +19,11 @@ class AdminDashboard extends Component {
             addMovie: false,
             addMultiplex: false,
             addMultiplexAdmin: false,
-            addDashboard: true,
+            addDashboard: false,
             addUserTracking: false,
             showTimings: false,
             showBillingDetails: false,
+            listUsers: true,
             isLoggedIn: false,
             adminEmail: '',
             adminId: '',
@@ -82,7 +84,8 @@ class AdminDashboard extends Component {
             addMultiplex: e.currentTarget.value == 4,
             addMultiplexAdmin: e.currentTarget.value == 5,
             showTimings: e.currentTarget.value == 6,
-            showBillingDetails: e.currentTarget.value == 7
+            showBillingDetails: e.currentTarget.value == 7,
+            listUsers: e.currentTarget.value == 8
 
         })
         console.log(this.state);
@@ -117,6 +120,7 @@ class AdminDashboard extends Component {
         let addMultiplexAdmin = 5;
         let showTimings = 6;
         let showBillingDetails = 7
+        let listUsers = 8
         return (
             // <body class="sticky-footer bg-dark fixed-nav" id="page-top">
             //     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
@@ -189,7 +193,7 @@ class AdminDashboard extends Component {
             //     {this.state.addUserTracking ? this.returnMultiplex() : ''}
             //     {this.state.showTimings ? this.returnShowTimings() : ''}
             // </body>
-            <body class="app">
+            <body class="app" id="admin-pages">
                 <div id="loader" class="fadeOut">
                     <div class="spinner"></div>
                 </div>
@@ -262,6 +266,15 @@ class AdminDashboard extends Component {
                                     <span class="icon-holder">
                                         <i class="c-orange-500 ti-layout-list-thumb"></i> 
                                         </span><span class="title">Show Billing Details</span>
+                                </a>
+                            </li> : ''}
+
+                            {localStorage.getItem('roleId')==3 ?
+                            <li class="nav-item" value={listUsers} onClick={this.handleLinkClick.bind(this)} data-toggle="tooltip" data-placement="right" title="" data-original-title="Link">
+                                <a class="sidebar-link" href="#" value={listUsers} onClick={this.handleLinkClick.bind(this)}>
+                                    <span class="icon-holder">
+                                        <i class="c-teal-500 ti-view-list-alt"></i> 
+                                        </span><span class="title">Show List Users</span>
                                 </a>
                             </li> : ''}
 
@@ -391,6 +404,7 @@ class AdminDashboard extends Component {
                             {this.state.addUserTracking ? this.returnMultiplex() : ''}
                             {this.state.showTimings ? this.returnShowTimings() : ''}
                             {this.state.showBillingDetails ? this.returnBillingDetails() : ''}
+                            {this.state.listUsers ? this.returnUserList() : ''}
                             </div>
                         </main>
                         <footer class="bdT ta-c p-30 lh-0 fsz-sm c-grey-600">
@@ -439,6 +453,22 @@ class AdminDashboard extends Component {
                 <div class="col-md-12">
                     <div class="admin-list bgc-white bd bdrs-3 p-20 mB-20">
                     <MovieForm />
+                    </div>
+                </div>
+            </div>            
+        </div>
+        )
+    }
+
+    returnUserList() {
+        return (
+            <div class="container-fluid">
+            <h3 class="data-header">User Details Dashboard</h3>
+            <br/>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="admin-list bgc-white bd bdrs-3 p-20 mB-20">
+                    <ListAllUsers />
                     </div>
                 </div>
             </div>            
