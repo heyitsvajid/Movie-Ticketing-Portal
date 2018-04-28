@@ -99,8 +99,13 @@ module.exports = function (app) {
   app.post('/getBillingDetailsPerUser', api_controller.getBillingDetailsPerUser);
 
   app.post('/getCardDetailsPerUser', api_controller.getCardDetailsPerUser);
+
+  app.post('/getCardDetails', api_controller.getCardDetails);
+
+  // app.post('/getShowDetails', api_controller.getShowDetails);
   
   app.get('/getClicksPerPage', api_controller.getClicksPerPage);
+
 
     //Click Analytics
   app.post('/logUserClick', api_controller.logUserClick)

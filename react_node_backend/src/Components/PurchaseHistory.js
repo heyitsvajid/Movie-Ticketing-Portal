@@ -4,25 +4,149 @@ import Index from './Index';
 import Header from './Header';
 import Footer from './Footer';
 import { envURL, reactURL } from '../config/environment';
+import swal from 'sweetalert';
 // import SignIn from './SignIn';
 // import SignUp from './SignUp';
 
 class PurchaseHistory extends Component {
   constructor(props) {
     super(props);
+    this.state = ({
+      movie_name : null,
+      movieDate : null,
+      movieTime : null,
+      isLoggedIn : false,
+      bills : null,
+      all_bills : null,
+      index : 0,
+      cardNumber : "00000",
+      cardExpiry : "00/00",
+      multiplexName : null,
+      multiplexAddress : null,
+      multiplexCity : null,
+      multiplexZipcode : null,
+      screenNumber : 0,
+      bill_no : null,
+      allMultiplex : {},
+      adult : 0,
+      child : 0,
+      student : 0,
+      disabled : 0,
+      adult_count : 0,
+      child_count : 0,
+      student_count : 0,
+      disabled_count : 0,
+      total : 0
+    })
+    this.getBillingDetailsPerUser = this.getBillingDetailsPerUser.bind(this)
+    this.renderModal = this.renderModal.bind(this)
+    this.getAllMultiplex = this.getAllMultiplex.bind(this)
   }
   
   componentWillMount(){
     this.getBillingDetailsPerUser()
+    this.getAllMultiplex()
   }
+  
+  renderModal(e){
+    e.preventDefault();
+    this.state.bills.forEach(bill => {
+      debugger
+
+      if(Number(e.target.id) === bill.id){
+
+        this.state.allMultiplex.forEach(multiplex => {
+          multiplex.show_timings.forEach(showTime => {
+            if(showTime._id === bill.show_id){
+              this.setState({
+                adult : showTime.price.adult,
+                child : showTime.price.child,
+                student : showTime.price.student,
+                disabled : showTime.disabled
+              })
+            }
+          });
+          
+        });
+
+
+
+        console.log(bill.screen_number);
+        let getCardDetails = envURL + 'getCardDetails';
+        let getShowDetails = envURL + 'getShowDetails';
+        var cardTransactionNumber = {cardTransactionNumber : bill.transaction_card_id}
+        axios.post(getCardDetails, cardTransactionNumber)
+            .then(res => {
+              this.setState({
+                movie_name : bill.movie_name,
+                movieDate : bill.show_time.split(" ")[0] + " " + bill.show_time.split(" ")[1] + " " + bill.show_time.split(" ")[2] + " " + bill.show_time.split(" ")[3],
+                movieTime : bill.show_time.split(" ")[4] + " " + bill.show_time.split(" ")[5],
+                cardNumber : "***** " + res.data.results.billing_information[0].cardNumber.slice(res.data.results.billing_information[0].cardNumber.length-4,res.data.results.billing_information[0].cardNumber.length),
+                cardExpiry : res.data.results.billing_information[0].expiryMonth + "/" + res.data.results.billing_information[0].expiryYear,
+                multiplexName : bill.multiplex_name,
+                multiplexAddress : bill.multiplex_address,
+                multiplexCity : bill.multiplex_city,
+                multiplexZipcode : bill.multiplex_zipcode,
+                screenNumber : bill.screen_number,
+                bill_no : bill.id,
+                adult_count : bill.adult_tickets,
+                child_count : bill.child_tickets,
+                student_count : bill.student_tickets,
+                disabled_count : bill.disabled_tickets,
+                total : bill.amount
+              })
+            })
+            .catch(err => {
+                console.error(err);
+            });
+          }
+        }) 
+
+
+       debugger 
+  }
+  
+  
 
   getBillingDetailsPerUser(){
         let getBillingDetailsPerUser = envURL + 'getBillingDetailsPerUser';
-        var user_email = localStorage.getItem("email")
-        axios.post(getBillingDetailsPerUser, user_email)
+        axios.post(getBillingDetailsPerUser, null, {withCredentials: true})
             .then(res => {
-                    console.log('Payment Completed');
-                    console.log(res.data);
+                    if(res.data.results.billing_information !== 0){
+                      this.setState({
+                        bills : res.data.results.billing_information,
+                        all_bills : res.data.results.billing_information.map( data => {
+                          var date_time
+                          this.state.index++; 
+                              return(
+                                <tr>
+                                <td>{this.state.index}</td>
+                                <td ><a href="#myModal" id = {data.id} onClick={this.renderModal} class="" data-toggle="modal">{data.movie_name}</a></td>
+                                <td>{data.show_time}</td>
+                                <td>${data.amount}</td>
+                                <td>{ ( Number(data.child_tickets) + Number(data.student_tickets) + Number(data.disabled_tickets) + Number(data.adult_tickets) ) }</td>
+                                <td>{ ( new Date(data.show_time).getTime() > new Date().getTime() ? <span class="label label-info">Pending </span> : <span class="label label-success">Completed </span>) }</td>
+                              </tr>
+                              )
+                      })
+
+                      })
+                    }
+            })
+            .catch(err => {
+                console.error(err);
+            });
+  }
+
+
+  getAllMultiplex(){
+    let findAllMultiplex = envURL + 'findAllMultiplex';
+    axios.get(findAllMultiplex)
+            .then(res => {
+              console.log(res.data.data)
+              this.setState({
+                allMultiplex : res.data.data
+              })
             })
             .catch(err => {
                 console.error(err);
@@ -48,7 +172,7 @@ class PurchaseHistory extends Component {
                 </tr>
               </thead>
               <tbody>
-                <tr>
+                {/* <tr>
                   <td>1</td>
                   
                   <td><a href="#myModal" class="" data-toggle="modal">Launch Demo Modal</a></td>
@@ -80,7 +204,8 @@ class PurchaseHistory extends Component {
                   <td>$12.00</td>
                   <td>10</td>
                   <td><span class="label label-success">Completed</span></td>
-                </tr>
+                </tr> */}
+                {this.state.all_bills}
               </tbody>
             </table>
           </div>
@@ -96,7 +221,7 @@ class PurchaseHistory extends Component {
                           <div class="row">
                               <div class="col-xs-12 modal-invoice-header">
                                 <div class="text-center">
-                                    <h2 id="transaction-purchase-header">Invoice for purchase #33221</h2>
+                                    <h2 id="transaction-purchase-header">Invoice for purchase #{this.state.bill_no}</h2>
                                 </div>
                                 <hr/>
                                 <div class="row invoice-row">
@@ -105,13 +230,13 @@ class PurchaseHistory extends Component {
                                           <div class="panel-heading box-heading">Movie and Screen</div>
                                           <div class="panel-body billing-body">
                                             <strong>Movie:  </strong>
-                                            Avengers<br/>
+                                            {this.state.movie_name}<br/>
                                             <strong>Date:   </strong>
-                                            March 28, 2017<br/>
+                                            {this.state.movieDate}<br/>
                                             <strong>Time:    </strong>
-                                            3:00 P.M<br/>
+                                            {this.state.movieTime}<br/>
                                             <strong>Auditorium:   </strong>
-                                            6
+                                            {this.state.screenNumber}
                                           </div>
                                       </div>
                                     </div>
@@ -119,9 +244,9 @@ class PurchaseHistory extends Component {
                                       <div class="panel panel-default height">
                                           <div class="panel-heading box-heading">Payment Information</div>
                                           <div class="panel-body billing-body">
-                                            <strong>Card Name:</strong> Visa<br/>
-                                            <strong>Card Number:</strong> ***** 332<br/>
-                                            <strong>Exp Date:</strong> 09/2020<br/>
+                                            {/* <strong>Card Name:</strong> Visa<br/> */}
+                                            <strong>Card Number:</strong> {this.state.cardNumber}<br/>
+                                            <strong>Exp Date:</strong> {this.state.cardExpiry}<br/>
                                           </div>
                                       </div>
                                     </div>
@@ -129,9 +254,9 @@ class PurchaseHistory extends Component {
                                       <div class="panel panel-default height">
                                           <div class="panel-heading box-heading">Multiplex Address</div>
                                           <div class="panel-body billing-body">
-                                            <strong>Towne 3 Cinemas</strong><br/>
-                                            1433 The Alameda<br/>
-                                            San Jose, CA <strong>95126</strong><br/>
+                                            <strong>{this.state.multiplexName}</strong><br/>
+                                            {this.state.multiplexAddress}<br/>
+                                            {this.state.multiplexCity} <strong>{this.state.multiplexZipcode}</strong><br/>
                                           </div>
                                       </div>
                                     </div>
@@ -158,27 +283,33 @@ class PurchaseHistory extends Component {
                                             <tbody>
                                                 <tr>
                                                   <td>Adult</td>
-                                                  <td class="text-center">$15.00</td>
-                                                  <td class="text-center">3</td>
-                                                  <td class="text-right">$45</td>
+                                                  <td class="text-center">${ (typeof this.state.adult !== "undefined" ? this.state.adult : 0).toFixed(2) }</td>
+                                                  <td class="text-center">{this.state.adult_count}</td>
+                                                  <td class="text-right">${ ( (typeof this.state.adult_count !== "undefined" && typeof this.state.adult  !== "undefined") ? ( (this.state.adult_count) * (this.state.adult) ) : 0).toFixed(2) }</td>
                                                 </tr>
                                                 <tr>
                                                   <td>Students</td>
-                                                  <td class="text-center">$10.00</td>
-                                                  <td class="text-center">2</td>
-                                                  <td class="text-right">$20.00</td>
+                                                  <td class="text-center">${ (typeof this.state.student !== "undefined" ? this.state.student : 0 ).toFixed(2) }</td>
+                                                  <td class="text-center">{this.state.student_count}</td>
+                                                  <td class="text-right">${ ( (typeof this.state.student_count !== "undefined" && typeof this.state.student !== "undefined") ? ( (this.state.student_count) * (this.state.student) ) : 0).toFixed(2) }</td>
                                                 </tr>
                                                 <tr>
                                                   <td>Child</td>
-                                                  <td class="text-center">$5.00</td>
-                                                  <td class="text-center">2</td>
-                                                  <td class="text-right">$10</td>
+                                                  <td class="text-center">${ (typeof this.state.child !== "undefined" ? this.state.child : 0).toFixed(2) }</td>
+                                                  <td class="text-center">{this.state.child_count}</td>
+                                                  <td class="text-right">${ ( (typeof this.state.child_count !== "undefined" && typeof this.state.child  !== "undefined") ? ( (this.state.child_count) * (this.state.child) ) : 0).toFixed(2) }</td>
+                                                </tr>
+                                                <tr>
+                                                  <td>Disabled</td>
+                                                  <td class="text-center">${ (typeof this.state.disabled !== "undefined" ? this.state.disabled : 0).toFixed(2) }</td>
+                                                  <td class="text-center">{this.state.disabled_count}</td>
+                                                  <td class="text-right">${ ( (typeof this.state.disabled_count !== "undefined" && typeof this.state.disabled !== "undefined") ? ( (this.state.disabled_count) * (this.state.disabled) ) : 0).toFixed(2) }</td>
                                                 </tr>
                                                 <tr>
                                                   <td class="emptyrow"></td>
                                                   <td class="emptyrow"></td>
                                                   <td class="emptyrow text-center"><strong>Total</strong></td>
-                                                  <td class="emptyrow text-right">$75.00</td>
+                                                  <td class="emptyrow text-right">${ ( this.state.total ).toFixed(2) }</td>
                                                 </tr>
                                             </tbody>
                                           </table>
