@@ -947,7 +947,7 @@ exports.getCardDetailsPerUser = function (req, res) {
     console.log("Fetch Billing Details per User : node backend");
     console.log(req.body.user_email)
     console.log("UserName:" + req.body);
-    var request_id = { request_id: 3, user_email: "Jay" };
+    var request_id = { request_id: 3, user_email: req.body.user_email };
     kafka.make_request('fetchBillingDetails', request_id, function (err, results) {
         console.log('Kafka Response:');
         console.log(results);
@@ -968,7 +968,7 @@ exports.getMultiplexSoldTicketsPerMonth = function (req, res) {
     console.log("Fetch Billing Details per User : node backend");
     console.log(req.body.multiplex_id)
     console.log("UserName:" + req.body);
-    var request_id = { request_id: 4, multiplex_id: "2" };
+    var request_id = { request_id: 4, multiplex_id: req.body.multiplex_id };
     kafka.make_request('fetchBillingDetails', request_id, function (err, results) {
         console.log('Kafka Response:');
         console.log(results);
@@ -989,7 +989,7 @@ exports.getCityRevenuePerYear = function (req, res) {
     console.log("Fetch Billing Details per User : node backend");
     console.log(req.body.multiplex_id)
     console.log("UserName:" + req.body);
-    var request_id = { request_id: 5, multiplex_id: "2" };
+    var request_id = { request_id: 5, multiplex_id: req.body.multiplex_id };
     kafka.make_request('fetchBillingDetails', request_id, function (err, results) {
         console.log('Kafka Response:');
         console.log(results);
@@ -1010,7 +1010,7 @@ exports.getMovieRevenuePerYear = function (req, res) {
     console.log("Fetch Billing Details per User : node backend");
     console.log(req.body.multiplex_id)
     console.log("UserName:" + req.body);
-    var request_id = { request_id: 6, multiplex_id: "2" };
+    var request_id = { request_id: 6, multiplex_id: req.body.multiplex_id };
     kafka.make_request('fetchBillingDetails', request_id, function (err, results) {
         console.log('Kafka Response:');
         console.log(results);
