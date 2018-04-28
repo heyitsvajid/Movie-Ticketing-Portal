@@ -208,7 +208,7 @@ function getMultiplexSoldTicketsPerMonth(msg, callback) {
             errHandler(err);
         } else {
             console.log("Connected to MYSQL in request of PaymentModel");
-            var sql = 'select month(booking_date) as month, multiplex_id, multiplex_name, sum(adult_tickets+child_tickets+student_tickets+disabled_tickets) as total_revenue from billing_information group by multiplex_id, month(booking_date);';
+            var sql = 'select month(booking_date) as month, multiplex_id, multiplex_name, sum(adult_tickets+child_tickets+student_tickets+disabled_tickets) as total_revenue from billing_information group by multiplex_id, month(booking_date) order by total_revenue DESC LIMIT 10;';
             console.log(sql)
             db.query(sql, (err, result) => {
                 if (err) {
@@ -234,7 +234,7 @@ function getCityRevenuePerYear(msg, callback) {
             errHandler(err);
         } else {
             console.log("Connected to MYSQL in request of PaymentModel");
-            var sql = 'select multiplex_city, sum(amount) as total_revenue, year(booking_date) as year from billing_information group by multiplex_city,year(booking_date);';
+            var sql = 'select multiplex_city, sum(amount) as total_revenue, year(booking_date) as year from billing_information group by multiplex_city,year(booking_date) order by total_revenue DESC LIMIT 10;';
             console.log(sql)
             db.query(sql, (err, result) => {
                 if (err) {
@@ -260,7 +260,7 @@ function getMovieRevenuePerYear(msg, callback) {
             errHandler(err);
         } else {
             console.log("Connected to MYSQL in request of PaymentModel");
-            var sql = 'select movie_id,movie_name, sum(amount) as total_revenue,year(booking_date) as year from billing_information group by movie_id,year(booking_date);';
+            var sql = 'select movie_id,movie_name, sum(amount) as total_revenue,year(booking_date) as year from billing_information group by movie_id,year(booking_date) order by total_revenue DESC LIMIT 10;';
             console.log(sql)
             db.query(sql, (err, result) => {
                 if (err) {
