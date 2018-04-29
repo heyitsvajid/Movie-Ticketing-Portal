@@ -363,7 +363,7 @@ class MultiplexAdmin extends Component {
     handleDeleteMultiplexAdmin = (e) => {
         swal({
             title: "Are you sure?",
-            text: "We regret leaving you!",
+            text: "",
             icon: "warning",
             buttons: true,
             dangerMode: true,
