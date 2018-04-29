@@ -85,7 +85,7 @@ class MultiplexForm extends Component {
 
     validateFile(file){
         if(file == ""){
-          document.getElementById("file_error").innerHTML = "Please enter File";
+          document.getElementById("file_error").innerHTML = "Please Add File";
           return false;
         }
         return true;
@@ -278,6 +278,7 @@ class MultiplexForm extends Component {
         this.setState({
             amenities: multiValues.join(',')
         })
+        document.getElementById("amenities_error").innerHTML = "";
     }
 
     handleFindAllAdmins = () => {
@@ -649,13 +650,13 @@ class MultiplexForm extends Component {
                                         </select>
                                         
                                     </div>
-                                    <div id = "multiplex_owner_id_error" class= "error"></div>
+                                    <div id = "multiplex_owner_id_error" class= "error"></div><br/>
                                     <div className="form-group">
                                         <label class="dashboard-label">Amenities</label>
                                         <Creatable name= "amenities" amenities={this.state.amenities} multiValueChange={this.multiValueChange.bind(this)} />
                                         
                                     </div>
-                                    <div id = "amenities_error" class= "error"></div>
+                                    <div id = "amenities_error" class= "error"></div><br/>
                                     <label class="dashboard-label">Add Multiplex Screens</label>
                                     <div class="form-row">
                                         
@@ -671,14 +672,15 @@ class MultiplexForm extends Component {
                                         <input class="form-control" type="number" name="row_count"
                                         placeholder="Row Count" required="" value={this.state.row_count} onChange={this.handleUserInput} />
                                         </div>
-                                        
-                                        <div id = "row_count_error" class= "error"></div>
 
-                                        <div className="form-group col-md-4">
+                                        <div className="form-group col-md-2">
                                             <input type="button" class="btn btn-info"
                                         value="Add Screen" required="" onClick={this.handleAddScreen.bind(this)} />
                                         </div>
+                                        
+                                    <div id = "row_count_error" class= "error"></div>
                                     </div>
+
                                     <div className="form-group">
                                         <label class="dashboard-label">Screen Rows</label>
                                         <table class="table">

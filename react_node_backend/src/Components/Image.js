@@ -105,22 +105,15 @@ class ImageUpload extends Component {
     let reader = new FileReader();
     let file = e.target.files[0];
 
-    if (file.type == 'image/png') {
       reader.onloadend = () => {
         this.setState({
           file: file,
           imagePreviewUrl: reader.result
         });
-      }
+      };
       reader.readAsDataURL(file)
 
-    } else {
-      swal({
-        type: 'error',
-        title: 'File Type',
-        text: 'Only PNG image types allowed',
-      })
-    }
+
   }
 
   renderImage() {
@@ -149,7 +142,7 @@ class ImageUpload extends Component {
       <div>
         <h3>Add Movie Character</h3>
         <hr />
-        <div class="row gap-20 masonry pos-r" style={{position: 'relative', height: '480px'}}>
+        <div class="row gap-20 masonry pos-r" style={{position: 'relative', height: '580px'}}>
             <div class="masonry-item col-md-6" style={{position: 'absolute', top: '0px'}}>
                 <div class="bgc-white p-20 bd">
                     <div class="mT-30">
@@ -174,7 +167,7 @@ class ImageUpload extends Component {
                 </div>
             </div>
         </div>
-        
+          <br/>
       </div>
     )
   }
