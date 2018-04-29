@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import {withRouter} from 'react-router-dom'
 import { envURL, reactURL } from '../config/environment';
-
+import swal from "sweetalert2";
 // import '../assets/css/foundation.css'
 // import '../assets/css/checkout.css'
 // import '../assets/css/style.css'
@@ -234,7 +234,13 @@ class Checkout extends Component {
                     })
                     localStorage.setItem("billing_id", res.data.results.data.id)
                     if(this.state.paymentSuccess){ window.location.href = reactURL + "confirmation" }
-                    else { alert("Complete the payment to confirm your bookings.") }
+                    else { 
+                        swal({
+                            type: 'error',
+                            title: 'Payment',
+                            text: "Complete the payment to confirm your bookings",
+                        })
+                    }
             })
             .catch(err => {
                 console.error(err);
