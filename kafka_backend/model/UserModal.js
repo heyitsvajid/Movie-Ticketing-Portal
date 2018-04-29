@@ -51,22 +51,32 @@ function createMultiplexAdmin( msg, callback) {
                     callback( null, multiplexAdminObject );
                 }
                 else {
-                    let sql2 = 'insert into user ( first_name, last_name, email, password, address, profile_image_path, city, state, zipcode, phone_number, disable , role_number ) values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ';
-                    db.query( sql2 ,  [ fname, lname, email, pwd, add, pimagepath, city, state, zip, phn, disable, role ] , (err, result) => {
-                        db.release();
+                    bcrypt.hash(pwd, saltRounds, (err, hash) => {
                         if(err) {
-                            console.log("Error in inserting user in mysql in creating multiplex admin");
-                            callback(null, 'Error in inserting user in mysql in creating multiplex admin');
+                            console.log("Error hasing the password");
                         }
                         else {
-                            console.log('Created Multiplex Admin', result );
-                            multiplexAdminObject = {
-                                code : 2 ,
-                                message : "Multiplex admin created successfully"
-                            };
-                            callback(null, multiplexAdminObject );
+                            console.log("Hashed the password", hash);
+                            let sql2 = 'insert into user ( first_name, last_name, email, password, address, profile_image_path, city, state, zipcode, phone_number, disable , role_number ) values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ';
+                            db.query( sql2 ,  [ fname, lname, email, hash, add, pimagepath, city, state, zip, phn, disable, role ] , (err, result) => {
+                                db.release();
+                                if(err) {
+                                    console.log("Error in inserting user in mysql in creating multiplex admin");
+                                    callback(null, 'Error in inserting user in mysql in creating multiplex admin');
+                                }
+                                else {
+                                    console.log('Created Multiplex Admin', result );
+                                    multiplexAdminObject = {
+                                        code : 2 ,
+                                        message : "Multiplex admin created successfully"
+                                    };
+                                    callback(null, multiplexAdminObject );
+                                }
+                            })
                         }
-                    })
+                    }
+                )
+
                 }
             }
         })

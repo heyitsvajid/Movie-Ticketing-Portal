@@ -439,7 +439,7 @@ class MultiplexAdmin extends Component {
                                             <div class="form-row">
                                                 <div className="form-group col-md-6">
                                                     <label class="dashboard-label">City</label>
-                                                    <input type="text" placeholder="Enter City" className="form-control" onChange={this.handleChange} id="city" name='city' pattern='[A-Za-z]*' title='Please enter valid city' />
+                                                    <input type="text" placeholder="Enter City" className="form-control" onChange={this.handleChange} id="city" name='city' pattern='[A-Za-z]+[\s]*[A-Za-z]*' title='Please enter valid city' />
                                                     <div id = "city_error" class= "error"></div>
                                                 </div>
 

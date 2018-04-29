@@ -1,7 +1,7 @@
 var mysql = require('mysql');
 
 var pool = mysql.createPool({
-    connectionLimit : 10,
+    connectionLimit : 1000,
     host : 'weserveinstance.ccecdywbwqqr.us-west-1.rds.amazonaws.com',
     port : 3305,
     user : 'root',
