@@ -29,9 +29,11 @@ class ProfileImage extends Component {
                 .then((response) => {
                     debugger
                     console.log("Response from DB in get profiledetails", response.data);
-                    this.setState({
-                        requireImagePath: response.data.data.image_path,
-                    })
+                    if(response.data.data.image_path){
+                        this.setState({
+                            requireImagePath: response.data.data.image_path,
+                        })    
+                    }
                 })
         }
         else {
@@ -163,20 +165,15 @@ class ProfileImage extends Component {
 
 
         return (
-            <div>
-                <div>
-                    <form id="dashboard-form" class='form-horizontal' onSubmit={this._handleSubmit}>
-
+                    <form id="dashboard-form" onSubmit={this._handleSubmit}>
                         {this.renderImage()}
-
-                        <div className="form-group">
+                        <br/><hr/><br/>
                             <input id="file-upload" type="file" onChange={this._handleImageChange} />
-                            <button type="submit" class="dashboard-form-btn btn btn-primary mt-2" value="Add Character" onClick={this._handleSubmit}>Upload Image</button>
+                            <div class="large-6 columns right-25">
+                        <a id="save-email" class="btn save-button" onClick={this._handleSubmit}>Save</a>
                         </div>
                     </form>
-                </div>
 
-            </div>
         )
     }
 

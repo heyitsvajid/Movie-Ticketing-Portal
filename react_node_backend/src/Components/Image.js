@@ -20,28 +20,9 @@ class ImageUpload extends Component {
   }
 
   componentWillMount() {
-    let getprofileImageAPI = envURL + 'getProfileImage';
-    let id = localStorage.getItem('id');
-    if (id) {
-      var apiPayload = {
-        id: id
-      }
-      axios.post(getprofileImageAPI, apiPayload)
-        .then(res => {
-          console.log(res.data);
-          if (res.data.errorMsg != '') {
-            console.log('No Image Found');
-          } else {
-            this.setState({
-              requireImagePath: res.data.data.src
-            });
-          }
-        })
-        .catch(err => {
-          console.error(err);
-        });
-    }
+
   }
+
   renderRows() {
     if (this.state.errorMessage != '') {
       return (
