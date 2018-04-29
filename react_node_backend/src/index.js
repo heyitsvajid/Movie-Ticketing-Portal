@@ -6,7 +6,6 @@ import Index from './Components/Index';
 import AdminDashboard from './Components/AdminDashboard';
 import MovieShowTimings from './Components/MovieShowTimings';
 import MovieDetails from './Components/MovieDetails';
-import Checkout from './Components/Checkout';
 import AccountSettings from "./Components/AccountSettings";
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import './assets/css/bootstrap.min.css'
@@ -18,7 +17,7 @@ import { Provider } from 'react-redux';
 import MultiplexAdmin from "./Components/MultiplexAdmin";
 import TicketBooking from './Components/TicketBooking';
 import SignUp from "./Components/SignUp";
-import CheckoutTest from './Components/CheckoutTest'
+import Checkout from './Components/Checkout'
 import TicketConfirmation from './Components/TicketConfirmation'
 import PurchaseHistory from './Components/PurchaseHistory'
 import AdminGraphs from "./Components/AdminGraphs";
@@ -39,9 +38,8 @@ ReactDOM.render(
         <Route exact path="/tickets" component={TicketBooking} />
         <Route exact path="/signup" component={SignUp} />
         <Route exact path="/movie_details" component={MovieDetails} />
-        <Route exact path="/checkout" component={Checkout} />
         <Route exact path="/profile" component={AccountSettings} />
-        <Route exact path="/co" component={CheckoutTest} />
+        <Route exact path="/checkout" component={Checkout} />
         <Route exact path="/confirmation" component={TicketConfirmation} />
         <Route exact path="/orders" component={PurchaseHistory} />
         <Route exact path="/admingraphs" component={AdminGraphs} />

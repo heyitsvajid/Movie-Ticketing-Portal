@@ -152,7 +152,7 @@ class TicketBooking extends Component {
     localStorage.setItem('da_total_amount', this.state.da_total_amount)
     localStorage.setItem('c_tickets', this.state.c_tickets)
     localStorage.setItem('child_total_amount', this.state.child_total_amount)
-    this.props.history.push('/co');    
+    this.props.history.push('/checkout');    
   }
 
   render() {
