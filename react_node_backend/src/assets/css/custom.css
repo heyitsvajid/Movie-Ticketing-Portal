@@ -746,7 +746,7 @@ label.star:before {
 
 .profile-headers {
   font-weight: bolder;
-  letter-spacing: -2px;
+  letter-spacing: -1px;
   font-size: 22px important;
   font-size: 24px !important;
 }
