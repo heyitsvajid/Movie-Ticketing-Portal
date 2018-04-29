@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { envURL, reactURL } from '../config/environment';
-import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ComposedChart, Area, Line, AreaChart, LineChart} from 'recharts';
+import {BarChart, Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ComposedChart, Area, Line, AreaChart, LineChart} from 'recharts';
 import '../assets/css/admingraphs.css';
 
 
@@ -17,6 +17,7 @@ class AdminGraphs extends Component {
             monthRevenue: [],
             lastMonthMultiplexRevenue: [],
             userClickAnalytics: [],
+            leastPagesVisited: [],
             movieList: [],
             movieReviewGraph: [],
             userSessionAnalytics:[],
@@ -215,6 +216,8 @@ class AdminGraphs extends Component {
                 console.log("User logging data", response.data);
                 this.setState({
                     userClickAnalytics: response.data
+                }, () => {
+                    this.setLeastVisistedPages();
                 })
 
             })
@@ -229,6 +232,19 @@ class AdminGraphs extends Component {
                 })
 
             })
+    }
+
+    setLeastVisistedPages(){
+        var all_pages = this.state.userClickAnalytics;
+        if(all_pages.length == 0 ){return};
+        let sorted_array = all_pages.sort(function(a,b) {return (a.count > b.count) ? 1 : ((b.count > a.count) ? -1 : 0);} ); 
+        if(sorted_array.length > 0){
+            var currentTodos = sorted_array.slice(1, 6);
+            // currentTodos.forEach(element => {
+            //     element.value = 100
+            // });
+            this.setState({leastPagesVisited: currentTodos})
+        }
     }
 
 
@@ -299,7 +315,7 @@ class AdminGraphs extends Component {
                 <div class="row">
                     <div className="form-group col-md-12">
                         <div class="row">
-                            <div className="form-group col-md-4 ">
+                            <div className="form-group col-md-6">
                                 <h3 class="c-grey-900 mB-20">Multiplex Revenue of Month</h3>
                             </div>
                             <div className="form-group col-md-2 ">
@@ -358,6 +374,43 @@ class AdminGraphs extends Component {
                     <div className="form-group col-md-12">
                         <div class="row">
                             <div className="form-group col-md-4 ">
+                                <h3 class="c-grey-900 mB-20">Least Clicks Per Page</h3>
+                            </div>
+                            {/* <div className="form-group col-md-2 ">
+                                <label class="dashboard-label center-head">Trailer Link</label>
+                            </div> */}
+                            <div className="form-group col-md-2">
+                                {/* <select id="mySelectMovie" onChange={ this.handleYearChangeForMovie }>
+                                </select> */}
+                            </div>
+                        </div>
+                        <br/>             
+                        <RadarChart cx={650} cy={250} outerRadius={150} width={1300} height={500} data={this.state.leastPagesVisited}>
+                            <PolarGrid />
+                            <PolarAngleAxis dataKey="pageName" />
+                            <PolarRadiusAxis angle={90}/>
+                        
+                            <Radar name="Count" dataKey="count" stroke="#82ca9d" fill="#82ca9d" fillOpacity={0.6}/>
+                            <Legend />
+                            
+                        </RadarChart>          
+                        
+                        {/* <ComposedChart width={1300} height={250} data={this.state.userClickAnalytics}>
+                            <XAxis dataKey="pageName" />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <CartesianGrid stroke="#f5f5f5" />
+                            <Area type="monotone" dataKey="count" fill="#8884d8" stroke="#8884d8" />
+                        </ComposedChart> */}
+                    </div>
+                </div>
+                <hr/>
+
+                <div class="row">
+                    <div className="form-group col-md-12">
+                        <div class="row">
+                            <div className="form-group col-md-4 ">
                                 <h3 class="c-grey-900 mB-20">Movie Clicks</h3>
                             </div>
                             <div className="form-group col-md-2 ">
@@ -368,9 +421,7 @@ class AdminGraphs extends Component {
                                 </select> */}
                             </div>
                         </div>
-                        
                         <br/>        
-                        
                         <BarChart width={1300} height={300} data={this.state.movieClickAnalytics}
                           margin={{top: 5, right: 30, left: 20, bottom: 5}}>
                             <CartesianGrid strokeDasharray="3 3"/>

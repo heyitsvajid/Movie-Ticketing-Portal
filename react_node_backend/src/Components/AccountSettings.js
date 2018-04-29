@@ -11,6 +11,7 @@ import '../assets/css/style.css'
 import { envURL, reactURL } from '../config/environment';
 
 class AccountSettings extends Component {
+
   constructor(props) {
     super(props);
     this.state = ({
@@ -24,9 +25,11 @@ class AccountSettings extends Component {
         ZipCode : '' ,
         error: '',
         oldPassword: '',
-        newPassword: ''
-
-
+        newPassword: '',
+        address: '',
+        phone: '',
+        state_name: 'AL',
+        city: ''
     });
     this.handleChange = this.handleChange.bind(this);
     this.handleSaveBasicInfo = this.handleSaveBasicInfo.bind(this);
@@ -45,7 +48,12 @@ class AccountSettings extends Component {
                   this.setState({
                       FirstName : response.data.data.first_name,
                       LastName : response.data.data.last_name,
-                      email : response.data.data.email
+                      email : response.data.data.email,
+                      address: response.data.data.address,
+                      phone: response.data.data.phone_number,
+                      city: response.data.data.city,
+                      state_name: response.data.data.state,
+                      zipcode: response.data.data.zipcode,
                   })
               })
       }
@@ -69,10 +77,16 @@ class AccountSettings extends Component {
 
     handleSaveBasicInfo = (e) => {
         e.preventDefault();
+        debugger
         let profiledetails = {
             id : localStorage.getItem('userid'),
             first_name : this.state.FirstName,
-            last_name : this.state.LastName
+            last_name : this.state.LastName,
+            city: this.state.city,
+            state_name: this.state.state_name,
+            zipcode: this.state.zipcode,
+            phone: this.state.phone,
+            address: this.state.address
         };
 
         let pattern1 = new RegExp("\\d");
@@ -413,13 +427,98 @@ class AccountSettings extends Component {
                     <div class="row">
                         <div class="large-6 columns">
                           <label >First Name</label>
-                          <input name="ctl00$ctl00$GlobalBody$Body$FirstName" type="text" onChange={this.handleChange}
+                          <input name="ctl00$ctl00$GlobalBody$Body$FirstName" placeholder = "Enter First Name" type="text" onChange={this.handleChange}
                                  value={this.state.FirstName} maxlength="80" id="FirstName" />
                         </div>
                         <div class="large-6 columns">
                           <label >Last Name</label>
-                          <input name="ctl00$ctl00$GlobalBody$Body$LastName" type="text" onChange={this.handleChange}
+                          <input name="ctl00$ctl00$GlobalBody$Body$LastName" type="text" placeholder = "Enter Last Name" onChange={this.handleChange}
                                  value={this.state.LastName} maxlength="80" id="LastName" />
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="large-10 columns">
+                          <label >Address</label>
+                          <input placeholder = "Enter Address" name="ctl00$ctl00$GlobalBody$Body$FirstName" type="text" onChange={this.handleChange}
+                                 value={this.state.address} maxlength="80" id="address" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="large-6 columns">
+                          <label >City</label>
+                          <input placeholder = "Enter City" name="ctl00$ctl00$GlobalBody$Body$FirstName" type="text" onChange={this.handleChange}
+                                 value={this.state.city} maxlength="80" id="city" />
+                        </div>
+                        <div class="large-6 columns">
+                          <label >State</label>
+                          <select class="form-control" onChange={this.handleChange} id="state_name" onChange = {this.handleChange} >
+                                <option value="AL">Alabama</option>
+                                <option value="AK">Alaska</option>
+                                <option value="AZ">Arizona</option>
+                                <option value="AR">Arkansas</option>
+                                <option value="CA">California</option>
+                                <option value="CO">Colorado</option>
+                                <option value="CT">Connecticut</option>
+                                <option value="DE">Delaware</option>
+                                <option value="DC">District Of Columbia</option>
+                                <option value="FL">Florida</option>
+                                <option value="GA">Georgia</option>
+                                <option value="HI">Hawaii</option>
+                                <option value="ID">Idaho</option>
+                                <option value="IL">Illinois</option>
+                                <option value="IN">Indiana</option>
+                                <option value="IA">Iowa</option>
+                                <option value="KS">Kansas</option>
+                                <option value="KY">Kentucky</option>
+                                <option value="LA">Louisiana</option>
+                                <option value="ME">Maine</option>
+                                <option value="MD">Maryland</option>
+                                <option value="MA">Massachusetts</option>
+                                <option value="MI">Michigan</option>
+                                <option value="MN">Minnesota</option>
+                                <option value="MS">Mississippi</option>
+                                <option value="MO">Missouri</option>
+                                <option value="MT">Montana</option>
+                                <option value="NE">Nebraska</option>
+                                <option value="NV">Nevada</option>
+                                <option value="NH">New Hampshire</option>
+                                <option value="NJ">New Jersey</option>
+                                <option value="NM">New Mexico</option>
+                                <option value="NY">New York</option>
+                                <option value="NC">North Carolina</option>
+                                <option value="ND">North Dakota</option>
+                                <option value="OH">Ohio</option>
+                                <option value="OK">Oklahoma</option>
+                                <option value="OR">Oregon</option>
+                                <option value="PA">Pennsylvania</option>
+                                <option value="RI">Rhode Island</option>
+                                <option value="SC">South Carolina</option>
+                                <option value="SD">South Dakota</option>
+                                <option value="TN">Tennessee</option>
+                                <option value="TX">Texas</option>
+                                <option value="UT">Utah</option>
+                                <option value="VT">Vermont</option>
+                                <option value="VA">Virginia</option>
+                                <option value="WA">Washington</option>
+                                <option value="WV">West Virginia</option>
+                                <option value="WI">Wisconsin</option>
+                                <option value="WY">Wyoming</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="large-6 columns">
+                          <label >Zipcode</label>
+                          <input name="ctl00$ctl00$GlobalBody$Body$FirstName" type="text" onChange={this.handleChange}
+                                 placeholder = "Enter Zipcode" value={this.state.zipcode} maxlength="80" id="zipcode" />
+                        </div>
+                        <div class="large-6 columns">
+                          <label >Contact Number</label>
+                          <input name="ctl00$ctl00$GlobalBody$Body$LastName" type="text" onChange={this.handleChange}
+                                 placeholder = "Enter Contact Number" value={this.state.phone} maxlength="80" id="phone" />
                         </div>
                         <div class="large-5 columns">
                         </div>
@@ -427,7 +526,8 @@ class AccountSettings extends Component {
                           <a id="save-basic" class="btn save-button" onClick={this.handleSaveBasicInfo} >Save</a>
                         </div>
                     </div>
-                  </div>
+                </div>
+                  
               </div>
 
               <div class="panel-group">

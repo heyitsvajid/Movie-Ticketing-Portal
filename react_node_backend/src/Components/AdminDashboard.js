@@ -211,7 +211,7 @@ class AdminDashboard extends Component {
                                                 <div class="logo"><img src="https://colorlib.com/polygon/adminator/assets/static/images/logo.png" alt="" /></div>
                                             </div>
                                             <div class="peer peer-greed">
-                                                <h5 class="admin-head lh-1 mB-0 logo-text">Adminator</h5>
+                                                <h5 class="admin-head lh-1 mB-0 logo-text">Administrator</h5>
                                             </div>
                                             </div>
                                         </a>
@@ -223,7 +223,7 @@ class AdminDashboard extends Component {
                             </div>
                             
                             <ul class="sidebar-menu scrollable pos-r ps">
-                            <li class="nav-item mT-30 active"><a class="sidebar-link" href="https://colorlib.com/polygon/adminator/index.html" default=""><span class="icon-holder"><i class="c-blue-500 ti-home"></i> </span><span class="title">Dashboard</span></a></li>
+                            <li class="nav-item mT-30 active"><a class="sidebar-link" href="" default=""><span class="icon-holder"><i class="c-blue-500 ti-home"></i> </span><span class="title">Dashboard</span></a></li>
                             {localStorage.getItem('roleId')==3 ?
                             <li class="nav-item" value={addMultiplexAdmin} onClick={this.handleLinkClick.bind(this)} data-toggle="tooltip" data-placement="right" title="" data-original-title="Link">
                                 <a class="sidebar-link" href="#" value={addMultiplexAdmin} onClick={this.handleLinkClick.bind(this)}>

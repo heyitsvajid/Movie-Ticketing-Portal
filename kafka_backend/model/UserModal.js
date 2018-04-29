@@ -398,8 +398,8 @@ function update_basic_information_profile_request(msg, callback) {
             errHandler(err);
         } else {
             console.log("Connected to MYSQL in update_basic_information_profile_request in usermodal");
-            var sql = "update user set first_name = ?, last_name = ?, address = ?, city = ?, state = ?, zipcode = ?, phone_number = ?";
-            db.query(sql, [first_name, last_name, address, city, state_name, zipcode, phone], (err, result) => {
+            var sql = "update user set first_name = ?, last_name = ?, address = ?, city = ?, state = ?, zipcode = ?, phone_number = ? where id=?";
+            db.query(sql, [first_name, last_name, address, city, state_name, zipcode, phone, id], (err, result) => {
                 if(err) {
                     console.log("Error in UserModal update_basic_information_profile_request while update query to DB");
                     errHandler(err);
