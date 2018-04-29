@@ -172,6 +172,7 @@ LogAPI.logUserClicks(click);
     let findMultiplexByIdAPI = envURL + 'findMultiplexById';
     var multiplexId = localStorage.getItem('bookMultiplexId')
     var showId = localStorage.getItem('bookShowId');
+    var screenId = localStorage.getItem('bookScreenId');
     // localStorage.removeItem('bookShowId');
     // localStorage.removeItem('bookMultiplexId');
     console.log('Fetching multiplex Details');
@@ -422,6 +423,7 @@ LogAPI.logUserClicks(click);
                         localStorage.setItem("billing_id", res.data.results.data.id)
                         localStorage.setItem("cards_last_four_digits", this.state.cardNumber.slice(this.state.cardNumber.length-4, this.state.cardNumber.length))
                         localStorage.setItem("card_expiry", this.state.expiryMonth +"/"+this.state.expiryYear )
+                        localStorage.setItem("bookScreenId", this.state.bookScreenId)
                         // localStorage.removeItem('bookShowId')
                         // localStorage.removeItem('bookMultiplexId')
                         // localStorage.setItem('a_tickets', this.state.a_tickets)
@@ -775,9 +777,14 @@ LogAPI.logUserClicks(click);
                                       <h2 id="theaterName">{this.state.multiplexName}</h2>
                                   </li>
                                   <li id="theaterAddress"><a id="maplink" href="http://www.fandango.com/maps/drivingdirections.aspx?category=ticketboxoffice_secure&label=Towne 3 Cinemas&icontitles=yes&streetaddress=&zip=&iconid=213&level=8&state=&height=295&country=CA&city=&tid=AAFRF&mouse_mode=center&width=400" target="_blank"  class="emptyCheck">{this.state.multiplexAddress}</a> </li>
-                                  {/* <li class="auditorium">
-                                      <h2 id="auditoriumInfo" class="emptyCheck">Auditorium: {this.state.screenNumber} </h2>
-                                  </li> */}
+                                  <li id="theaterAddress"><a id="maplink" href="http://www.fandango.com/maps/drivingdirections.aspx?category=ticketboxoffice_secure&label=Towne 3 Cinemas&icontitles=yes&streetaddress=&zip=&iconid=213&level=8&state=&height=295&country=CA&city=&tid=AAFRF&mouse_mode=center&width=400" target="_blank"  class="emptyCheck">{this.state.multiplexCity} {this.state.multiplexState} <strong>{this.state.multiplexZipCode}</strong></a> </li>
+                                  {/* <li id="theaterAddress"><a id="maplink" href="http://www.fandango.com/maps/drivingdirections.aspx?category=ticketboxoffice_secure&label=Towne 3 Cinemas&icontitles=yes&streetaddress=&zip=&iconid=213&level=8&state=&height=295&country=CA&city=&tid=AAFRF&mouse_mode=center&width=400" target="_blank"  class="emptyCheck">{this.state.multiplexState}</a> </li> */}
+                                  {/* <li id="theaterAddress"><strong><a id="maplink" href="http://www.fandango.com/maps/drivingdirections.aspx?category=ticketboxoffice_secure&label=Towne 3 Cinemas&icontitles=yes&streetaddress=&zip=&iconid=213&level=8&state=&height=295&country=CA&city=&tid=AAFRF&mouse_mode=center&width=400" target="_blank"  class="emptyCheck">{this.state.multiplexZipCode}</a></strong> </li> */}
+                                  
+                                  
+                                  <li class="auditorium">
+                                      <h2 id="auditoriumInfo" class="emptyCheck">Auditorium: {this.state.bookScreenId} </h2>
+                                  </li>
                                   <li class="theaterNotes">
                                       <h2 class="emptyCheck" id="notesHeader"></h2>
                                       <div class="emptyCheck" id="notesBody"></div>
