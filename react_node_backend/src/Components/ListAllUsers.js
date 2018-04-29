@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import {withRouter} from 'react-router-dom';
-import axios from 'axios';
+import axios from 'axios'
+import { post } from 'axios';
 import { envURL, reactURL } from '../config/environment';
 import '../assets/css/style.css'
 import '../assets/css/admin.css'
 import swal from "sweetalert";
 import Pagination from './Pagination';
+
 import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ComposedChart, Area, Line, AreaChart, LineChart} from 'recharts';
 
 class ListAllUsers extends Component {
@@ -17,14 +19,14 @@ class ListAllUsers extends Component {
             users: [],
             searchedUsers: [],
             UserID : '',
-            First_Name : '',
-            Last_Name : '',
-            Email : '',
-            Phone_Number : '',
-            Address : '',
-            City : '',
-            State : '',
-            Zipcode : '',
+            first_name : '',
+            last_name : '',
+            email : '',
+            phone_number : '',
+            address : '',
+            city : '',
+            state_name : 'AL',
+            zipcode : '',
             Role_Number : '',
             currentPage: 1,
             perPageRows: 5,
@@ -32,8 +34,18 @@ class ListAllUsers extends Component {
             currentSessionUserId: "",
             sessionOptions: [],
             currentSessionObject: [],
-            finalGraphData: []
+            finalGraphData: [],
+            update_id: 0,
+            update: false,
         };
+    }
+
+    handleChange = (e) => {
+        const name = e.target.name;
+        const value = e.target.value;
+        this.setState({ [name]: value })
+        document.getElementById(e.target.name + "_error").innerHTML = "";
+        console.log(this.state)
     }
 
     componentWillMount(){
@@ -63,6 +75,7 @@ class ListAllUsers extends Component {
         axios.get( url, { withCredentials : true } )
             .then((response) => {
                 console.log("In Get All Users", response.data);
+                debugger
                 this.setState({
                     users : response.data.data,
                     searchedUsers: response.data.data,
@@ -72,6 +85,140 @@ class ListAllUsers extends Component {
                 })
             })
     };
+
+    updateUser(e) {
+        e ? e.preventDefault() : ''
+        // if (!this.state.name || !this.state.address || !this.state.state_name || !this.state.city || !this.state.zipcode
+        //     || !this.state.multiplex_owner_id || !this.state.amenities || !this.state.screens.length > 0 || !this.state.file) {
+        //     swal({
+        //         type: 'error',
+        //         title: 'Add Multiplex',
+        //         text: 'Provide all fields.',
+        //     })
+        //     return;
+        // }
+        // if (!String(this.state.zipcode).match(/(^\d{5}$)|(^\d{5}-\d{4}$)/i)) {
+        //     swal({
+        //         type: 'error',
+        //         title: 'Add Multiplex',
+        //         text: 'Invalid Zipcode',
+        //     })
+        //     return;
+        // }
+        // if (!(String(this.state.contact_number).length == 10)) {
+        //     swal({
+        //         type: 'error',
+        //         title: 'Add Multiplex',
+        //         text: 'Invalid Contact Number',
+        //     })
+        //     return;
+        // }
+        let all_details = {
+            id : this.state.update_id,
+            first_name : this.state.first_name,
+            last_name : this.state.last_name,
+            city: this.state.city,
+            state_name: this.state.state_name,
+            zipcode: this.state.zipcode,
+            phone: this.state.phone_number,
+            address: this.state.address
+        };
+
+        let profiledetails = {
+            id : this.state.update_id,
+            email : this.state.email,
+        };
+
+        axios.post(envURL + 'checkforexistingemail', profiledetails, { withCredentials : true})
+        .then(res => {
+            if(res.data.errorMsg == "" && all_details.id != res.data.data[0].id){
+                document.getElementById("email_error").innerHTML = "Email already present";
+                return;
+            }
+            else {
+                axios.post( envURL+'updateprofileemail', profiledetails, { withCredentials : true} )
+                    .then( (response) => {
+                            axios.post( envURL+'updateprofilebasicinfo', all_details, { withCredentials : true} )
+                            .then((res) => {
+                                this.setState({
+                                    id : '',
+                                    first_name : '',
+                                    last_name : '',
+                                    city: '',
+                                    state_name: '',
+                                    zipcode: '',
+                                    phone: '',
+                                    address: ''
+                                })
+                                this.getAllUsers();
+                                swal( "Email Updated Successfully!", "", "success" );
+                                document.getElementById("user-update").style.display = "none";
+                            })
+                        }
+                    )
+            }
+        })
+
+        // let updateMultiplexAPI = envURL + 'updateMultiplex';
+
+        // this.state.screens.forEach(element => {
+        //     delete element._id
+        // });
+
+        // var multiplex = {
+        //     _id: this.state.update_id,
+        //     name: this.state.name,
+        //     address: this.state.address,
+        //     city: this.state.city,
+        //     state: this.state.state_name,
+        //     zipcode: this.state.zipcode,
+        //     contact_number: this.state.contact_number,
+        //     multiplex_owner_id: this.state.multiplex_owner_id,
+        //     amenities: this.state.amenities,
+        //     screen: JSON.stringify(this.state.screens),
+        // }
+
+        // const formData = new FormData();
+        // formData.append('file', this.state.file);
+        // for (var key in multiplex) {
+        //     formData.append(key, multiplex[key]);
+        // }
+        // const config = {
+        //     headers: {
+        //         'content-type': 'multipart/form-data'
+        //     }
+        // }
+        // post(updateMultiplexAPI, formData, config).then(function (res) {
+        //     if (res.data.errorMsg != '') {
+        //         swal({
+        //             type: 'error',
+        //             title: 'Update Multiplex',
+        //             text: res.data.errorMsg,
+        //         })
+        //     } else if (res.data.successMsg != '') {
+        //         swal({
+        //             type: 'success',
+        //             title: 'update Multiplex',
+        //             text: res.data.successMsg,
+        //         })
+        //     }
+        // }.bind(this));
+        // this.setState({
+        //     update: false,
+        //     file: '',
+        //     first_name: '',
+        //     last_name: '',
+        //     city: '',
+        //     state_name: '',
+        //     zipcode: '',
+        //     contact_number: '',
+        //     address: '',
+        //     email: ''
+        // })
+        // var that = this;
+        // setTimeout(function () {
+        // }, 2000);
+    }
 
     // handleUserDetail = (e) => {
     //     console.log("In handleUserDetail, id :", e )
@@ -253,6 +400,33 @@ class ListAllUsers extends Component {
         }
     }
 
+    handleUserUpdate(e) {
+        e ? e.preventDefault() : ''
+        this.state.users.forEach(element => {
+            if (element.id == e.target.id) {
+                document.getElementById("user-update").style.display = 'block';
+                debugger
+                this.setState({
+                    update_id: e.target.id,
+                    first_name: element.first_name,
+                    last_name: element.last_name,
+                    email: element.email,
+                    city: element.city,
+                    state_name: element.state,
+                    zipcode: element.zipcode,
+                    phone_number: element.phone_number,
+                    address: element.address
+                })
+                return;
+            }
+        });
+
+    }
+
+    handleCancel(e){
+        document.getElementById("user-update").style.display = "none";
+    }
+
     returnUserList() {
         let pagination_list, currentTodos=null;
         if(this.state.searchedUsers != []){
@@ -281,8 +455,19 @@ class ListAllUsers extends Component {
                     <td> <a href = "" data-userId = {item.id} onClick={this.handleShowUserSessionGraph.bind(this)} > { item.first_name } </a> </td>
                     <td> { item.last_name } </td>
                     <td> { item.email } </td>
+                    
                     <td>
-                        <button className='btn-danger' style={{backgroundColor: '#F15500'}} onClick={this.handleDeleteUser.bind(this, item.id )} > Delete </button>
+                    <div class="row">
+                        <div className="form-group col-md-2.5">
+                            <input type="button" id={item.id} class="dashboard-form-btn link-style nav-link btn-info action-link"
+                                value="Update" required=""  onClick={this.handleUserUpdate.bind(this)} />
+                        </div>
+
+                        <div className="form-group col-md-2">
+                            <button className='btn-danger' style={{backgroundColor: '#F15500'}} onClick={this.handleDeleteUser.bind(this, item.id )} > Delete </button>
+                        </div>
+                    </div>
+
                     </td>
 
                 </tr>
@@ -334,6 +519,153 @@ class ListAllUsers extends Component {
                 {this.returnUserList()}
                 <hr/>
                 {this.getSessionChart()}
+                <hr class='mt-5 mb-5' />
+                <div id = "user-update">
+                    <h3>Update User</h3>
+                    <hr />
+
+
+                    <div class="row gap-20 masonry pos-r" style={{position: 'relative', height: '606px'}}>
+                        <div class="masonry-item col-md-6" style={{position: 'absolute', top: '0px'}}>
+                            <div class="bgc-white p-20 bd">
+                                <div class="mT-30">
+                                    <form id="dashboard-form" className='form-multiplexadmin'>
+
+                                        <div class="form-row">
+                                            <div className="form-group col-md-6">
+                                                <label class="dashboard-label">First Name</label>
+                                                <input type="text" onChange={this.handleChange} value = {this.state.first_name} placeholder="Enter First Name" className="form-control" id="first_name" name='first_name' pattern='[A-Za-z]*' title='Please enter valid name' />
+                                                <div id = "first_name_error" class= "error"></div>
+                                            </div>
+
+                                            <div className="form-group col-md-6">
+                                                <label class="dashboard-label">Last Name</label>
+                                                <input type="text" onChange={this.handleChange} value = {this.state.last_name} placeholder="Enter Last Name" className="form-control" id="last_name" name='last_name' pattern='[A-Za-z]*' title='Please enter valid name' />
+                                                <div id = "last_name_error" class= "error"></div>
+                                            </div>
+                                        </div>
+                                        <div className="form-group">
+                                            <label class="dashboard-label">Email</label>
+                                            <input type="text" placeholder="Enter Email" value = {this.state.email} onChange={this.handleChange} className="form-control" id="email" name='email' />
+                                            <div id = "email_error" class= "error"></div>
+                                        </div>
+                                        {/* <div className="form-group">
+                                            <label class="dashboard-label">Password</label>
+                                            <input type="password" placeholder="Enter Password" value = {this.state.first_name} className="form-control" onChange={this.handleChange} id="pwd" name='password' />
+                                            <div id = "password_error" class= "error"></div>
+                                        </div> */}
+                                        <div className="form-group">
+                                            <label class="dashboard-label">Address</label>
+                                            <input type="text" placeholder="Enter Address"  value = {this.state.address} className="form-control" onChange={this.handleChange} id="address" name='address' />
+                                            <div id = "address_error" class= "error"></div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div className="form-group col-md-6">
+                                                <label class="dashboard-label">City</label>
+                                                <input type="text" placeholder="Enter City"  value = {this.state.city} className="form-control" onChange={this.handleChange} id="city" name='city' pattern='[A-Za-z]+[\s]*[A-Za-z]*' title='Please enter valid city' />
+                                                <div id = "city_error" class= "error"></div>
+                                            </div>
+
+                                            <div className="form-group col-md-6">
+                                                <label class="dashboard-label">State</label>
+                                                <select class="form-control" onChange={this.handleChange} id="state" name='state_name' >
+                                                    <option value="AL">Alabama</option>
+                                                    <option value="AK">Alaska</option>
+                                                    <option value="AZ">Arizona</option>
+                                                    <option value="AR">Arkansas</option>
+                                                    <option value="CA">California</option>
+                                                    <option value="CO">Colorado</option>
+                                                    <option value="CT">Connecticut</option>
+                                                    <option value="DE">Delaware</option>
+                                                    <option value="DC">District Of Columbia</option>
+                                                    <option value="FL">Florida</option>
+                                                    <option value="GA">Georgia</option>
+                                                    <option value="HI">Hawaii</option>
+                                                    <option value="ID">Idaho</option>
+                                                    <option value="IL">Illinois</option>
+                                                    <option value="IN">Indiana</option>
+                                                    <option value="IA">Iowa</option>
+                                                    <option value="KS">Kansas</option>
+                                                    <option value="KY">Kentucky</option>
+                                                    <option value="LA">Louisiana</option>
+                                                    <option value="ME">Maine</option>
+                                                    <option value="MD">Maryland</option>
+                                                    <option value="MA">Massachusetts</option>
+                                                    <option value="MI">Michigan</option>
+                                                    <option value="MN">Minnesota</option>
+                                                    <option value="MS">Mississippi</option>
+                                                    <option value="MO">Missouri</option>
+                                                    <option value="MT">Montana</option>
+                                                    <option value="NE">Nebraska</option>
+                                                    <option value="NV">Nevada</option>
+                                                    <option value="NH">New Hampshire</option>
+                                                    <option value="NJ">New Jersey</option>
+                                                    <option value="NM">New Mexico</option>
+                                                    <option value="NY">New York</option>
+                                                    <option value="NC">North Carolina</option>
+                                                    <option value="ND">North Dakota</option>
+                                                    <option value="OH">Ohio</option>
+                                                    <option value="OK">Oklahoma</option>
+                                                    <option value="OR">Oregon</option>
+                                                    <option value="PA">Pennsylvania</option>
+                                                    <option value="RI">Rhode Island</option>
+                                                    <option value="SC">South Carolina</option>
+                                                    <option value="SD">South Dakota</option>
+                                                    <option value="TN">Tennessee</option>
+                                                    <option value="TX">Texas</option>
+                                                    <option value="UT">Utah</option>
+                                                    <option value="VT">Vermont</option>
+                                                    <option value="VA">Virginia</option>
+                                                    <option value="WA">Washington</option>
+                                                    <option value="WV">West Virginia</option>
+                                                    <option value="WI">Wisconsin</option>
+                                                    <option value="WY">Wyoming</option>
+                                                </select>
+                                                <div id = "state_name_error" class= "error"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-row">
+                                            <div className="form-group col-md-6">
+                                                <label class="dashboard-label">ZipCode</label>
+                                                <input type="text" placeholder="Enter ZipCode" className="form-control" onChange={this.handleChange} id="zipcode" name='zipcode' title='Please enter 5 Digit Zipcode' />
+                                                <div id = "zipcode_error" class= "error"></div>
+                                            </div>
+                                            <div className="form-group col-md-6">
+                                                <label class="dashboard-label">Phone Number</label>
+                                                <input type="text" placeholder="Enter Phone Number" className="form-control" onChange={this.handleChange} id="phone_number" name='phone_number' title='Please enter 10 Digit Phone Number' />
+                                                <div id = "phone_number_error" class= "error"></div>
+                                            </div>
+                                        </div>
+
+                                        
+                                    
+
+                                        
+
+                                        {/* <div className="form-group">
+                                            <label class="dashboard-label">Multiplex Logo</label>
+                                            <input id="file-upload" type="file" onChange={ this._handleChangeFile.bind(this) } />
+                                            <div id = "file_error" class= "error"></div>
+                                        </div> */}
+
+                                        <div class="form-row">
+                                            <div className="form-group col-md-3">
+                                            <input type="submit" class="dashboard-form-btn btn btn-primary"
+                                            value="Update User" required="" onClick={this.updateUser.bind(this)} /> 
+                                            </div>
+
+                                            <div className="form-group col-md-3">
+                                                <input type="reset" class="dashboard-form-btn btn btn-default" value="Cancel" onClick = {this.handleCancel.bind(this)} />
+                                            </div>
+                                        </div>
+                                    
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
             </div>
         );

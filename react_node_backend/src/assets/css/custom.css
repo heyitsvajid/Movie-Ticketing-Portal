@@ -1077,3 +1077,7 @@ button#footer-fanmail-submit {
   margin-top: 5px;
   font-size: 20px;
 }
+
+#user-update{
+  display: none;
+}
