@@ -516,6 +516,7 @@ class MovieForm extends Component {
                                                 <option value="R">R – Restricted</option>
                                                 <option value="NC-17">NC-17 – Adults Only</option>
                                             </select>
+                                            <div id = "mpaa_ratings_error" class= "error"></div>
                                         </div>
 
                                         <div className="form-group col-md-6">
@@ -526,6 +527,7 @@ class MovieForm extends Component {
                                                 <option value="HD">HD</option>
                                                 <option value="HHD">HHD</option>
                                             </select>
+                                            <div id = "movie_definition_error" class= "error"></div>
                                         </div>
                                     </div>
 
