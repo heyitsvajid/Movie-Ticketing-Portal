@@ -28,7 +28,8 @@ class AccountSettings extends Component {
         address: '',
         phone: '',
         state_name: 'AL',
-        city: ''
+        city: '',
+        cardZipCode : ''
     });
     this.handleChange = this.handleChange.bind(this);
     this.handleSaveBasicInfo = this.handleSaveBasicInfo.bind(this);
@@ -58,11 +59,11 @@ class AccountSettings extends Component {
                       FirstName : response.data.data.first_name,
                       LastName : response.data.data.last_name,
                       email : response.data.data.email,
-                      address: response.data.data.address,
-                      phone: response.data.data.phone_number,
-                      city: response.data.data.city,
-                      state_name: response.data.data.state,
-                      zipcode: response.data.data.zipcode,
+                      address : response.data.data.address,
+                      phone : response.data.data.phone_number,
+                      city : response.data.data.city,
+                      state_name : response.data.data.state,
+                      ZipCode : response.data.data.zipcode,
                   })
               })
       }
@@ -70,6 +71,33 @@ class AccountSettings extends Component {
           swal("Please login first to view your profile", "", "warning");
           this.props.history.push('/');
       }
+
+      let getCardDetailsPerUser = envURL + 'getCardDetailsPerUser';
+      var user_email = { user_email : localStorage.getItem("email") };
+      console.log('Sending Card Fetching Request');
+      if(user_email){
+          axios.post(getCardDetailsPerUser, user_email )
+              .then( res => {
+                  console.log('Fetching Card Details');
+                  console.log(res.data.results.billing_information[0]);
+                  if(typeof res.data.results.billing_information[0] !== "undefined"){
+                      var card_details = res.data.results.billing_information[0];
+                      this.setState({
+                          cardDetails : card_details,
+                          CardNumber : card_details.cardNumber,
+                          ExpirationMonth : card_details.expiryMonth,
+                          ExpirationYear : card_details.expiryYear,
+                          cardZipCode : card_details.card_zipcode
+                      }, () => {
+                          console.log("After getting card details", this.state)
+                      })
+                  }
+              })
+              .catch(err => {
+                  console.error(err);
+              });
+      }
+
 
   };
 
@@ -86,37 +114,86 @@ class AccountSettings extends Component {
 
     handleSaveBasicInfo = (e) => {
         e.preventDefault();
-        debugger
         let profiledetails = {
             id : localStorage.getItem('userid'),
             first_name : this.state.FirstName,
             last_name : this.state.LastName,
             city: this.state.city,
             state_name: this.state.state_name,
-            zipcode: this.state.zipcode,
+            zipcode: this.state.ZipCode,
             phone: this.state.phone,
             address: this.state.address
         };
 
         let pattern1 = new RegExp("\\d");
         let test1 = pattern1.test(this.state.FirstName);
+
         let pattern2 = new RegExp("\\d");
         let test2 = pattern2.test(this.state.LastName);
 
+        let pattern3 = new RegExp(/(^\d{5}$)|(^\d{5}-\d{4}$)/);
+        let test3 = pattern3.test(this.state.ZipCode);
+
         if( !test1 && !test2) {
-            console.log(" Regex Test Passed");
-            let url = envURL+'updateprofilebasicinfo';
-            axios.post( url, profiledetails, { withCredentials : true} )
-                .then( (response) => {
-                    console.log("Response from Db in Update Profile : ", response.data );
-                    swal("Updated Successfully!", "", "success");
-                } )
+            console.log("First Name and Last name don't have digits check");
+            if( this.state.FirstName !== '' ) {
+                console.log(" First Name is not empty");
+                if( this.state.ZipCode === null || this.state.ZipCode === ''  ) {
+                    console.log("Empty Zipcode");
+                    this.sendSaveBasicInfo();
+                }
+                else {
+                    if( test3 ) {
+                        console.log("Zipcode Valid");
+                        this.sendSaveBasicInfo();
+                    }
+                    else {
+                        this.setState({
+                            error : 'Invalid Zipcode'
+                        })
+                    }
+                }
+            }
+            else {
+                this.setState({
+                    error : 'First Name can\'t be empty'
+                })
+            }
+
+            // let url = envURL+'updateprofilebasicinfo';
+            // axios.post( url, profiledetails, { withCredentials : true} )
+            //     .then( (response) => {
+            //         console.log("Response from Db in Update Profile : ", response.data );
+            //         swal("Updated Successfully!", "", "success");
+            //     } )
         }
         else {
             this.setState({
                 error : 'Please enter valid names'
             })
         }
+    };
+
+    sendSaveBasicInfo = () => {
+        console.log("All test Passed in save Basic Info");
+
+        let profiledetails = {
+            id : localStorage.getItem('userid'),
+            first_name : this.state.FirstName,
+            last_name : this.state.LastName,
+            city: this.state.city,
+            state_name: this.state.state_name,
+            zipcode: this.state.ZipCode,
+            phone: this.state.phone,
+            address: this.state.address
+        };
+
+        let url = envURL+'updateprofilebasicinfo';
+        axios.post( url, profiledetails, { withCredentials : true} )
+            .then( (response) => {
+                console.log("Response from Db in Update Profile : ", response.data );
+                swal("Updated Successfully!", "", "success");
+            } )
     };
 
     handleProfileImageClick(e){
@@ -137,8 +214,8 @@ class AccountSettings extends Component {
 
     handleSaveEmail(e) {
       e.preventDefault();
-        var patt = new RegExp('[a-zA-Z0-9]+[@][a-zA-Z0-9]+[.][a-zA-Z]+');
-        var res = patt.test(this.state.newEmail);
+        let patt = new RegExp('[a-zA-Z0-9]+[@][a-zA-Z0-9]+[.][a-zA-Z]+');
+        let res = patt.test(this.state.newEmail);
 
         if( res ) {
             let profiledetails = {
@@ -219,7 +296,7 @@ class AccountSettings extends Component {
         let test1 = pattern1.test(this.state.CardNumber);
 
         let pattern2 = new RegExp(/(^\d{5}$)|(^\d{5}-\d{4}$)/);
-        let test2 = pattern2.test(this.state.ZipCode);
+        let test2 = pattern2.test(this.state.cardZipCode);
 
         if( test1 ) {
             console.log("Test Passed");
@@ -237,7 +314,7 @@ class AccountSettings extends Component {
                         expiryMonth : this.state.ExpirationMonth,
                         expiryYear : this.state.ExpirationYear,
                         nameOnCard : this.state.FirstName + " " + this.state.LastName,
-                        card_zipcode : this.state.ZipCode
+                        card_zipcode : this.state.cardZipCode
                     };
 
                     let payment_details = {
@@ -248,6 +325,9 @@ class AccountSettings extends Component {
                     axios.post( url, payment_details, { withCredentials : true })
                         .then((response) => {
                             console.log("In Response Data of Save User details ", response.data )
+                            if( response.data.results.payment_successfull === true ) {
+                                swal('Card Details Saved', '' , 'success');
+                            }
 
                         })
                 }
@@ -538,7 +618,7 @@ class AccountSettings extends Component {
                         <div class="large-6 columns">
                           <label >Zipcode</label>
                           <input name="ctl00$ctl00$GlobalBody$Body$FirstName" type="text" onChange={this.handleChange}
-                                 placeholder = "Enter Zipcode" value={this.state.zipcode} maxlength="80" id="zipcode" />
+                                 placeholder = "Enter Zipcode" value={this.state.ZipCode} maxlength="80" id="ZipCode" />
                         </div>
                         <div class="large-6 columns">
                           <label >Contact Number</label>
@@ -680,12 +760,13 @@ class AccountSettings extends Component {
                     </div>
                     <div class="large-12 columns">
                         <label class="" for="">Card Number</label>
-                        <input name="ctl00$ctl00$GlobalBody$Body$CardNumber" type="text" maxlength="19" id="CardNumber" onChange={this.handleChange} class="user-password" />
+                        <input name="ctl00$ctl00$GlobalBody$Body$CardNumber" type="text" maxlength="19" id="CardNumber"
+                               value={this.state.CardNumber} onChange={this.handleChange} class="user-password" />
                     </div>
                     <div class="large-12 columns">
                         <label class="" for="userExpDate">Expiration Date</label>
                         <br/>
-                        <select name="ctl00$ctl00$GlobalBody$Body$ExpirationMonth" id="ExpirationMonth" onChange={this.handleChange} class="user-card-month">
+                        <select name="ctl00$ctl00$GlobalBody$Body$ExpirationMonth" id="ExpirationMonth" value={this.state.ExpirationMonth} onChange={this.handleChange} class="user-card-month">
                           <option value="">Month</option>
                           <option value="1">January</option>
                           <option value="2">February</option>
@@ -700,7 +781,7 @@ class AccountSettings extends Component {
                           <option value="11">November</option>
                           <option value="12">December</option>
                         </select>
-                        <select name="ctl00$ctl00$GlobalBody$Body$ExpirationYear" id="ExpirationYear" onChange={this.handleChange} class="user-card-year">
+                        <select name="ctl00$ctl00$GlobalBody$Body$ExpirationYear" id="ExpirationYear" value={this.state.ExpirationYear} onChange={this.handleChange} class="user-card-year">
                           <option value="">Year</option>
                           <option value="2018">2018</option>
                           <option value="2019">2019</option>
@@ -717,10 +798,11 @@ class AccountSettings extends Component {
                     </div>
                     <div class="large-6 payment-zip columns ">
                         <label class="" for="">Billing ZIP Code</label>
-                        <input name="ctl00$ctl00$GlobalBody$Body$ZipCode" type="text" maxlength="10" id="ZipCode" onChange={this.handleChange} class="user-zip" />
+                        <input name="ctl00$ctl00$GlobalBody$Body$ZipCode" type="text" maxlength="10"
+                               value={this.state.cardZipCode} id="cardZipCode" onChange={this.handleChange} class="user-zip" />
                     </div>
                     <div class="large-6 columns right-25 payment-zip-columns">
-                        <a id="save-cc" class="btn save-button" onClick={this.handleUserCardDetails.bind(this)} >Save</a> //Add code here
+                        <a id="save-cc" class="btn save-button" onClick={this.handleUserCardDetails.bind(this)} >Save</a>
                         <a id="delete-cc" class="btn save-button hide" data-reveal-id="delete-modal">Delete</a>
                     </div>
                     <div id="delete-modal" class="reveal-modal small review-delete-modal" data-reveal>
