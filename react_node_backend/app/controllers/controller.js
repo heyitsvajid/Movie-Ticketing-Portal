@@ -118,7 +118,12 @@ exports.updateProfileDetailsBasicInfo = (req, res) => {
         id: req.body.id,
         first_name: req.body.first_name,
         last_name: req.body.last_name,
-        request_code: 4 // Update Profile Details - Basic Info
+        request_code: 4,
+        city: req.body.city,
+        state_name: req.body.state_name,
+        zipcode: req.body.zipcode,
+        phone: req.body.phone,
+        address: req.body.address
     };
     console.log(data);
 
