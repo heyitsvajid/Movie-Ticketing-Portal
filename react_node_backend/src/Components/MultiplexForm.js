@@ -113,10 +113,15 @@ class MultiplexForm extends Component {
     }
 
     validateContactNumberFormat(contact_number){
+        const regex = /^\(?([0-9]{3})\)?[-.●]?([0-9]{3})[-.●]?([0-9]{4})$/;
         if(contact_number == ""){
-            document.getElementById("contact_number_error").innerHTML = "Please enter Valid Zipcode";
+            document.getElementById("contact_number_error").innerHTML = "Please enter Valid Contact Number";
             return false;
         }
+        else if(!regex.test(String(contact_number).toLowerCase())){
+            document.getElementById("contact_number_error").innerHTML = "Please enter Valid Contact Number";
+            return false;
+          }
           return true;
     }
 
