@@ -1087,3 +1087,12 @@ button#footer-fanmail-submit {
   margin: auto;
   margin-top: 2%;
 }
+
+.center-align{
+  width: 100%
+}
+
+#img-link{
+  width: 580px !important;
+  height: 455px !important;
+}

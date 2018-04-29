@@ -224,10 +224,25 @@ LogAPI.logUserClicks(click);
   }
   render() {
     
-    let movie_image, a = null;
+
+    
+
+    let movie_image, trailer_link, keywords_list = null;
     if(this.state.movie.movie_logo != undefined){
       movie_image = <img class="movie-details__movie-img visual-thumb" src = {require('../images/' + this.state.movie.movie_logo)} alt="Blumhouse's Truth or Dare (2018) Movie Poster" />
-      a = <a href = "https://www.youtube.com/embed/tgbNymZ7vqY"><img  src={require('../images/' + this.state.movie.movie_logo)} alt="Truth or Dare: Trailer 1" itemprop="image" /></a>
+      trailer_link = <a href = "https://www.youtube.com/embed/tgbNymZ7vqY"><img id="img-link" src={require('../images/' + this.state.movie.movie_logo)} alt="Truth or Dare: Trailer 1" itemprop="image" /></a>
+    }
+    debugger
+    if(this.state.movie.movie_keywords != undefined){
+      let keywords =  this.state.movie.movie_keywords.toString().split(",");
+
+      keywords_list = keywords.map((keyword) => {
+        return (
+          <li>{keyword}
+          </li>
+        )
+    });
+      
     }
     return (
     <div>
@@ -291,8 +306,7 @@ LogAPI.logUserClicks(click);
                           {'movie_length' in this.state.movie?this.state.movie.movie_length+' min':''}, 
 
                           </li>
-                          <li>{'movie_keywords' in this.state.movie?this.state.movie.movie_keywords.join('/'):''}, 
-                          </li>
+                          {keywords_list}
                           <li class="fd-star-rating__container">
                               <div class="js-fd-star-rating fd-star-rating" data-star-rating="2">
                                 <a class="fd-star-rating__star icon icon-star-rating-small js-heartsAndStars-star" data-action="rate" data-id="208538" data-isnew="true" data-rate-movie="true" data-show-caption="true" data-value="5" title="Loved It">
@@ -335,7 +349,7 @@ LogAPI.logUserClicks(click);
                           <div class="mop-video">
                             <div id="vdlpVideoPlayerWrap" class="media-player" data-width="" data-height="350">
                                 <div class="media-player__placeholder js-video-placeholder" >
-                                  {a}
+                                  {trailer_link}
                                 </div>
                             </div>
                             <div class="mop-video__summary-wrapper">
