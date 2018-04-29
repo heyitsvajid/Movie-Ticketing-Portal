@@ -16,7 +16,8 @@ class Layout extends Component {
             processedmultiplexList: [],
             showTimingList: [],
             selectedDate: new Date().getTime(),
-            search: localStorage.getItem('search')
+            search: localStorage.getItem('search'),
+            mpaa_rating:'#'
         }
     }
 
@@ -33,7 +34,6 @@ class Layout extends Component {
             .then(res => {
                 if (res.data.successMsg != '') {
                     console.log('Fetching all movies');
-                    console.log(res.data.data);
                     this.setState({
                         movieList: res.data.data ? res.data.data : []
                     })
@@ -76,7 +76,7 @@ class Layout extends Component {
     }
 
     processDataAsSelectedDate() {
-
+debugger
         if (this.state.search) {
             var data = {
                 searchQuery: this.state.search
@@ -98,12 +98,23 @@ class Layout extends Component {
                                 if (!groups[groupName]) {
                                     groups[groupName] = [];
                                 }
+                                debugger;
                                 let selectedDate = new Date(this.state.selectedDate);
                                 let showDate = new Date(item.show_timings[i].sort_field);
+                                let mpaa_rating = 'mpaa_ratings' in item.show_timings[i] ?item.show_timings[i].movie.mpaa_ratings[0]:"#";
+
+                                
                                 if (selectedDate.getDate() == showDate.getDate()
                                     && selectedDate.getDay() == showDate.getDay()
                                     && selectedDate.getYear() == showDate.getYear()) {
-                                    groups[groupName].push(item.show_timings[i]);
+
+                                        if(mpaa_rating==this.state.mpaa_rating){
+                                            groups[groupName].push(item.show_timings[i]);
+                                        }else if(mpaa_rating=='#'){
+                                            groups[groupName].push(item.show_timings[i]);     
+                                        }else{
+                                            console.log('Movie doest satisfy MPAA_Rating selected')
+                                        }
                                 }
                             }
                             let myArray = [];
@@ -133,7 +144,6 @@ class Layout extends Component {
                 .then(res => {
                     if (res.data.successMsg != '') {
                         console.log('Fetching all multiplex');
-                        console.log(res.data.data);
 
                         var multiplexes = res.data.data.length > 0 ? res.data.data : [];
                         multiplexes.forEach(item => {
@@ -145,10 +155,18 @@ class Layout extends Component {
                                 }
                                 let selectedDate = new Date(this.state.selectedDate);
                                 let showDate = new Date(item.show_timings[i].sort_field);
+                                let mpaa_rating = 'mpaa_ratings' in item.show_timings[i] ?item.show_timings[i].movie.mpaa_ratings[0]:"#";
                                 if (selectedDate.getDate() == showDate.getDate()
                                     && selectedDate.getDay() == showDate.getDay()
                                     && selectedDate.getYear() == showDate.getYear()) {
-                                    groups[groupName].push(item.show_timings[i]);
+debugger
+                                        if(mpaa_rating==this.state.mpaa_rating){
+                                            groups[groupName].push(item.show_timings[i]);
+                                        }else if(mpaa_rating=='#'){
+                                            groups[groupName].push(item.show_timings[i]);     
+                                        }else{
+                                            console.log('Movie doest satisfy MPAA_Rating selected')
+                                        }
                                 }
                             }
                             let myArray = [];
@@ -256,6 +274,16 @@ class Layout extends Component {
         })
     }
 
+    handleChange = (e) => {
+        e.preventDefault();
+        this.setState({
+                [e.target.name] : e.target.value,
+            }, () => {
+                console.log(this.state)
+            }
+        )
+    };
+
     render() {
         return (
             <div>
@@ -330,15 +358,20 @@ class Layout extends Component {
                                     </div>
                                 </div>
                                 <div class="js-spotlight-ad"></div>
-                                <label class="nearby-theaters__label">Nearby Theaters: </label>
-                                <select class="mb-5 nearby-theaters__select js-nearby-theaters">
-                                    <option value="#" disabled>Select Theater</option>
-                                    {
+                                <label class="nearby-theaters__label">Filter Ratings</label>
+                                <select name="mpaa_rating"  value={this.state.mpaa_rating} onChange={this.handleChange.bind(this)} class="mb-5 nearby-theaters__select js-nearby-theaters">
+                                    <option value="#" disabled selected>MPAA Ratings</option>
+                                    <option value="G">General Audience</option>
+                                                <option value="PG">PG – Parental Guidance Suggested</option>
+                                                <option value="PG-13">PG-13 – Parents Strongly Cautioned</option>
+                                                <option value="R">R – Restricted</option>
+                                                <option value="NC-17">NC-17 – Adults Only</option>                                    
+                                    {/* {
                                         this.state.processedmultiplexList.map(function (multiplex) {
                                             return <option key={multiplex._id}
                                                 value={multiplex._id}>{multiplex.name}</option>;
                                         })
-                                    }
+                                    } */}
 
                                 </select>
                                 <div class="fd-showtimes js-theaterShowtimes-loading">
