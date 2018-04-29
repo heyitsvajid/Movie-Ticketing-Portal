@@ -3,6 +3,7 @@ import axios from 'axios';
 import Index from './Index';
 import Header from './Header';
 import Footer from './Footer';
+import swal from "sweetalert2";
 import { envURL, reactURL } from '../config/environment';
 var LogAPI = require('../utils/logging');
 
@@ -436,10 +437,17 @@ LogAPI.logUserClicks(click);
                     else 
                     { 
                         if(res.data.results.data.count_left<=0){
-                            alert('No Tickets left')
+                            swal({
+                                type: 'error',
+                                title: 'Sorry!',
+                                text: "We are out of seats for now",
+                            })
                         }else{
-                            alert('Only '+res.data.results.data.count_left +' tickets left!')
-                            
+                            swal({
+                                type: 'error',
+                                title: 'Sorry!',
+                                text: "Only " + res.data.results.data.count_left + " tickets left!",
+                            })
                         }
                     }
             })

@@ -6,6 +6,7 @@ import LatestMovies from './LatestMovies';
 import MovieSlider from './MovieSlider';
 import { envURL, reactURL } from '../config/environment';
 import axios from 'axios';
+import swal from "sweetalert2";
 var LogAPI = require('../utils/logging');
 
 
@@ -132,7 +133,12 @@ class TicketBooking extends Component {
     debugger;
     if(totalCount<=0)
   {
-    alert('Add tickets to proceed')
+      swal({
+        type: 'error',
+        title: 'Sorry!',
+        text: "Add tickets to proceed",
+      })
+    // alert('Add tickets to proceed')
     return;
   }
     localStorage.setItem('bookShowId', this.state.bookShowId);
