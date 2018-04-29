@@ -69,7 +69,7 @@ class AccountSettings extends Component {
       }
       else {
           swal("Please login first to view your profile", "", "warning");
-          this.props.history.push('/');
+          this.props.history.push('/login');
       }
 
       let getCardDetailsPerUser = envURL + 'getCardDetailsPerUser';

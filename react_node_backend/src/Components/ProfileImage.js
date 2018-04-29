@@ -24,7 +24,6 @@ class ProfileImage extends Component {
         let url = envURL + 'getprofiledetails';
         let userid = localStorage.getItem('userid');
         if (userid !== null) {
-
             axios.post(url, { userid }, { withCredentials: true })
                 .then((response) => {
                     debugger
@@ -37,8 +36,7 @@ class ProfileImage extends Component {
                 })
         }
         else {
-            swal("Please login first to view your profile", "", "warning");
-            this.props.history.push('/');
+            console.log("Login First")
         }
 
 
