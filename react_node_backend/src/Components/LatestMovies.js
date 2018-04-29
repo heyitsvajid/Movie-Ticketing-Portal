@@ -31,13 +31,12 @@ class Layout extends Component {
 
   showMovieDetailsPage(e){
     debugger
-    const movieId = e.target.dataset.movieID;
+    const movieId = e.target.dataset.movieid;
     localStorage.setItem("movieID", movieId);
     window.location.href = reactURL + "movie_details";
   }
 
   getReleaseDate(release_date){
-    debugger
     const monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
     let day = new Date(release_date).getDate();
@@ -52,7 +51,7 @@ class Layout extends Component {
     var movies = this.state.movieList;
     if(movies.length>0){
       for(var i=0;i<8;i++){
-        movies[i] != undefined && new Date(movies[i].release_date) > Date.now() ? eightMovies.push(movies[i]) : eightMovies.push("Coming Soon");
+        movies[i] != undefined && new Date(movies[i].release_date) ? eightMovies.push(movies[i]) : eightMovies.push("Coming Soon");
       }  
     }
     let moviesNode = eightMovies.map((item, index) => {
@@ -64,11 +63,10 @@ class Layout extends Component {
           </a>
       }
       else{
-        movieAnchorTag =  <a data-movieID = {item._id} href="#" onClick = {this.showMovieDetailsPage.bind(this)} class="visual-container">
-            <img class="poster-thumb-size-s visual-thumb" data-movieID = {item._id} src={imageSource} alt="Movie Poster" />
+        movieAnchorTag =  <a data-movieid = {item._id} href="#" onClick = {this.showMovieDetailsPage.bind(this)} class="visual-container">
+            <img class="poster-thumb-size-s visual-thumb" data-movieid = {item._id} src={imageSource} alt="Movie Poster" />
           </a>
       }
-      debugger
       const movie_release_date = item == "Coming Soon" ? "" : this.getReleaseDate(item.release_date);
       const movie_title = item == "Coming Soon" ? item : item.title;
       return (
@@ -76,7 +74,7 @@ class Layout extends Component {
           <div class="fluid poster">
             { movieAnchorTag}
             <div>
-              <a class="heading-style-1 movie-header heading-size-s heading__movie-carousel" href="#" data-movieID = {item._id} onClick = {this.showMovieDetailsPage.bind(this)}>{movie_title}</a>
+              <a class="heading-style-1 movie-header heading-size-s heading__movie-carousel" href="#" data-movieid = {item._id} onClick = {this.showMovieDetailsPage.bind(this)}>{movie_title}</a>
               <time datetime="Fri, Apr 13">{movie_release_date}</time> 
             </div>
           </div>
