@@ -413,7 +413,7 @@ class ShowTimingsForm extends Component {
                                                 {
                                                     this.state.multiplex.screens.map(function (screen) {
                                                         return <option key={screen.screen_number}
-                                                            value={screen._id}>{'Screen :' + screen.screen_number + ' Seats: '
+                                                            value={screen.screen_number}>{'Screen :' + screen.screen_number + ' Seats: '
                                                                 + screen.seat_count}</option>;
                                                     })
                                                 }
