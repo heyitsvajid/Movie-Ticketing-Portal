@@ -61,7 +61,7 @@ class AdminDashboard extends Component {
                             }
                             else{
                                 if(this.state.roleId == 2){
-                                    this.setState({showMultiplexBillings: true})
+                                    this.setState({showMultiplexGraphDashboard: true})
                                 }
                                 localStorage.setItem('admin_name','Admin')
                             }
