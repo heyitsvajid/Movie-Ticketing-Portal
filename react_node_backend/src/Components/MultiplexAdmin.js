@@ -26,8 +26,9 @@ class MultiplexAdmin extends Component {
             multiplexAdminList:[],
             searchedAdminList: [],
             error : '', 
-            currentPage: 1, 
-            perPageRows: 5
+            currentPage: 1,
+            perPageRows: 5,
+            update: false
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleCreateUser = this.handleCreateUser.bind(this);
@@ -194,6 +195,63 @@ class MultiplexAdmin extends Component {
       }
 
 
+      updateUser(e) {
+        e ? e.preventDefault() : ''
+
+        let firstNameErrorPresent = !this.validateFirstNameFormat(this.state.first_name) ? true : false;
+        let emailErrorPresent = !this.validateEmailFormat(this.state.email) ? true : false;
+        let zipcodeErrorPresent = !this.validateZipcodeFormat(this.state.zipcode) ? true : false;
+        let phoneNumberErrorPresent = !this.validatePhoneNumberFormat(this.state.phone_number) ? true : false;
+
+        if(firstNameErrorPresent || emailErrorPresent || zipcodeErrorPresent || phoneNumberErrorPresent){ return; }
+
+        let all_details = {
+            id : this.state.update_id,
+            first_name : this.state.first_name,
+            last_name : this.state.last_name,
+            city: this.state.city,
+            state_name: this.state.state_name,
+            zipcode: this.state.zipcode,
+            phone: this.state.phone_number,
+            address: this.state.address
+        };
+
+        let profiledetails = {
+            id : this.state.update_id,
+            email : this.state.email,
+        };
+
+        axios.post(envURL + 'checkforexistingemail', profiledetails, { withCredentials : true})
+        .then(res => {
+            if(res.data.errorMsg == "" && all_details.id != res.data.data[0].id){
+                document.getElementById("email_error").innerHTML = "Email already present";
+                return;
+            }
+            else {
+                axios.post( envURL+'updateprofileemail', profiledetails, { withCredentials : true} )
+                    .then( (response) => {
+                            axios.post( envURL+'updateprofilebasicinfo', all_details, { withCredentials : true} )
+                            .then((res) => {
+                                this.setState({
+                                    id : '',
+                                    first_name : '',
+                                    last_name : '',
+                                    city: '',
+                                    state_name: '',
+                                    zipcode: '',
+                                    phone_number: '',
+                                    address: '',
+                                    update: false
+                                })
+                                this.handleFindAllAdmins();
+                                swal( "Email Updated Successfully!", "", "success" );
+                                document.getElementById("password-div").style.display = "block";
+                            })
+                        }
+                    )
+            }
+        })
+    }
 
     handleFindAllAdmins = () => {
         let url = envURL+'findallmultiplexadmin';
@@ -279,6 +337,29 @@ class MultiplexAdmin extends Component {
         }
     };
 
+    handleUserUpdate(e) {
+        e ? e.preventDefault() : ''
+        this.state.multiplexAdminList.forEach(element => {
+            if (element.id == e.target.id) {
+                document.getElementById("password-div").style.display = "none";
+                this.setState({
+                    update_id: e.target.id,
+                    update: !this.state.update,
+                    first_name: element.first_name,
+                    last_name: element.last_name,
+                    email: element.email,
+                    city: element.city,
+                    state_name: element.state,
+                    zipcode: element.zipcode,
+                    phone_number: element.phone_number,
+                    address: element.address
+                })
+                return;
+            }
+        });
+
+    }
+
     handleDeleteMultiplexAdmin = (e) => {
         swal({
             title: "Are you sure?",
@@ -341,14 +422,24 @@ class MultiplexAdmin extends Component {
  
                     // </tr>
                     <tr>
-                        <th scope="row"> { index + 1 } </th>
+                        <th scope="row"> { item.current_index } </th>
                         {/* <td> <a href = "#mymodal" data-toggle="modal" onClick={this.handleMultiplexAdminDetail.bind(this, item.id )} > { item.id } </a> </td> */}
                         <td> <a href = "#mymodal" data-toggle="modal" onClick={this.handleMultiplexAdminDetail.bind(this, item.id )} > { item.first_name } </a> </td>
                         <td> { item.last_name } </td>
                         <td> { item.email } </td>
                         <td> { item.phone_number } </td>
                         <td>
-                            <button className='btn-danger' style={{backgroundColor: '#F15500'}} onClick={this.handleDeleteMultiplexAdmin.bind(this, item.id )} > Delete </button>
+                            <div class="row">
+                                <div className="form-group col-md-2.5">
+                                    <input type="button" id={item.id} class="dashboard-form-btn link-style nav-link btn-info action-link"
+                                        value="Update" required=""  onClick={this.handleUserUpdate.bind(this)} />
+                                </div>
+
+                                <div className="form-group col-md-2">
+                                    <button className='btn-danger' style={{backgroundColor: '#F15500'}} onClick={this.handleDeleteMultiplexAdmin.bind(this, item.id )} > Delete </button>
+                                </div>
+                            </div>
+                            
                         </td>
 
                     </tr>
@@ -400,52 +491,52 @@ class MultiplexAdmin extends Component {
                 <div>
                     <div>
                         <hr class='mt-5 mb-5' />
-                        <h3>Add New Multiplex Admin</h3>
+                        <h3>{this.state.update ? 'Update' : 'Add New'} Multiplex Admin</h3>
                         <hr />
                         <div class="row gap-20 masonry pos-r" style={{position: 'relative', height: '700px'}}>
                             <div class="masonry-item col-md-6" style={{position: 'absolute', top: '0px'}}>
                                 <div class="bgc-white p-20 bd">
                                     <div class="mT-30">
-                                        <form id="dashboard-form" className='form-multiplexadmin' onSubmit={this.handleCreateUser}>
+                                        <form id="dashboard-form" className='form-multiplexadmin' >
 
                                             <div class="form-row">
                                                 <div className="form-group col-md-6">
                                                     <label class="dashboard-label">First Name</label>
-                                                    <input type="text" onChange={this.handleChange} placeholder="Enter First Name" className="form-control" id="first_name" name='first_name' pattern='[A-Za-z]*' title='Please enter valid name' />
+                                                    <input type="text" value={this.state.first_name} onChange={this.handleChange} placeholder="Enter First Name" className="form-control" id="first_name" name='first_name' pattern='[A-Za-z]*' title='Please enter valid name' />
                                                     <div id = "first_name_error" class= "error"></div>
                                                 </div>
 
                                                 <div className="form-group col-md-6">
                                                     <label class="dashboard-label">Last Name</label>
-                                                    <input type="text" onChange={this.handleChange} placeholder="Enter Last Name" className="form-control" id="last_name" name='last_name' pattern='[A-Za-z]*' title='Please enter valid name' />
+                                                    <input type="text" value={this.state.last_name} onChange={this.handleChange} placeholder="Enter Last Name" className="form-control" id="last_name" name='last_name' pattern='[A-Za-z]*' title='Please enter valid name' />
                                                     <div id = "last_name_error" class= "error"></div>
                                                 </div>
                                             </div>
                                             <div className="form-group">
                                                 <label class="dashboard-label">Email</label>
-                                                <input type="text" placeholder="Enter Email" onChange={this.handleChange} className="form-control" id="email" name='email' />
+                                                <input type="text" value={this.state.email} placeholder="Enter Email" onChange={this.handleChange} className="form-control" id="email" name='email' />
                                                 <div id = "email_error" class= "error"></div>
                                             </div>
-                                            <div className="form-group">
+                                            <div id="password-div" className="form-group">
                                                 <label class="dashboard-label">Password</label>
                                                 <input type="password" placeholder="Enter Password" className="form-control" onChange={this.handleChange} id="pwd" name='password' />
                                                 <div id = "password_error" class= "error"></div>
                                             </div>
                                             <div className="form-group">
                                                 <label class="dashboard-label">Address</label>
-                                                <input type="text" placeholder="Enter Address" className="form-control" onChange={this.handleChange} id="address" name='address' />
+                                                <input type="text" value={this.state.address} placeholder="Enter Address" className="form-control" onChange={this.handleChange} id="address" name='address' />
                                                 <div id = "address_error" class= "error"></div>
                                             </div>
                                             <div class="form-row">
                                                 <div className="form-group col-md-6">
                                                     <label class="dashboard-label">City</label>
-                                                    <input type="text" placeholder="Enter City" className="form-control" onChange={this.handleChange} id="city" name='city' pattern='[A-Za-z]+[\s]*[A-Za-z]*' title='Please enter valid city' />
+                                                    <input type="text" value={this.state.city} placeholder="Enter City" className="form-control" onChange={this.handleChange} id="city" name='city' pattern='[A-Za-z]+[\s]*[A-Za-z]*' title='Please enter valid city' />
                                                     <div id = "city_error" class= "error"></div>
                                                 </div>
 
                                                 <div className="form-group col-md-6">
                                                     <label class="dashboard-label">State</label>
-                                                    <select class="form-control" onChange={this.handleChange} id="state" name='state_name' >
+                                                    <select class="form-control" value={this.state.state_name} onChange={this.handleChange} id="state" name='state_name' >
                                                         <option value="AL">Alabama</option>
                                                         <option value="AK">Alaska</option>
                                                         <option value="AZ">Arizona</option>
@@ -505,17 +596,19 @@ class MultiplexAdmin extends Component {
                                             <div class="form-row">
                                                 <div className="form-group col-md-6">
                                                     <label class="dashboard-label">ZipCode</label>
-                                                    <input type="text" placeholder="Enter ZipCode" className="form-control" onChange={this.handleChange} id="zipcode" name='zipcode' title='Please enter 5 Digit Zipcode' />
+                                                    <input type="text" placeholder="Enter ZipCode" value={this.state.zipcode} className="form-control" onChange={this.handleChange} id="zipcode" name='zipcode' title='Please enter 5 Digit Zipcode' />
                                                     <div id = "zipcode_error" class= "error"></div>
                                                 </div>
                                                 <div className="form-group col-md-6">
                                                     <label class="dashboard-label">Phone Number</label>
-                                                    <input type="text" placeholder="Enter Phone Number" className="form-control" onChange={this.handleChange} id="phone_number" name='phone_number' title='Please enter 10 Digit Phone Number' />
+                                                    <input type="text" placeholder="Enter Phone Number" value={this.state.phone_number} className="form-control" onChange={this.handleChange} id="phone_number" name='phone_number' title='Please enter 10 Digit Phone Number' />
                                                     <div id = "phone_number_error" class= "error"></div>
                                                 </div>
                                             </div>
+                                            {this.state.update ? <input type="submit" class="dashboard-form-btn btn btn-primary"
+                                                value="Update Admin" required="" onClick={this.updateUser.bind(this)} /> : <input type="submit" class="dashboard-form-btn btn btn-primary"
+                                                    value="Add Admin" required="" onClick={this.handleCreateUser.bind(this)} />}
 
-                                            <button type="submit" class="dashboard-form-btn btn btn-primary">Submit</button>
                                         </form>
                                     </div>
                                 </div>

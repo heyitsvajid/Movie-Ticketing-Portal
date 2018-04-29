@@ -427,16 +427,16 @@ class ListAllUsers extends Component {
                     <td> { item.email } </td>
                     
                     <td>
-                    <div class="row">
-                        <div className="form-group col-md-2.5">
-                            <input type="button" id={item.id} class="dashboard-form-btn link-style nav-link btn-info action-link"
-                                value="Update" required=""  onClick={this.handleUserUpdate.bind(this)} />
-                        </div>
+                        <div class="row">
+                            <div className="form-group col-md-2.5">
+                                <input type="button" id={item.id} class="dashboard-form-btn link-style nav-link btn-info action-link"
+                                    value="Update" required=""  onClick={this.handleUserUpdate.bind(this)} />
+                            </div>
 
-                        <div className="form-group col-md-2">
-                            <button className='btn-danger' style={{backgroundColor: '#F15500'}} onClick={this.handleDeleteUser.bind(this, item.id )} > Delete </button>
+                            <div className="form-group col-md-2">
+                                <button className='btn-danger' style={{backgroundColor: '#F15500'}} onClick={this.handleDeleteUser.bind(this, item.id )} > Delete </button>
+                            </div>
                         </div>
-                    </div>
 
                     </td>
 
