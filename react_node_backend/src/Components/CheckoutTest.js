@@ -252,18 +252,30 @@ class CheckoutTest extends Component {
         let getCardDetailsPerUser = envURL + 'getCardDetailsPerUser';
         var user_email = { user_email : localStorage.getItem("email") }
         console.log('Sending Card Fetching Request');
-        axios.get(getCardDetailsPerUser, user_email )
+        if(user_email){
+        axios.post(getCardDetailsPerUser, user_email )
             .then(res => {
                 debugger
                     console.log('Fetching Card Details');
-                    console.log(res.data.data);
+                    console.log(res.data.results.billing_information[0]);
+                    if(typeof res.data.results.billing_information[0] !== "undefined"){
+                    var card_details = res.data.results.billing_information[0]
                     this.setState({
-                        cardDetails : res.data.data
+                        cardDetails : card_details,
+                        cardNumber : card_details.cardNumber,
+                        expiryMonth : card_details.expiryMonth,
+                        expiryYear : card_details.expiryYear,
+                        firstName : card_details.nameOnCard.split(" ")[0],
+                        lastName : card_details.nameOnCard.split(" ")[1],
+                        cardZipCode : card_details.card_zipcode
                     })
+                }
+                    debugger
             })
             .catch(err => {
                 console.error(err);
             });
+        }
     }
     handleCardNumber(e){
         e.preventDefault()
@@ -499,7 +511,7 @@ class CheckoutTest extends Component {
                                     <div class="errorText card remove" id="ccError"></div>
                                     <div class="cvvDetail card fieldContainer display">
                                         <label for="creditCardNoInput" class="card display">Card number</label>
-                                        <input name="ExpressWebCheckout$PaymentView$creditCardNoInput" type="text" id="creditCardNoInput" maxLength = "19" class="input card display" min="20" maxlength="19" onChange = {this.handleCardNumber} title="Card number" />
+                                        <input name="ExpressWebCheckout$PaymentView$creditCardNoInput" type="text" id="creditCardNoInput" maxLength = "19" class="input card display" min="20" maxlength="19" onChange = {this.handleCardNumber} title="Card number" value = {this.state.cardNumber}/>
                                         <div style = {{color : "red"}} id = "cardNumber"></div>
                                     </div>
                                     {/* <div class="errorText card remove" id="yearError"></div>
@@ -509,7 +521,7 @@ class CheckoutTest extends Component {
                                         <label id="expLabel" class="card display" for="expMonthDropdown">Expiration date</label>  
                                         <div class="expiry-latest expMonthDropdown">
                                           <select name="ExpressWebCheckout$PaymentView$expMonthDropdown" id="expMonthDropdown" size="1" onChange = {this.handleExpiryMonth} class="card inline">
-                                              <option selected="selected" value="0">Month</option>
+                                              <option selected="selected" value={this.state.expiryMonth}>{this.state.expiryMonth !== "0" ? this.state.expiryMonth : "Month"}</option>
                                               <option value="1">01 - January</option>
                                               <option value="2">02 - February</option>
                                               <option value="3">03 - March</option>
@@ -526,7 +538,7 @@ class CheckoutTest extends Component {
                                         </div>
                                         <div class="expiry-latest expYearDropdown">
                                           <select name="ExpressWebCheckout$PaymentView$expYearDropdown" id="expYearDropdown" onChange = {this.handleExpiryYear} class="card inline">
-                                              <option selected="selected" value="Year">Year</option>
+                                              <option selected="selected" value={this.state.expiryYear}>{this.state.expiryYear !== "0" ? this.state.expiryYear : "Year"}</option>
                                               <option value="2018">18</option>
                                               <option value="2019">19</option>
                                               <option value="2020">20</option>
@@ -549,20 +561,20 @@ class CheckoutTest extends Component {
                                         <div class="fieldContainer  card display">
                                           <div class="errorText remove" id="firstNameError"></div>
                                           <label id="firstNameLabel" class="card name display" for="firstNameInput">First name</label>
-                                          <input name="ExpressWebCheckout$PaymentView$firstNameInput" type="text" id="firstNameInput" onChange = {this.handleFirstName} class="input card name display" maxlength="50" title="First Name" />
+                                          <input name="ExpressWebCheckout$PaymentView$firstNameInput" placeholder = {this.state.firstName} type="text" id="firstNameInput" onChange = {this.handleFirstName} class="input card name display" maxlength="50" title="First Name" />
                                         </div>
                                         <div style = {{color : "red"}} id = "firstName"></div>
                                         <div class="fieldContainer  card display">
                                           <div class="errorText remove" id="lastNameError"></div>
                                           <label id="lastNameLabel" class="card name display" for="lastNameInput">Last name</label>
-                                          <input name="ExpressWebCheckout$PaymentView$lastNameInput" type="text" id="lastNameInput" onChange = {this.handleLastName} class="input card name display" maxlength="50" title="Last Name" />
+                                          <input name="ExpressWebCheckout$PaymentView$lastNameInput" placeholder = {this.state.lastName} type="text" id="lastNameInput" onChange = {this.handleLastName} class="input card name display" maxlength="50" title="Last Name" />
                                         </div>
                                         <div style = {{color : "red"}} id = "lastName"></div>
                                     </div>
                                     <div class="fieldContainer card display">
                                         <div class="errorText remove" id="zipError"></div>
                                         <label id="zipLabel" class="card display" for="zipInput">Billing ZIP code</label>
-                                        <input name="ExpressWebCheckout$PaymentView$zipInput" type="text" id="zipInput" onChange = {this.handleCardZipCode} class="input card display" title="Last Name" maxlength="8" />
+                                        <input name="ExpressWebCheckout$PaymentView$zipInput" placeholder = {this.state.cardZipCode} type="text" id="zipInput" onChange = {this.handleCardZipCode} class="input card display" title="Last Name" maxlength="8" />
                                         {/* <label for="saveCreditCardCheckBox" class="save card checkbox inline" id="saveCreditCardCheckBoxContainer">
                                         <input name="ExpressWebCheckout$PaymentView$saveCreditCardCheckBox" type="checkbox" id="saveCreditCardCheckBox" class="save card inline" />
                                         Save my credit card information
