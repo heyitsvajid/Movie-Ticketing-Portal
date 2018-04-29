@@ -23,6 +23,7 @@ var MultiplexSchema = new Schema({
     show_timings: [
         {
             screen_number: { type: String },
+            screen_id:{ type: String }, 
             date_time: { type: String },
             sort_field:{type:Number},
             seats_left: { type: Number },

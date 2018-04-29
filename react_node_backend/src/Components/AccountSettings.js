@@ -5,10 +5,9 @@ import Header from './Header';
 import Footer from './Footer';
 import swal from 'sweetalert';
 import '../assets/css/style.css'
-
-// import SignIn from './SignIn';
-// import SignUp from './SignUp';
+import ProfileImage from './ProfileImage';
 import { envURL, reactURL } from '../config/environment';
+var LogAPI = require('../utils/logging');
 
 class AccountSettings extends Component {
 
@@ -42,6 +41,16 @@ class AccountSettings extends Component {
       let url = envURL + 'getprofiledetails';
       let userid = localStorage.getItem('userid');
       if(userid !== null) {
+          //AccountSettings.js Logging
+          let click = {
+            pageClick: {
+                email: "anonymous",
+                pageName: "Account Settings",
+                timeStamp: new Date().getTime()
+            }
+        };
+        console.log(click);
+        LogAPI.logUserClicks(click);
           axios.post( url, { userid }, { withCredentials : true } )
               .then( (response) => {
                   console.log("Response from DB in get profiledetails", response.data );
@@ -109,6 +118,22 @@ class AccountSettings extends Component {
             })
         }
     };
+
+    handleProfileImageClick(e){
+        this.setState({
+            error : ''
+        });
+        var basic_info_element = document.getElementById("profile-image-form");
+        if(basic_info_element.style.display == "none" || basic_info_element.style.display == ""){
+            this.hideDivBoxesAndArrows();
+            basic_info_element.style.display = "block";
+            document.getElementsByClassName("profile-image-arrow")[0].classList.add("accordion-opened");
+        }
+        else {
+            basic_info_element.style.display = "none";
+            document.getElementsByClassName("profile-image-arrow")[0].classList.remove("accordion-opened");
+        }
+    }
 
     handleSaveEmail(e) {
       e.preventDefault();
@@ -528,6 +553,19 @@ class AccountSettings extends Component {
                     </div>
                 </div>
                   
+              </div>
+
+              <div class="panel-group">
+                  <div class="panel accordion-head" data-accordion-target="profile-image-form" onClick = {this.handleProfileImageClick.bind(this)}>
+                    <h2 class="profile-image-header heading-style-1 heading-size-l profile-headers" > Profile Image</h2>
+                    <div class="profile-image-arrow accordion-arrow"></div>
+                  </div>
+                  <div class="panel form-box accordion-body accordion-closed" id="profile-image-form">
+                      <br/>
+                    <div class="row">
+                    <ProfileImage/>  
+                    </div>
+                  </div>
               </div>
 
               <div class="panel-group">

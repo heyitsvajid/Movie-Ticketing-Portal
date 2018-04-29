@@ -2,6 +2,7 @@
 *Module dependencies
 */
 var MultiplexModel = require('./multiplex');
+var pool = require('../services/mysql')
 //==============================================================================
 /**
 *User Model Utility functions
@@ -225,12 +226,44 @@ function multiplexSearch(data, callback) {
 }
 
 
+function revenueByEachMovie(data, callback) {
+  console.log('Inside MultiplexModal search');
+  console.log(data);
+  var multiplex_id = data.id;
+  pool.connect((err, db) => {
+      if(err) {
+          console.log("error connecting to mysql in revenueByEachMovie");
+          errHandler(err);
+      }
+      else {
+          console.log("Connected to MYSQL in revenueByEachMovie in usermodal");
+          let sql = "select multiplex_id, movie_name, sum(amount) as total_revenue from billing_information where movie_name != 'null' and multiplex_id = ? group by multiplex_id, movie_name";
+          db.query(sql, multiplex_id, (err, result) => {
+              if(err) {
+                  console.log("Error in querying mysql in revenueByEachMovie");
+                  errHandler(err);
+              }
+              else {
+                  if(result.length > 0) {
+                      console.log("result after querying mysql in revenueByEachMovie", result);
+                      callback(null, result);
+                  } else {
+                      callback(null, []);
+                  }
+              }
+          })
+
+      }
+  })
+
+}
 
 //==============================================================================
 /**
 * Export module
 */
 module.exports = {
+  revenueByEachMovie : revenueByEachMovie,
   errHandler: errHandler,
   validationErr: validationErr,
   createNewMultiplex: createNewMultiplex,
@@ -241,6 +274,5 @@ module.exports = {
   updateShowTiming: updateShowTiming,
   findMultiplexById:findMultiplexById,
   multiplexSearch: multiplexSearch
-  //  deleteUser: deleteUser
 };
 //==============================================================================

@@ -4,8 +4,7 @@ import Index from './Index';
 import Header from './Header';
 import Footer from './Footer';
 import { envURL, reactURL } from '../config/environment';
-// import SignIn from './SignIn';
-// import SignUp from './SignUp';
+var LogAPI = require('../utils/logging');
 
 class CheckoutTest extends Component {
     constructor(props) {
@@ -69,7 +68,16 @@ class CheckoutTest extends Component {
     }
   
     componentWillMount(){
-        debugger
+ //CheckOut.js Logging
+ let click = {
+    pageClick: {
+        email: "anonymous",
+        pageName: "Check Out",
+        timeStamp: new Date().getTime()
+    }
+};
+console.log(click);
+LogAPI.logUserClicks(click);
         var showId = localStorage.getItem('bookShowId');
         var screenId = localStorage.getItem('bookScreenId');
         //localStorage.removeItem('bookShowId');
@@ -80,14 +88,14 @@ class CheckoutTest extends Component {
             bookScreenId: screenId,
             bookShowId: showId,
           })
-              debugger
+              
             this.getUserDetails()
             // this.getMovieDetails()
             this.getMultiplexDetails()
             this.getTicketDetails()
           //   this.getTicketDetails()
             this.getCardDetails()
-            debugger
+            
           }
            else {
           this.props.history.push('/movies')
@@ -106,7 +114,7 @@ class CheckoutTest extends Component {
 
 
     getTicketDetails(){
-        debugger
+        
         this.setState({
             a_tickets : localStorage.getItem("a_tickets"),
             c_tickets : localStorage.getItem("c_tickets"),
@@ -121,7 +129,7 @@ class CheckoutTest extends Component {
             // ticketPrice : localStorage.getItem("ticketPrice"),
             // total : Number(this.state.adult_total_amount) + Number(this.state.child_total_amount) + Number(this.state.da_total_amount) + Number(this.state.student_total_amount)
         }, () => {
-            debugger
+            
                         localStorage.removeItem("a_tickets")
                         localStorage.removeItem("c_tickets")
                         localStorage.removeItem("da_tickets")
@@ -131,19 +139,19 @@ class CheckoutTest extends Component {
                         localStorage.removeItem("da_total_amount")
                         localStorage.removeItem("child_total_amount")
         })
-        debugger
+        
     }
 
     // getMovieDetails(){
-    //     debugger
+    //     
     //     let findMovieById = envURL + 'findMovieById';
     //     var movie_id = 1;
     //     // localStorage.getItem("movie_id")
     //     console.log(movie_id)
-    //     debugger
+    //     
     //     axios.get(findMovieById, movie_id)
     //         .then(res => {
-    //             debugger
+    //             
     //                 console.log('Fetching Movie Details');
     //                 console.log(res.data.data);
     //                 this.setState({
@@ -172,7 +180,7 @@ class CheckoutTest extends Component {
       }
       axios.post(findMultiplexByIdAPI, payload)
         .then(res => {
-            debugger
+            
           if (res.data.successMsg != '') {
             console.log('Fetching multiplex by id');
             console.log(res.data.data);
@@ -190,7 +198,7 @@ class CheckoutTest extends Component {
             var multiplex = res.data.data;
             multiplex.show_timings.forEach(element => {
                 if(showId == element._id){
-                    debugger
+                    
                     console.log(element)
                   this.setState({
                     show:element,
@@ -212,7 +220,7 @@ class CheckoutTest extends Component {
                   })
                 }
             });
-            debugger
+            
           } else {
             console.error('Error Fetching all multiplex');
           }
@@ -248,14 +256,14 @@ class CheckoutTest extends Component {
         //     });
     }
     getCardDetails(){
-        debugger
+        
         let getCardDetailsPerUser = envURL + 'getCardDetailsPerUser';
         var user_email = { user_email : localStorage.getItem("email") }
         console.log('Sending Card Fetching Request');
         if(user_email){
         axios.post(getCardDetailsPerUser, user_email )
             .then(res => {
-                debugger
+                
                     console.log('Fetching Card Details');
                     console.log(res.data.results.billing_information[0]);
                     if(typeof res.data.results.billing_information[0] !== "undefined"){
@@ -270,7 +278,7 @@ class CheckoutTest extends Component {
                         cardZipCode : card_details.card_zipcode
                     })
                 }
-                    debugger
+                    
             })
             .catch(err => {
                 console.error(err);
@@ -327,7 +335,7 @@ class CheckoutTest extends Component {
     }
 
     completePayment(e){
-        debugger
+        
         e.preventDefault();
         var visa = /^4[0-9]{12}(?:[0-9]{3})?$/;
         var mastercard = /^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$/;
@@ -355,7 +363,7 @@ class CheckoutTest extends Component {
             document.getElementById('zipcode').innerHTML = "Enter Valid ZipCode"
         }
         else{
-            debugger
+            
                         localStorage.setItem('a_tickets', this.state.a_tickets)
                         localStorage.setItem('adult_total_amount', this.state.adult_total_amount)
                         localStorage.setItem('s_tickets', this.state.s_tickets)
@@ -397,10 +405,10 @@ class CheckoutTest extends Component {
                                     card_details : cardInformation,
                                     billing_details : billingInformation
         }
-                        debugger;
+                        ;
         axios.post(completePayment, payment_details)
             .then(res => {
-                    debugger
+                    
                     console.log('Payment Completed');
                     console.log(res.data.results);
                      this.setState({
@@ -408,7 +416,7 @@ class CheckoutTest extends Component {
                      })
                     if(res.data.results.data.payment_successfull)
                     { 
-                        debugger
+                        
                         localStorage.setItem("billing_id", res.data.results.data.id)
                         localStorage.setItem("cards_last_four_digits", this.state.cardNumber.slice(this.state.cardNumber.length-4, this.state.cardNumber.length))
                         localStorage.setItem("card_expiry", this.state.expiryMonth +"/"+this.state.expiryYear )
@@ -422,7 +430,7 @@ class CheckoutTest extends Component {
                         // localStorage.setItem('da_total_amount', this.state.da_total_amount)
                         // localStorage.setItem('c_tickets', this.state.c_tickets)
                         // localStorage.setItem('child_total_amount', this.state.child_total_amount)
-                        debugger
+                        
                         window.location.href = reactURL + "confirmation" 
                     }
                     else 
@@ -443,7 +451,7 @@ class CheckoutTest extends Component {
     }
 
   render() {
-    debugger
+    
     return (
     <div>
       <form  id="form1">

@@ -3,6 +3,7 @@ import axios from 'axios';
 import {envURL} from "../config/environment";
 import { withRouter } from 'react-router-dom';
 import { debug } from 'util';
+import swal from 'sweetalert';
 
 class Header extends Component {
   constructor(props) {

@@ -304,6 +304,35 @@ user_consumer.on('message', function (message) {
             } );
             return;
         });
+    }else if(data.data.request_code === 10) {
+        console.log("In Request Code 10 : Saving User mail " , data.data );
+        UserModal.save_user_image(data.data, function (err, res) {
+            console.log('Kafka Server : after handle in save_user_image', res);
+            var resultObject = {
+                successMsg: '',
+                errorMsg: '',
+                data: {}
+            };
+
+            if( res === "success" ) {
+                resultObject.successMsg = "Image updated Successfully";
+                resultObject.errorMsg = '';
+                resultObject.data = {};
+            }
+            else {
+                resultObject.successMsg = '';
+                resultObject.errorMsg = 'Error in image updating';
+                resultObject.data =  {};
+            }
+
+            console.log("After formation of resultobject in save_user_image in serverjs",resultObject);
+            var payloads = utility.createPayload(data, resultObject);
+            console.log('is producer ready : ' + producer.ready);
+            producer.send(payloads, function (err, data) {
+                utility.log(data, err) ;
+            } );
+            return;
+        });
     }
 
 
@@ -448,6 +477,31 @@ multiplex_consumer.on('message', function (message) {
                 resultObject.errorMsg= 'Error fetching search results';
             }else{
                 resultObject.successMsg= 'Fetching Search Results';
+                resultObject.errorMsg= '';
+                resultObject.data=res;
+            }
+            let payloads = utility.createPayload(request_data, resultObject);
+            console.log('is producer ready : ' + producer.ready);
+            producer.send(payloads, function (err, data) {
+                utility.log(data, err);
+            });
+            return;
+        });
+    }else if (request_data.data.request_code == 6) {
+        console.log('Kafka Server multiplex_consumer : message received inside request code 6 for revenueByEachMovie', request_data.data);
+        MultiplexModel.revenueByEachMovie(request_data.data,function (err, res) {
+            var resultObject = {
+                successMsg: '',
+                errorMsg: '',
+                data: {}
+            }
+            console.log('Kafka Server : after handle');
+            console.log(res);
+            if(err || !res){
+                resultObject.successMsg= '';
+                resultObject.errorMsg= 'Error fetching results';
+            }else{
+                resultObject.successMsg= 'Fetching Results';
                 resultObject.errorMsg= '';
                 resultObject.data=res;
             }

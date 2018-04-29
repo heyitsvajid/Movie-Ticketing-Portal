@@ -122,6 +122,13 @@ module.exports = function (app) {
     app.post('/deletebillingdetail', api_controller.deleteBillingDetail );
 
     app.get('/getAllSessionDetails', api_controller.getAllSessionDetails);
+
+    
+    app.post('/movieClickCount', api_controller.movieClickCount);
+
+    app.post('/updateUserImage', api_controller.updateUserImage);
+
+    app.post('/getMultiplexAdminGraph', api_controller.getMultiplexAdminGraph);
     
 };
 

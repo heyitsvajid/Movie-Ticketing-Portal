@@ -608,12 +608,41 @@ function checkfor_existing_email ( msg, callback ) {
 
 }
 
+function save_user_image ( msg, callback) {
+    
+    console.log("Inside check save_user_image in kafkabackend UserModal", msg ) ;
+
+    pool.connect((err, db) => {
+        if(err) {
+            console.log("Error in UserModal save_user_image while connecting to DB");
+            errHandler(err);
+        } else {
+            console.log("Connected to MYSQL in save_user_image in usermodal");
+            let sql = " update user set image_path = ? where id = ? ";
+            let image_path = msg.image_path;
+            let id = msg.id;
+            db.query(sql, [image_path, id] , (err, result) => {
+                db.release();
+                if(err) {
+                    console.log("Error in UserModal save_user_image while query to DB");
+                    callback(null, "error");
+                }
+                else {
+                    console.log("Result after save_user_image from DB..", result);
+                    callback(null, "success");
+                }
+            });
+        }
+    });
+
+}
 
 //==============================================================================
 /**
 * Export module
 */
 module.exports = {
+    save_user_image:save_user_image,
     createMultiplexAdmin: createMultiplexAdmin,
     findAllMultiplexAdmins : findAllMultiplexAdmins,
     findMultiplexAdminbyId : findMultiplexAdminbyId,
