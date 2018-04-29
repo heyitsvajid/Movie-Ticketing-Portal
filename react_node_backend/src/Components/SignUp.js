@@ -168,7 +168,7 @@ class SignUp extends Component {
                         </div>
                         <div class="page registration authentication-form" role="main">
                             <div class="row">
-                                <div class="double-type large-8 medium-10 small-12 large-centered medium-centered small-centered columns">
+                                <div class="credential-box double-type large-8 medium-10 small-12 large-centered medium-centered small-centered columns">
                                     <div class="panel-group row">
                                         <div class="panel main-panel intercept-container large-6 medium-6 small-12 columns">
                                             <div class="action-details small-12 columns">

@@ -43,8 +43,8 @@ class Footer extends Component {
     let eightMovies = [];
     var movies = this.state.movieList;
     if(movies.length>0){
-      for(var i=0;i<8;i++){
-        movies[i] != undefined && new Date(movies[i].release_date) > Date.now() ? eightMovies.push(movies[i]) : eightMovies.push("Coming Soon");
+      for(var i=0;i<this.state.movieList.length;i++){
+        movies[i] != undefined && new Date(movies[i].release_date) > Date.now() ? eightMovies.push(movies[i]) : ""
       }  
     }
     let moviesNode = eightMovies.map((item, index) => {

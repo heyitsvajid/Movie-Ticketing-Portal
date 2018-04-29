@@ -232,7 +232,6 @@ LogAPI.logUserClicks(click);
       movie_image = <img class="movie-details__movie-img visual-thumb" src = {require('../images/' + this.state.movie.movie_logo)} alt="Blumhouse's Truth or Dare (2018) Movie Poster" />
       trailer_link = <a href = "https://www.youtube.com/embed/tgbNymZ7vqY"><img id="img-link" src={require('../images/' + this.state.movie.movie_logo)} alt="Truth or Dare: Trailer 1" itemprop="image" /></a>
     }
-    debugger
     if(this.state.movie.movie_keywords != undefined){
       let keywords =  this.state.movie.movie_keywords.toString().split(",");
 

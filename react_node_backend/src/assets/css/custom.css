@@ -1096,3 +1096,14 @@ button#footer-fanmail-submit {
   width: 580px !important;
   height: 455px !important;
 }
+
+.credential-box{
+  margin: auto !important ;
+}
+
+.show-time{
+  color: white;
+}
+#movie-show-box{
+  margin: auto;
+}

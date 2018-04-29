@@ -76,7 +76,6 @@ class Layout extends Component {
     }
 
     processDataAsSelectedDate() {
-debugger
         if (this.state.search) {
             var data = {
                 searchQuery: this.state.search
@@ -159,7 +158,6 @@ debugger
                                 if (selectedDate.getDate() == showDate.getDate()
                                     && selectedDate.getDay() == showDate.getDay()
                                     && selectedDate.getYear() == showDate.getYear()) {
-debugger
                                         if(mpaa_rating==this.state.mpaa_rating){
                                             groups[groupName].push(item.show_timings[i]);
                                         }else if(mpaa_rating=='#'){
@@ -283,6 +281,18 @@ debugger
             }
         )
     };
+
+    formatAMPM(ts) {
+        var date = new Date(ts);
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var ampm = hours >= 12 ? 'p' : 'a';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        var strTime = hours + ':' + minutes + '' + ampm;
+        return strTime;
+    }
 
     render() {
         return (
@@ -426,9 +436,9 @@ debugger
                     movie = show.movie;
                     imageSource = require('../images/' + movie.movie_logo) ? require('../images/' + movie.movie_logo) : ''
                     return (
-                        <li class="fd-movie__btn-list-item" >
+                        <li class="fd-movie__btn-list-item show-time" >
                             <a class="btn showtime-btn showtime-btn--available"
-                                id={show._id + ',' + multiplex._id + ',' + show.screen_number} onClick={this.onShowTimeClick.bind(this)} >{new Date(show.sort_field).getHours() + ':' + new Date(show.sort_field).getMinutes()}</a>
+                                id={show._id + ',' + multiplex._id + ',' + show.screen_number} onClick={this.onShowTimeClick.bind(this)} >{this.formatAMPM(show.sort_field)}</a>
                         </li>
                     )
                 });
@@ -519,7 +529,7 @@ debugger
                     <a class="fd-theater__amenities js-amenity font-sans-serif-cond font-sm" href="#" data-amenity-name="Theater Amenities" data-amenity-desc="<ul class=&quot;fd-theater__amenities-list&quot;><li>Print at Home Tickets</li><li>Mobile Tickets</li></ul>">AMENITIES</a>
                   </div> */}
                         </div>
-                        <ul>
+                        <ul id="movie-show-box">
                             {moviesNodes}
                         </ul>
                         {/* <div class="fd-theater__future-dates">

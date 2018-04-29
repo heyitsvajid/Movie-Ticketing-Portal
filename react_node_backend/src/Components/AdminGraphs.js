@@ -374,7 +374,7 @@ class AdminGraphs extends Component {
                     <div className="form-group col-md-12">
                         <div class="row">
                             <div className="form-group col-md-4 ">
-                                <h3 class="c-grey-900 mB-20">Least Clicks Per Page</h3>
+                                <h3 class="c-grey-900 mB-20">Least Clicked Pages</h3>
                             </div>
                             {/* <div className="form-group col-md-2 ">
                                 <label class="dashboard-label center-head">Trailer Link</label>
