@@ -30,7 +30,8 @@ class Layout extends Component {
   }
 
   showMovieDetailsPage(e){
-    const movieId = e.target.dataset.movieid;
+    debugger
+    const movieId = e.target.dataset.movieID;
     localStorage.setItem("movieID", movieId);
     window.location.href = reactURL + "movie_details";
   }
@@ -64,7 +65,7 @@ class Layout extends Component {
       }
       else{
         movieAnchorTag =  <a data-movieID = {item._id} href="#" onClick = {this.showMovieDetailsPage.bind(this)} class="visual-container">
-            <img class="poster-thumb-size-s visual-thumb" src={imageSource} alt="Movie Poster" />
+            <img class="poster-thumb-size-s visual-thumb" data-movieID = {item._id} src={imageSource} alt="Movie Poster" />
           </a>
       }
       debugger

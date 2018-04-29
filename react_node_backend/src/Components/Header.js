@@ -92,8 +92,8 @@ class Header extends Component {
       <div id="brand-bar" class="hide-on-mobile">
         <div class="row">
           <div class="width-25 right">
-            <a href="/fandango-gift-cards">Gift Cards</a> |
-            <a href="/freemovietickets">Offers</a> |
+            <a href="#">Gift Cards</a> |
+            <a href="#">Offers</a> |
             {/*<a href="https://www.fandango.com/account/signin?from=%2F" class="hide-logged-in">Sign In</a>*/}
             {/*<a href="/login" class="hide-logged-in">Sign In</a>*/}
             {/*<a href="/signout" class="show-logged-in">Sign Out</a>*/}
@@ -127,7 +127,7 @@ class Header extends Component {
             <ul id="global-menu" class="inline-items tablet-width-100 right nonstandard-width header-ul">
               <li id="movies-tab" class="tablet-width-20 nonstandard-width">
                 <section class="has-dropdown">
-                  <h3><a class = "header-links" href="/moviesintheaters">Movies</a></h3>
+                  {/* <h3><a class = "header-links" href="/moviesintheaters">Movies</a></h3> */}
                   <div class="mega-menu">
                     <div class="row">
                       <div class="width-25">
@@ -429,7 +429,7 @@ class Header extends Component {
               </li>
               <li class="tablet-width-30 nonstandard-width">
                 <section class="has-dropdown">
-                  <h3><a class = "header-links" href="/movie-news">Movie News</a></h3>
+                  <h3><a class = "header-links" href="/orders">Purchase History</a></h3>
                   <div class="mega-menu">
                     <div class="row">
                       <div id="featured-movie-news" class="width-75 mobile-width-100 grid-parent">
