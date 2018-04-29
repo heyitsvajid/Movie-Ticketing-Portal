@@ -1083,6 +1083,88 @@ exports.getCardDetails = function (req, res) {
         }
     });
 }
+//Movie Click Analytics:
+exports.movieClickCount = function (req, res) {
+    console.log('Logging for movie :' + req.body.movieClick.name);
+    console.log(req.body);  
+    console.log("Adding Log for movie click");
+    winston.info({ movieClick: req.body.movieClick });
+
+}
+
+//Upload User Profile Image
+exports.updateUserImage = function (req, res) {
+    console.log('API: uploadImage ' + 'STEP: Start');
+
+    var resultObject = {
+        successMsg: '',
+        errorMsg: 'Error Uploading Image',
+        data: {}
+    }
+    let form = new multiparty.Form();
+    form.parse(req, (err, fields, files) => {
+        resultObject = {
+            successMsg: '',
+            errorMsg: 'Error Uploading Image',
+            data: {}
+        }
+        console.log(files);
+        console.log(fields.user_id);
+        let { path: tempPath, originalFilename } = files.file[0];
+        let copyToPath = "./src/images/" + fields.user_id + originalFilename;
+        let dbPath = fields.user_id + originalFilename;
+        fs.readFile(tempPath, (err, data) => {
+            if (err) throw err;
+            fs.writeFile(copyToPath, data, (err) => {
+                if (err) throw err;
+                fs.unlink(tempPath, () => {
+                    console.log('API: uploadImage ' + 'STEP: FIle save to new path');
+                });
+            });
+        });
+        let data = {
+            image_path: dbPath,
+            id: fields.user_id,
+            request_code:10
+        };
+        console.log(data);
+        kafka.make_request('user_request', data, function (err, results) {
+            console.log('Kafka Response:');
+            console.log(results);
+            if (err) {
+                console.log('Controller : Error Occurred : ');
+                console.log(err);
+                res.json(results);
+            }
+            else {
+                res.json(results);
+                return;
+            }
+        });
+    })
+}
+
+exports.getMultiplexAdminGraph = function (req, res) {
+    console.log("getMultiplexAdminGraph_request : node backend");
+    let data = {
+        id: req.body.multiplex_id,
+        request_code:6
+    };
+
+    kafka.make_request('multiplex_request', data, function (err, results) {
+        console.log('Kafka Response:');
+        console.log(results);
+        if (err) {
+            console.log('Controller : Error Occurred : ');
+            console.log(err);
+            res.json(results);
+        }
+        else {
+            res.json(results);
+            return;
+        }
+    });
+};
 
 exports.saveUserCardDetails = function (req, res) {
     console.log("Fetching Ticket Confirmation : node backend");

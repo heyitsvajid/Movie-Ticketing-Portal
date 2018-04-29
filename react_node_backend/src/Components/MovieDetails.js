@@ -5,6 +5,7 @@ import Header from './Header'
 import Footer from './Footer'
 import { envURL, reactURL } from '../config/environment';
 import swal from 'sweetalert2'
+var LogAPI = require('../utils/logging');
 
 class MovieDetails extends Component {
   constructor(props) {
@@ -20,10 +21,21 @@ class MovieDetails extends Component {
   }
   
   componentWillMount(){
+ //MovieDetails.js
+ let click = {
+  pageClick: {
+      email: "anonymous",
+      pageName: "Movie Detail",
+      timeStamp: new Date().getTime()
+  }
+};
+console.log(click);
+LogAPI.logUserClicks(click);
     this.fetchDataFromServer();
   }
 
   fetchDataFromServer(){
+    
     let findMovieByIdAPI = envURL + 'findMovieById';
     //var movieId = localStorage.getItem('movieIdforDetails')
     var movieId = localStorage.getItem("movieID");
@@ -36,6 +48,15 @@ class MovieDetails extends Component {
           if (res.data.successMsg != '') {
             console.log('Fetching movie by id');
             console.log(res.data.data);
+
+            //AccountSettings.js Logging
+              let click = {
+                      movieClick: {
+                          name: res.data.data ? res.data.data.title : '',
+                      }
+                  };
+                  console.log(click);
+                  LogAPI.logMovieClicks(click);
             this.setState({
               movie: res.data.data ? res.data.data : {},
               reviews: res.data.data.review_ratings ? res.data.data.review_ratings : {},

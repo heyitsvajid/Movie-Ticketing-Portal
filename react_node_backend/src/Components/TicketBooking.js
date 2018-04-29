@@ -6,9 +6,9 @@ import LatestMovies from './LatestMovies';
 import MovieSlider from './MovieSlider';
 import { envURL, reactURL } from '../config/environment';
 import axios from 'axios';
+var LogAPI = require('../utils/logging');
 
 
-// import '../assets/css/ticketbooking.css'
 
 
 class TicketBooking extends Component {
@@ -35,7 +35,16 @@ class TicketBooking extends Component {
   }
 
   componentWillMount() {
-    debugger
+        //Ticket Booking
+        let click = {
+          pageClick: {
+              email: "anonymous",
+              pageName: "Ticket Booking",
+              timeStamp: new Date().getTime()
+          }
+      };
+      console.log(click);
+      LogAPI.logUserClicks(click);
     let findMultiplexByIdAPI = envURL + 'findMultiplexById';
     var multiplexId = localStorage.getItem('bookMultiplexId');
     var showId = localStorage.getItem('bookShowId');

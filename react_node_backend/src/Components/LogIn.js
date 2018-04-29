@@ -6,6 +6,7 @@ import axios from 'axios';
 import { withRouter } from 'react-router-dom'
 import { envURL, reactURL } from '../config/environment';
 import LoginSignupHeader from './LoginSignupHeader';
+var LogAPI = require('../utils/logging');
 
 class SignIn extends Component {
 
@@ -23,6 +24,16 @@ class SignIn extends Component {
     }
 
     componentWillMount() {
+    //LogIn Logging
+    let click = {
+        pageClick: {
+            email: "anonymous",
+            pageName: "Log In",
+            timeStamp: new Date().getTime()
+        }
+    };
+    console.log(click);
+    LogAPI.logUserClicks(click);
         axios.get(envURL + 'isLoggedIn', {withCredentials: true})
             .then((response) => {
                 console.log("After checking the session", response.data);
