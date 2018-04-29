@@ -1081,3 +1081,9 @@ button#footer-fanmail-submit {
 #user-update{
   display: none;
 }
+
+.index-image{
+  display: block;
+  margin: auto;
+  margin-top: 2%;
+}

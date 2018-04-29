@@ -30,7 +30,6 @@ class Layout extends Component {
   }
 
   showMovieDetailsPage(e){
-    debugger
     const movieId = e.target.dataset.movieid;
     localStorage.setItem("movieID", movieId);
     window.location.href = reactURL + "movie_details";

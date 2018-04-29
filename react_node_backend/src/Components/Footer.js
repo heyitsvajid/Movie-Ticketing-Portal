@@ -43,7 +43,6 @@ class Footer extends Component {
     var movies = this.state.movieList;
     if(movies.length>0){
       for(var i=0;i<8;i++){
-        // debugger
         movies[i] != undefined && new Date(movies[i].release_date) > Date.now() ? eightMovies.push(movies[i]) : eightMovies.push("Coming Soon");
       }  
     }
@@ -88,13 +87,15 @@ class Footer extends Component {
             <ul class="row panel footer-panel">
               <li class="width-25">
                 <div class="media media-footer">
-                  <a href="https://www.fandango.com/ready-player-one-204139/movie-times?intcmp=IMA_RPOGWP_merch">
-                    <img src="https://images.fandango.com/images/spotlight/FD_ReadyPlayerOne_300x150_offerstrip_v1.png" alt="&lt;b&gt;&#39;Ready Player One&#39; Gift With Purchase&lt;/b&gt;" />
+                  <a href="https://www.fandango.com/VIP-Plus?intcmp=IMA_VIPPLUS_merch">
+                    <img src="https://images.fandango.com/images/spotlight/FND_Loyalty_300x150_v01.png" alt="&lt;b&gt;&#39;Ready Player One&#39; Gift With Purchase&lt;/b&gt;" />
                   </a>
                   <div>
-                    <h3 class="heading-style-2 heading-size-s bold">&#39;Ready Player One&#39; Gift With Purchase</h3>
+                    <h3 class="heading-style-2 heading-size-s bold">WELCOME TO THE SUMMER OF MORE</h3>
                     <p>
-                      Receive a FREE* exclusive 'Ready Player One' poster with ticket purchase (*shipping & handling not included).
+			EARN 150 VIP+ POINTS FOR EVERY TICKET YOU BUY. 600 VIP+ Points unlocks a $6 reward.
+			
+				
                     <a href="https://www.fandango.com/ready-player-one-204139/movie-times?intcmp=IMA_RPOGWP_merch">BUY TICKETS</a>
                     </p>
                   </div>
@@ -103,26 +104,27 @@ class Footer extends Component {
               <li class="width-25">
                 <div class="media media-footer">
                   <a href="https://www.fandango.com/a-wrinkle-in-time-203789/movie-times?intcmp=IMA_WrinkleinTimeGWP_merch">
-                    <img src="https://images.fandango.com/images/spotlight/FD_Wrinkle_300x150_offerstrip_v1.png" alt="&lt;b&gt;&#39;A Wrinkle in Time&#39; Gift With Purchase&lt;/b&gt;" />
+                    <img src="https://images.fandango.com/images/spotlight/FD_Deadpool2_300x150_offerstrip_v1.png" alt="&lt;b&gt;&#39;A Wrinkle in Time&#39; Gift With Purchase&lt;/b&gt;" />
                   </a>
                   <div>
-                    <h3 class="heading-style-2 heading-size-s bold">&#39;A Wrinkle in Time&#39; Gift With Purchase</h3>
+                    <h3 class="heading-style-2 heading-size-s bold">'Deadpool 2' Gift With Purchase</h3>
                     <p>
-                      Receive a FREE* exclusive 'A Wrinkle in Time' poster with ticket purchase (*shipping & handling not included).
+                      Receive a FREE* exclusive 'Deadpool 2' poster with ticket purchase (*shipping & handling not included).
                     <a href="https://www.fandango.com/a-wrinkle-in-time-203789/movie-times?intcmp=IMA_WrinkleinTimeGWP_merch">BUY TICKETS</a>
                     </p>
                   </div>
                 </div>
               </li>
               <li class="width-25">
+              
                 <div class="media media-footer">
                   <a href="https://www.fandango.com/thoroughbreds-205562/movie-times?intcmp=IMA_ThoroughbredsGWP_merch">
-                    <img src="https://images.fandango.com/images/spotlight/fd_Thoroughbred_300x150_offerstrip_v2.png" alt="&lt;b&gt;&#39;Thoroughbreds&#39; Gift With Purchase&lt;/b&gt;" />
+                    <img src="https://images.fandango.com/images/spotlight/FD_Avengers_300x150_offerstrip_v1.png" alt="&lt;b&gt;&#39;Thoroughbreds&#39; Gift With Purchase&lt;/b&gt;" />
                   </a>
                   <div>
-                    <h3 class="heading-style-2 heading-size-s bold">&#39;Thoroughbreds&#39; Gift With Purchase</h3>
+                    <h3 class="heading-style-2 heading-size-s bold">'Avengers: Infinity War' Gift With Purchase</h3>
                     <p>
-                      Receive a FREE* exclusive 'Thoroughbreds' t-shirt brought to you by Betches with ticket purchase (*shipping & handling not included).
+                      Choose 1 of 5 FREE* exclusive posters with ticket purchase (*shipping & handling not included).
                     <a href="https://www.fandango.com/thoroughbreds-205562/movie-times?intcmp=IMA_ThoroughbredsGWP_merch">BUY TICKETS</a>
                     </p>
                   </div>
@@ -131,12 +133,12 @@ class Footer extends Component {
               <li class="width-25">
                 <div class="media media-footer">
                   <a href="https://www.fandango.com/midnight-sun-2018-201176/movie-times?intcmp=IMA_MidnightSunGWP_merch">
-                    <img src="https://images.fandango.com/images/spotlight/FD_MidnightSun_300x150_offerstrip_v1.png" alt="&lt;b&gt;&#39;Midnight Sun&#39; Gift With Purchase&lt;/b&gt;" />
+                    <img src="https://images.fandango.com/images/spotlight/FNOW_April_300x150_NCO_v2.png" alt="&lt;b&gt;&#39;Midnight Sun&#39; Gift With Purchase&lt;/b&gt;" />
                   </a>
                   <div>
-                    <h3 class="heading-style-2 heading-size-s bold">&#39;Midnight Sun&#39; Gift With Purchase</h3>
+                    <h3 class="heading-style-2 heading-size-s bold">20% Off Your First Month on FandangoNOW</h3>
                     <p>
-                      Receive a FREE* song download of 'Burn so Bright' performed by Bella Thorne with ticket purchase.
+                    Watch the newest movies not available on Netflix, Hulu or Amazon Prime subscriptions. New customers get 20% off for 1 month!
                     <a href="https://www.fandango.com/midnight-sun-2018-201176/movie-times?intcmp=IMA_MidnightSunGWP_merch">BUY TICKETS</a>
                     </p>
                   </div>
@@ -263,7 +265,5 @@ class Footer extends Component {
     )
   }
 }
-
-
 
 export default Footer;
