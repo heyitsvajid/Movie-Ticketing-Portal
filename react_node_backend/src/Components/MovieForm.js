@@ -84,7 +84,7 @@ class MovieForm extends Component {
             let keywordsErrorPresent = !this.validateKeywordsFormat(this.state.movie_keywords) ? true : false;
             let checkFilePresent = !this.validateFile(this.state.file) ? true : false;
             let synopsisErrorPresent = !this.validateSynopsisFormat(this.state.synopsis) ? true : false;
-            debugger
+
             if (titleErrorPresent || trailerLinkErrorPresent || movieTimeErrorPresent || keywordsErrorPresent
                 || synopsisErrorPresent) {
                 // swal({

@@ -19,7 +19,9 @@ class AdminGraphs extends Component {
             userClickAnalytics: [],
             movieList: [],
             movieReviewGraph: [],
-            userSessionAnalytics:[]
+            userSessionAnalytics:[],
+            movieClickAnalytics: [],
+            defaultGraph1State: ""
         }
         this.getMovieRevenuePerYear = this.getMovieRevenuePerYear.bind(this);
         this.populateSelectBoxForMovieRevenueYears = this.populateSelectBoxForMovieRevenueYears.bind(this);
@@ -29,7 +31,6 @@ class AdminGraphs extends Component {
         this.filterCurrentMonth = this.filterCurrentMonth.bind(this);
         this.getUserClickDetails = this.getUserClickDetails.bind(this);
         this.loadMoviesRatings = this.loadMoviesRatings.bind(this)
-        this.loadSessionAnalytics=this.loadSessionAnalytics.bind(this);
     }
 
     componentWillMount() {
@@ -39,37 +40,8 @@ class AdminGraphs extends Component {
         this.getMultiplexSoldTicketsPerMonth();
         this.getUserClickDetails();
         this.loadMoviesRatings();
-        this.loadSessionAnalytics()
+        this.getMovieClicks();
     }
-
-    loadSessionAnalytics(){
-        let findAllSessionDetails = envURL + 'getAllSessionDetails';
-        axios.get(findAllSessionDetails)
-            .then(res => {
-                if (res.data.successMsg != '') {
-                    console.log('Fetching all SessionDetails');
-                    console.log(res.data.data);
-                    var session = res.data.data[0].session;
-                    let finalData=[]
-
-                    session.forEach((element,index) => {
-                            finalData.push({
-                               page:element.pages[index],
-                               time:parseInt(element.pageTime[index])/1000 
-                            });
-                    });
-
-                    this.setState({
-                        userSessionAnalytics:finalData 
-                    })
-                } else {
-                    console.error('Error Fetching all movie');
-                }
-            })
-            .catch(err => {
-                console.error(err);
-            });
-    }        
     
     loadMoviesRatings() {
         var finalArrayToShowInGraph = [];
@@ -113,8 +85,7 @@ class AdminGraphs extends Component {
 
 
     handleYearChangeForMovie(e) {
-        console.log("Hello", e.target.value);
-        var selectedYear = e.target.value;
+        var selectedYear = e ? e.target.value : this.state.defaultGraph1State;
         var allMoviesRevenueArray = this.state.movieRevenue;
         var graphToShow = [];
         for(var i = 0; i < allMoviesRevenueArray.length; i++) {
@@ -131,8 +102,8 @@ class AdminGraphs extends Component {
     }
 
     handleYearChangeForCity(e) {
-        console.log("Hello", e.target.value);
-        var selectedYear = e.target.value;
+        // console.log("Hello", e.target.value);
+        var selectedYear = e ? e.target.value : this.state.defaultGraph1State;
         var allCitiesRevenueArray = this.state.cityRevenue;
         var graphToShow = [];
         for(var i = 0; i < allCitiesRevenueArray.length; i++) {
@@ -165,7 +136,7 @@ class AdminGraphs extends Component {
     }
 
     populateSelectBoxForMovieRevenueYears(selectBoxId, stateData) {
-
+        
         var yeararray = [];
 
         var tempArray = stateData;
@@ -180,6 +151,14 @@ class AdminGraphs extends Component {
         for (var i = 0; i < yeararray.length; i++) {
             var option = document.createElement("option");
             option.setAttribute("value", yeararray[i]);
+            yeararray[i] == 2018 ? option.selected = true : '';
+            if (i == 0){
+                this.setState({defaultGraph1State: 2018}, () =>{
+                    this.handleYearChangeForMovie();
+                    this.handleYearChangeForCity();
+                })
+            }
+            
             option.text = yeararray[i];
             document.getElementById(selectBoxId).appendChild(option);
         }
@@ -191,7 +170,7 @@ class AdminGraphs extends Component {
         axios.post(envURL + 'getMovieRevenuePerYear', null, { withCredentials: true })
             .then((response) => {
                 console.log("getMovieRevenuePerYear", response.data);
-                var resultArray = response.data.results.billing_information;
+                var resultArray = response.data.results != undefined? response.data.results.billing_information : [];
                 console.log("final result array in getMovieRevenuePerYear:", resultArray);
                 this.setState({
                     movieRevenue: resultArray
@@ -206,7 +185,7 @@ class AdminGraphs extends Component {
         axios.post(envURL + 'getCityRevenuePerYear', null, { withCredentials: true })
             .then((response) => {
                 //console.log("getCityRevenuePerYear", response.data);
-                var resultArray = response.data.results.billing_information;
+                var resultArray = response.data.results != undefined? response.data.results.billing_information : [];
                 console.log("final result array: getCityRevenuePerYear", resultArray);
                 this.setState({
                     cityRevenue: resultArray
@@ -220,7 +199,7 @@ class AdminGraphs extends Component {
         axios.post(envURL + 'getMultiplexSoldTicketsPerMonth', null, { withCredentials: true })
             .then((response) => {
                 console.log("getMultiplexSoldTicketsPerMonth", response.data);
-                 var resultArray = response.data.results.billing_information;
+                 var resultArray = response.data.results != undefined? response.data.results.billing_information : [];
                  console.log("final result array: getMultiplexSoldTicketsPerMonth", resultArray);
                 this.setState({
                     monthRevenue: resultArray
@@ -241,114 +220,301 @@ class AdminGraphs extends Component {
             })
     }
 
+    getMovieClicks() {
+        axios.get(envURL + 'getMovieClicks', null, { withCredentials: true })
+            .then((response) => {
+                console.log("User logging data", response.data);
+                this.setState({
+                    movieClickAnalytics: response.data
+                })
+
+            })
+    }
+
 
 
     render() {
         return (
-            <div className="AdminGraphs">
-                <h1>Hello On AdminGraphs</h1>
-
-                <h1>Movie Wise</h1>
-
-                <div id="movieSelectBoxDiv">Append here
-                    <select id="mySelectMovie" onChange={ this.handleYearChangeForMovie }>
-
-                    </select>
+            <div>
+                <div class="row">
+                    <div className="form-group col-md-12">
+                        <div class="row">
+                            <div className="form-group col-md-4 ">
+                                <h3 class="c-grey-900 mB-20">Top 10 Movie Revenues</h3>
+                            </div>
+                            <div className="form-group col-md-2 ">
+                                <label class="dashboard-label center-head">Year</label>
+                            </div>
+                            <div className="form-group col-md-2">
+                                <select id="mySelectMovie" onChange={ this.handleYearChangeForMovie }></select>
+                            </div>
+                        </div>
+                        
+                        <div id="citySelectBoxDiv">
+                            
+                        </div>
+                        <br/>                            
+                        <BarChart width={1300} height={300} data={this.state.movieRevenuePerSelectedYear}
+                          margin={{top: 5, right: 30, left: 20, bottom: 5}}>
+                        <CartesianGrid strokeDasharray="3 3"/>
+                        <XAxis dataKey="movie_name"/>
+                        <YAxis/>
+                        <Tooltip/>
+                        <Legend />
+                        <Bar dataKey="total_revenue" fill="#ffcc00" />
+                    </BarChart>
+                    </div>
                 </div>
 
+                <div class="row">
+                    <div className="form-group col-md-12">
+                        <div class="row">
+                            <div className="form-group col-md-4 ">
+                                <h3 class="c-grey-900 mB-20">City Wise Revenue/Year</h3>
+                            </div>
+                            <div className="form-group col-md-2 ">
+                                <label class="dashboard-label center-head">Year</label>
+                            </div>
+                            <div className="form-group col-md-2">
+                                <select id="mySelectCity" onChange={ this.handleYearChangeForCity }>
 
-
-                {/*Bar Chart for movie revenue per year*/}
-                <BarChart width={700} height={300} data={this.state.movieRevenuePerSelectedYear}
-                          margin={{top: 5, right: 30, left: 20, bottom: 5}}>
-                    <CartesianGrid strokeDasharray="3 3"/>
-                    <XAxis dataKey="movie_name"/>
-                    <YAxis/>
-                    <Tooltip/>
-                    <Legend />
-                    <Bar dataKey="total_revenue" fill="#ffcc00" />
-                </BarChart>
-
-
-                <h1>CityWise</h1>
-
-                <div id="citySelectBoxDiv">Append here
-                    <select id="mySelectCity" onChange={ this.handleYearChangeForCity }>
-
-                    </select>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <br/>                            
+                        <BarChart width={1300} height={300} data={this.state.cityRevenuePerSelectedYear}
+                                margin={{top: 5, right: 30, left: 20, bottom: 5}}>
+                            <CartesianGrid strokeDasharray="3 3"/>
+                            <XAxis dataKey="multiplex_city"/>
+                            <YAxis/>
+                            <Tooltip/>
+                            <Legend />
+                            <Bar dataKey="total_revenue" fill="#ffcc00" />
+                        </BarChart>
+                    </div>
                 </div>
+                <hr/>
 
-                {/*Bar Chart for city revenue per year*/}
-                <BarChart width={700} height={300} data={this.state.cityRevenuePerSelectedYear}
+                <div class="row">
+                    <div className="form-group col-md-12">
+                        <div class="row">
+                            <div className="form-group col-md-4 ">
+                                <h3 class="c-grey-900 mB-20">Multiplex Revenue of Month</h3>
+                            </div>
+                            <div className="form-group col-md-2 ">
+                                {/* <label class="dashboard-label center-head">Trailer Link</label> */}
+                            </div>
+                            <div className="form-group col-md-2">
+                                {/* <select id="mySelectMovie" onChange={ this.handleYearChangeForMovie }>
+                                </select> */}
+                            </div>
+                        </div>
+                        
+                        <br/>                            
+                        <BarChart width={1300} height={300} data={this.state.lastMonthMultiplexRevenue}
                           margin={{top: 5, right: 30, left: 20, bottom: 5}}>
-                    <CartesianGrid strokeDasharray="3 3"/>
-                    <XAxis dataKey="multiplex_city"/>
-                    <YAxis/>
-                    <Tooltip/>
-                    <Legend />
-                    <Bar dataKey="total_revenue" fill="#ffcc00" />
-                </BarChart>
+                            <CartesianGrid strokeDasharray="3 3"/>
+                            <XAxis dataKey="multiplex_name"/>
+                            <YAxis/>
+                            <Tooltip/>
+                            <Legend />
+                            <Bar dataKey="total_revenue" fill="#ffcc00" />
+                        </BarChart>
+                    </div>
+                </div>
+                <hr/>
 
-                <h1>Last Month</h1>
-                {/*Bar Chart for last month top 10 multiplex revenue per year*/}
-                <BarChart width={700} height={300} data={this.state.lastMonthMultiplexRevenue}
+                <div class="row">
+                    <div className="form-group col-md-12">
+                        <div class="row">
+                            <div className="form-group col-md-4 ">
+                                <h3 class="c-grey-900 mB-20">Clicks Per Page</h3>
+                            </div>
+                            {/* <div className="form-group col-md-2 ">
+                                <label class="dashboard-label center-head">Trailer Link</label>
+                            </div> */}
+                            <div className="form-group col-md-2">
+                                {/* <select id="mySelectMovie" onChange={ this.handleYearChangeForMovie }>
+                                </select> */}
+                            </div>
+                        </div>
+                        
+                        <br/>                            
+                        <ComposedChart width={1300} height={250} data={this.state.userClickAnalytics}>
+                            <XAxis dataKey="pageName" />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <CartesianGrid stroke="#f5f5f5" />
+                            <Area type="monotone" dataKey="count" fill="#8884d8" stroke="#8884d8" />
+                            {/*<Bar dataKey="coun" barSize={20} fill="#413ea0" />*/}
+                        </ComposedChart>
+                    </div>
+                </div>
+                <hr/>
+
+                <div class="row">
+                    <div className="form-group col-md-12">
+                        <div class="row">
+                            <div className="form-group col-md-4 ">
+                                <h3 class="c-grey-900 mB-20">Movie Clicks</h3>
+                            </div>
+                            <div className="form-group col-md-2 ">
+                                {/* <label class="dashboard-label center-head"></label> */}
+                            </div>
+                            <div className="form-group col-md-2">
+                                {/* <select id="mySelectMovie" onChange={ this.handleYearChangeForMovie }>
+                                </select> */}
+                            </div>
+                        </div>
+                        
+                        <br/>        
+                        
+                        <BarChart width={1300} height={300} data={this.state.movieClickAnalytics}
                           margin={{top: 5, right: 30, left: 20, bottom: 5}}>
-                    <CartesianGrid strokeDasharray="3 3"/>
-                    <XAxis dataKey="multiplex_name"/>
-                    <YAxis/>
-                    <Tooltip/>
-                    <Legend />
-                    <Bar dataKey="total_revenue" fill="#ffcc00" />
-                </BarChart>
+                            <CartesianGrid strokeDasharray="3 3"/>
+                            <XAxis dataKey="movieName"/>
+                            <YAxis/>
+                            <Tooltip/>
+                            <Legend />
+                            <Bar dataKey="count" fill="#ffcc00" />
+                        </BarChart>
+                    </div>
+                </div>
+                <hr/>
 
-
-                <h1>UserClicks</h1>
-                <ComposedChart width={730} height={250} data={this.state.userClickAnalytics}>
-                    <XAxis dataKey="pageName" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <CartesianGrid stroke="#f5f5f5" />
-                    <Area type="monotone" dataKey="count" fill="#8884d8" stroke="#8884d8" />
-                    {/*<Bar dataKey="coun" barSize={20} fill="#413ea0" />*/}
-                </ComposedChart>
-
-
-                <h1>UserSession</h1>
-                <ComposedChart width={730} height={250} data={this.state.userSessionAnalytics}>
-                    <XAxis dataKey="page" />
-                    <YAxis label={{ value: "Time Spent(sec)", angle: -90, position: 'insideLeft' }}/>
-                    <Tooltip />
-                    <Legend />
-                    <CartesianGrid stroke="#f5f5f5" />
-                    <Area type="monotone" dataKey="time" fill="#8884d8" stroke="#8884d8" />
-                    {/*<Bar dataKey="coun" barSize={20} fill="#413ea0" />*/}
-                </ComposedChart>
-
-
-
-                <h1>Top Movie Rating's</h1>
-
-                <AreaChart width={730} height={250} data={ this.state.movieReviewGraph }
+                <div class="row">
+                    <div className="form-group col-md-12">
+                        <div class="row">
+                            <div className="form-group col-md-4 ">
+                                <h3 class="c-grey-900 mB-20">Movie Ratings Graph</h3>
+                            </div>
+                            <div className="form-group col-md-2 ">
+                                {/* <label class="dashboard-label center-head">Trailer Link</label> */}
+                            </div>
+                            <div className="form-group col-md-2">
+                                {/* <select id="mySelectMovie" onChange={ this.handleYearChangeForMovie }>
+                                </select> */}
+                            </div>
+                        </div>
+                        
+                        <br/>                            
+                        <AreaChart width={1300} height={250} data={ this.state.movieReviewGraph }
                            margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                    <defs>
-                        <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
-                            <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
-                        </linearGradient>
+                            <defs>
+                                <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
+                                    <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
+                                </linearGradient>
 
-                    </defs>
-                    <XAxis dataKey="movie_name" />
-                    <YAxis />
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <Tooltip />
-                    <Area type="monotone" dataKey="averageRating" stroke="#8884d8" fillOpacity={1} fill="url(#colorUv)" />
+                            </defs>
+                            <XAxis dataKey="movie_name" />
+                            <YAxis />
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <Tooltip />
+                            <Area type="monotone" dataKey="averageRating" stroke="#8884d8" fillOpacity={1} fill="url(#colorUv)" />
 
-                </AreaChart>
+                        </AreaChart>
+                    </div>
+                </div>
+                <hr/>
 
 
 
+
+                
             </div>
+            // <div className="AdminGraphs">
+            //     <h1>Hello On AdminGraphs</h1>
+
+            //     <h1>Movie Wise</h1>
+
+            //     <div id="movieSelectBoxDiv">Append here
+            //         <select id="mySelectMovie" onChange={ this.handleYearChangeForMovie }>
+
+            //         </select>
+            //     </div>
+
+
+
+            //     {/*Bar Chart for movie revenue per year*/}
+            //     <BarChart width={700} height={300} data={this.state.movieRevenuePerSelectedYear}
+            //               margin={{top: 5, right: 30, left: 20, bottom: 5}}>
+            //         <CartesianGrid strokeDasharray="3 3"/>
+            //         <XAxis dataKey="movie_name"/>
+            //         <YAxis/>
+            //         <Tooltip/>
+            //         <Legend />
+            //         <Bar dataKey="total_revenue" fill="#ffcc00" />
+            //     </BarChart>
+
+
+            //     <h1>CityWise</h1>
+
+            //     <div id="citySelectBoxDiv">Append here
+            //         <select id="mySelectCity" onChange={ this.handleYearChangeForCity }>
+
+            //         </select>
+            //     </div>
+
+            //     {/*Bar Chart for city revenue per year*/}
+            //     <BarChart width={700} height={300} data={this.state.cityRevenuePerSelectedYear}
+            //               margin={{top: 5, right: 30, left: 20, bottom: 5}}>
+            //         <CartesianGrid strokeDasharray="3 3"/>
+            //         <XAxis dataKey="multiplex_city"/>
+            //         <YAxis/>
+            //         <Tooltip/>
+            //         <Legend />
+            //         <Bar dataKey="total_revenue" fill="#ffcc00" />
+            //     </BarChart>
+
+            //     <h1>Last Month</h1>
+            //     {/*Bar Chart for last month top 10 multiplex revenue per year*/}
+            //     <BarChart width={700} height={300} data={this.state.lastMonthMultiplexRevenue}
+            //               margin={{top: 5, right: 30, left: 20, bottom: 5}}>
+            //         <CartesianGrid strokeDasharray="3 3"/>
+            //         <XAxis dataKey="multiplex_name"/>
+            //         <YAxis/>
+            //         <Tooltip/>
+            //         <Legend />
+            //         <Bar dataKey="total_revenue" fill="#ffcc00" />
+            //     </BarChart>
+
+
+            //     <h1>UserClicks</h1>
+            //     <ComposedChart width={730} height={250} data={this.state.userClickAnalytics}>
+            //         <XAxis dataKey="pageName" />
+            //         <YAxis />
+            //         <Tooltip />
+            //         <Legend />
+            //         <CartesianGrid stroke="#f5f5f5" />
+            //         <Area type="monotone" dataKey="count" fill="#8884d8" stroke="#8884d8" />
+            //         {/*<Bar dataKey="coun" barSize={20} fill="#413ea0" />*/}
+            //     </ComposedChart>
+
+            //     <h1>Top Movie Rating's</h1>
+
+            //     <AreaChart width={730} height={250} data={ this.state.movieReviewGraph }
+            //                margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+            //         <defs>
+            //             <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+            //                 <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
+            //                 <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
+            //             </linearGradient>
+
+            //         </defs>
+            //         <XAxis dataKey="movie_name" />
+            //         <YAxis />
+            //         <CartesianGrid strokeDasharray="3 3" />
+            //         <Tooltip />
+            //         <Area type="monotone" dataKey="averageRating" stroke="#8884d8" fillOpacity={1} fill="url(#colorUv)" />
+
+            //     </AreaChart>
+
+
+
+            // </div>
         );
     }
 }

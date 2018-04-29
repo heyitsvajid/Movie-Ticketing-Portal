@@ -177,7 +177,7 @@ class ListAllUsers extends Component {
         if(this.state.currentSessionUserId != ""){
             return(
                 <div>
-                    <h3>Graph</h3>
+                    <h3>Session Graph</h3>
                     <hr />
                     <div class="row gap-20 masonry pos-r" style={{position: 'relative', height: '800px'}}>
                         <div class="masonry-item col-md-12" style={{position: 'absolute', top: '0px'}}>

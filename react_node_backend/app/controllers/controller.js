@@ -1262,3 +1262,37 @@ exports.getClicksPerPage = function (req, res) {
         res.json(pageClicks)
     });
 };
+
+exports.getMovieClicks = function (req, res) {
+    var movies = [];
+    var lineReader = require('readline').createInterface({
+        input: require('fs').createReadStream('./logging/useranalytics.log')
+    });
+    lineReader.on('line', function (line) {
+        var jsonConvert = JSON.parse(line);
+        if(jsonConvert["message"]["movieClick"] != undefined){
+            var moviePresent = false;
+            if(movies.length == 0){
+                var movieObject = {movieName: jsonConvert["message"]["movieClick"]["name"], count: 1};
+                movies.push(movieObject);
+                console.log("Now movies " + movies)
+            }
+            else{
+                movies.forEach(element => {
+                    if(element["movieName"] == jsonConvert["message"]["movieClick"]["name"]){
+                        console.log("this is same movie" + element["movieName"])
+                        moviePresent = true;
+                        element.count += 1;
+                    }
+                });
+
+                if(!moviePresent){
+                    var movieObject = {movieName: jsonConvert["message"]["movieClick"]["name"], count: 1};
+                    movies.push(movieObject);
+                }
+            }
+        }
+    }).on('close', function () {
+        res.json(movies)
+    });
+};

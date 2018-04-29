@@ -10,6 +10,7 @@ import MultiplexAdminForm from './MultiplexAdmin'
 import { envURL, reactURL } from "../config/environment";
 import AllBillingDetails from './AllBillingDetails';
 import ListAllUsers from './ListAllUsers'
+import AdminGraphs from './AdminGraphs';
 
 class AdminDashboard extends Component {
     constructor(props) {
@@ -19,11 +20,11 @@ class AdminDashboard extends Component {
             addMovie: false,
             addMultiplex: false,
             addMultiplexAdmin: false,
-            addDashboard: false,
+            addDashboard: true,
             addUserTracking: false,
             showTimings: false,
             showBillingDetails: false,
-            listUsers: true,
+            listUsers: false,
             isLoggedIn: false,
             adminEmail: '',
             adminId: '',
@@ -419,29 +420,18 @@ class AdminDashboard extends Component {
     }
 
     returnDashboard() {
-        return (<div class="content-wrapper">
+        return (
             <div class="container-fluid">
-                {/* <ol class="breadcrumb">
-                    <li class="breadcrumb-item">
-                        <a href="#">Dashboard</a>
-                    </li>
-                </ol>
-                <h1>Dashboard</h1>
-                <hr />
-                <div class="row">
-                    <div class="col-6">.col-6</div>
-                    <div class="col-6">.col-6</div>
+            <h3 class="data-header">Dashboard</h3>
+            <br/>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="admin-list bgc-white bd bdrs-3 p-20 mB-20">
+                    <AdminGraphs />
+                    </div>
                 </div>
-                <div class="row">
-                    <div class="col-6">.col-6</div>
-                    <div class="col-6">.col-6</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-6">.col-6</div>
-                    <div class="col-6">.col-6</div>
-                </div> */}
-            </div></div>
+            </div>            
+        </div>
         )
     }
     returnMovie() {
