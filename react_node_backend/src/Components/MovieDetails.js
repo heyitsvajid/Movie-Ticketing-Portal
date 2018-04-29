@@ -212,6 +212,16 @@ LogAPI.logUserClicks(click);
     this.setState({ review_content: e.target.value });
   }
 
+  handleBooking(){
+    console.log("search clicked", this.state.searchQuery);
+    if(window.location.href.includes('/movies')){
+      this.props.onSearchData(this.state.searchQuery);
+    }else{
+      localStorage.setItem('search','title' in this.state.movie? this.state.movie.title: '')
+      this.props.history.push('/movies');
+    
+    }
+  }
   render() {
     
     let movie_image, a = null;
@@ -246,11 +256,11 @@ LogAPI.logUserClicks(click);
                               
                           </h1>
                           <ul class="subnav__link-list">
-                              <li class=" subnav__link-item"><a class="below-header-link subnav__link" href="/blumhouses-truth-or-dare-2018-208538/movie-overview">Overview</a></li>
-                              <li class="subnav__link-item"><a class="below-header-link subnav__link" href="/blumhouses-truth-or-dare-2018-208538/movie-times">Movie Times + Tickets</a></li>
-                              <li class="subnav__link-item"><a class="below-header-link subnav__link" href="/blumhouses-truth-or-dare-2018-208538/plot-summary">Synopsis</a></li>
-                              <li class="subnav__link-item"><a class="below-header-link subnav__link" href="/movie_details#review-list">Movie Reviews</a></li>
-                              <li class="subnav__link-item"><a class="below-header-link subnav__link" href="https://www.fandango.com/movie-trailer/blumhousestruthordare2018-trailer/208538">Trailers</a></li>
+                              <li class=" subnav__link-item"><a class="below-header-link subnav__link" href="#">Overview</a></li>
+                              <li class="subnav__link-item"><a class="below-header-link subnav__link" href="#" onClick={this.handleBooking.bind(this)}>Movie Times + Tickets</a></li>
+                              <li class="subnav__link-item"><a class="below-header-link subnav__link" href="#">Synopsis</a></li>
+                              <li class="subnav__link-item"><a class="below-header-link subnav__link" href="#">Movie Reviews</a></li>
+                              <li class="subnav__link-item"><a class="below-header-link subnav__link" href="#">Trailers</a></li>
                               <li class="subnav__link-item vertical-dropdown">
                                 <a class="below-header-link subnav__link" href="#">More</a>
                                 <ul class="dropdown-nav">

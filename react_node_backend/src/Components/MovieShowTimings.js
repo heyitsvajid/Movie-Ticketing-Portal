@@ -279,12 +279,12 @@ class Layout extends Component {
                           </a>
                                         </li>
                                         <li class="subnav__link-item">
-                                            <a class="subnav__link" href="/95101_movietimes?ticketedonly=true">
+                                            <a class="subnav__link" href="#">
                                                 Fandango Ticketing Theaters
                           </a>
                                         </li>
                                         <li class="subnav__link-item">
-                                            <a class="subnav__link" href="/95101_movietimes?mytheaters=true">
+                                            <a class="subnav__link" href="#">
                                                 My theaters
                           </a>
                                         </li>

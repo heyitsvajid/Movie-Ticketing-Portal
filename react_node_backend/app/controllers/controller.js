@@ -1204,14 +1204,14 @@ exports.logUserClick = function (req, res) {
     winston.info({ pageClick: req.body.pageClick });
 
     //Reading Log
-    var lineReader = require('readline').createInterface({
-        input: require('fs').createReadStream('./logging/useranalytics.log')
-    });
+    // var lineReader = require('readline').createInterface({
+    //     input: require('fs').createReadStream('./logging/useranalytics.log')
+    // });
 
-    lineReader.on('line', function (line) {
-        var jsonConvert = JSON.parse(line);
-        console.log('Line from file:', jsonConvert);
-    });
+    // lineReader.on('line', function (line) {
+    //     var jsonConvert = JSON.parse(line);
+    //     console.log('Line from file:', jsonConvert);
+    // });
 
     try {
         if (req.session.email !== null && req.session.email !== undefined && req.session.email !== 'admin@fandango.com') {
