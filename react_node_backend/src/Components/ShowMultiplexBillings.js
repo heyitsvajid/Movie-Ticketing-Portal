@@ -13,6 +13,7 @@ class ShowMultiplexBillings extends Component {
         super();
         this.state = {
             billing_details : [],
+            multiplex:{},
             searchedBillingDetails: [],
             adult_tickets : '',
             student_tickets : '',
@@ -33,18 +34,60 @@ class ShowMultiplexBillings extends Component {
     }
 
     getAllBillingDetails(){
-        let url = envURL + 'getAllBillingDetails';
-        axios.post( url, null, {withCredentials : true} )
-        .then( (response) => {
-            console.log( "In Get All Billing details, Responce from DB" , response.data);
-            this.setState({
-                billing_details : response.data.results.billing_information,
-                searchedBillingDetails: response.data.results.billing_information,
-                currentPage: 1
-            }, () => {
-                console.log(this.state.billing_details)
-            } )
-        } );
+
+        let findAllMultiplexAPI = envURL + 'findAllMultiplex';
+        axios.get(findAllMultiplexAPI)
+            .then(res => {
+                if (res.data.successMsg != '') {
+                    console.log('Fetching all multiplex');
+                    console.log(res.data.data);
+                    var allMultiplex =res.data.data ? res.data.data : [];
+                    var userId = localStorage.getItem('userid')
+                    var adminMultiplex = {}
+                    allMultiplex.forEach(element => {
+                        if(element.multiplex_owner_id ==userId ){
+                            adminMultiplex = element;
+                            this.setState({
+                                multiplex:element
+                            })
+                        }
+                    });
+                    if('_id' in adminMultiplex){
+                        let url = envURL + 'getAllBillingDetails';
+                        axios.post( url, null, {withCredentials : true} )
+                        .then( (response) => {
+                            console.log( "In Get All Billing details, Responce from DB" , response.data);
+                            var allBills = response.data.results.billing_information;
+                            let billsToShow = [];
+                            allBills.forEach(element => {
+                                if(element.multiplex_id==adminMultiplex._id){
+                                    billsToShow.push(element)
+                                }
+                            });
+                            
+                
+                            this.setState({
+                                billing_details : billsToShow,
+                                searchedBillingDetails: billsToShow,
+                                currentPage: 1
+                            }, () => {
+                                console.log(this.state.billing_details)
+                            } )
+                        } );
+    
+                    }
+            
+
+
+                } else {
+                    console.error('Error Fetching all multiplex');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+            });
+
+
     }
 
     handleDeleteBillingDetail = ( e ) => {

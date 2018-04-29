@@ -75,7 +75,8 @@ class ShowTimingsForm extends Component {
         let addShowTimingsAPI = envURL + 'addShowTimings';
         let show_timings =
             {
-                screen_number: this.state.screen_number,
+                screen_number: "2",
+                screen_id:this.state.screen_number,
                 date_time: this.state.date_time.format('LLLL'),
                 sort_field: (new Date(this.state.date_time._d)).getTime(),
                 seats_left: { type: Number },
@@ -87,15 +88,10 @@ class ShowTimingsForm extends Component {
                 show_timings.movie = element;
             }
         });
-        this.state.movieList.forEach(element => {
-            if (element._id == this.state.movie_id) {
-                show_timings.movie = element;
-                return;
-            }
-        });
         this.state.multiplex.screens.forEach(element => {
             if (element._id == this.state.screen_number) {
-                show_timings.seats_left = element.seat_count;
+                show_timings.seats_left = parseInt(element.seat_count),
+                show_timings.screen_number= element.screen_number
             }
         });
         debugger
@@ -413,7 +409,7 @@ class ShowTimingsForm extends Component {
                                                 {
                                                     this.state.multiplex.screens.map(function (screen) {
                                                         return <option key={screen.screen_number}
-                                                            value={screen.screen_number}>{'Screen :' + screen.screen_number + ' Seats: '
+                                                            value={screen._id}>{'Screen :' + screen.screen_number + ' Seats: '
                                                                 + screen.seat_count}</option>;
                                                     })
                                                 }
