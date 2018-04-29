@@ -394,6 +394,7 @@ class MovieForm extends Component {
             that.loadMovies()
         }, 2000);
     }
+
     handleMovieUpdate(e) {
         e ? e.preventDefault() : ''
         this.state.movieList.forEach(element => {
@@ -408,6 +409,7 @@ class MovieForm extends Component {
                     movie_keywords: element.movie_keywords,
                     movie_length: element.movie_length,
                     movie_definition: element.movie_definition,
+                    synopsis : element.synopsis
                 })
                 return;
             }
