@@ -261,7 +261,8 @@ LogAPI.logUserClicks(click);
         let getCardDetailsPerUser = envURL + 'getCardDetailsPerUser';
         var user_email = { user_email : localStorage.getItem("email") }
         console.log('Sending Card Fetching Request');
-        if(user_email){
+        debugger
+        if(user_email.user_email !== null){
         axios.post(getCardDetailsPerUser, user_email )
             .then(res => {
                 
@@ -728,7 +729,7 @@ LogAPI.logUserClicks(click);
                     </div>
                     <div class="side">
                       <div class="module-standard module-timer">
-                          <div id="timer"><span class="timerText">Time to complete your order: </span><span class="countdown" id="countdownTimer"></span></div>
+                          <div id="timer"><span class="timerText">Complete your order</span><span class="countdown" id="countdownTimer"></span></div>
                       </div>
                       <div class="module-standard">
                           <div id="movieTicketSummary">
