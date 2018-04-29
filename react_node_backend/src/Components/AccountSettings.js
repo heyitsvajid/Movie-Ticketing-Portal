@@ -174,6 +174,83 @@ class AccountSettings extends Component {
 
     }
 
+    handleUserCardDetails = () => {
+
+        let pattern1 = new RegExp('[0-9]{16}');
+        let test1 = pattern1.test(this.state.CardNumber);
+
+        let pattern2 = new RegExp(/(^\d{5}$)|(^\d{5}-\d{4}$)/);
+        let test2 = pattern2.test(this.state.ZipCode);
+
+        if( test1 ) {
+            console.log("Test Passed");
+            if( this.state.ExpirationMonth !== '' && this.state.ExpirationYear !== '' ) {
+                console.log("Regex For month and year passed");
+                if( test2 ) {
+                    console.log("All tests passed including Zipcode");
+
+                    let url = envURL + 'saveUserCardDetails';
+                    console.log("Save Button Clicked in Profile Save Card Info");
+
+                    let cardInformation  = {
+                        user_email :  this.state.email,
+                        cardNumber : this.state.CardNumber,
+                        expiryMonth : this.state.ExpirationMonth,
+                        expiryYear : this.state.ExpirationYear,
+                        nameOnCard : this.state.FirstName + " " + this.state.LastName,
+                        card_zipcode : this.state.ZipCode
+                    };
+
+                    let payment_details = {
+                        card_details : cardInformation,
+                    };
+                    console.log(payment_details);
+
+                    axios.post( url, payment_details, { withCredentials : true })
+                        .then((response) => {
+                            console.log("In Response Data of Save User details ", response.data )
+
+                        })
+                }
+                else {
+                    this.setState({
+                        error : 'Please enter valid Zipcode'
+                    })
+                }
+            }
+            else {
+                this.setState({
+                    error : 'Please Select Expiration Month and Year'
+                })
+            }
+        }
+        else {
+            this.setState({
+                error : 'Please enter valid 16 Digit Card Number'
+            })
+        }
+
+        // let url = envURL + 'saveUserCardDetails';
+        // console.log("Save Button Clicked in Profile Save Card Info");
+        // let cardInformation  = {
+        //     user_email :  this.state.email,
+        //     cardNumber : this.state.CardNumber,
+        //     expiryMonth : this.state.ExpirationMonth,
+        //     expiryYear : this.state.ExpirationYear,
+        //     nameOnCard : this.state.FirstName + " " + this.state.LastName,
+        //     card_zipcode : this.state.ZipCode
+        // };
+        // let payment_details = {
+        //     card_details : cardInformation,
+        // };
+        // console.log(payment_details);
+        // axios.post( url, payment_details, { withCredentials : true })
+        //     .then((response) => {
+        //         console.log("In Response Data of Save User details ", response.data )
+        //     })
+
+    };
+
 
     handleDelete(e) {
         e.preventDefault();
@@ -447,6 +524,7 @@ class AccountSettings extends Component {
                     </table>
                     <div class="payment-arrow accordion-arrow"></div>
                   </div>
+
                   <div class="panel form-box accordion-body accordion-closed" id="payment-form">
                     <div class="large-12 columns">
                         <div class="credit-card-logos">
@@ -456,6 +534,10 @@ class AccountSettings extends Component {
                           <span class="discover"></span>
                         </div>
                     </div>
+                      <div className='text-danger'>
+                          {this.state.error}
+                      </div>
+                      <br/>
                     <div class="large-12 columns">
                     </div>
                     <div class="large-12 columns">
@@ -500,7 +582,7 @@ class AccountSettings extends Component {
                         <input name="ctl00$ctl00$GlobalBody$Body$ZipCode" type="text" maxlength="10" id="ZipCode" onChange={this.handleChange} class="user-zip" />
                     </div>
                     <div class="large-6 columns right-25 payment-zip-columns">
-                        <a id="save-cc" class="btn save-button">Save</a>
+                        <a id="save-cc" class="btn save-button" onClick={this.handleUserCardDetails.bind(this)} >Save</a> //Add code here
                         <a id="delete-cc" class="btn save-button hide" data-reveal-id="delete-modal">Delete</a>
                     </div>
                     <div id="delete-modal" class="reveal-modal small review-delete-modal" data-reveal>

@@ -1088,9 +1088,9 @@ fetchBillingDetails.on('message', function (message) {
                 console.log(res );
                 if(err){
                     resultObject.successMsg= '';
-                    resultObject.errorMsg= 'Error deleting billing details';
+                    resultObject.errorMsg= 'Error entering saving user card details';
                 }else{
-                    resultObject.successMsg= 'Billing details successfully deleted.';
+                    resultObject.successMsg= 'User card details added successfully.';
                     resultObject.errorMsg= '';
                     resultObject.data=res;
                 }

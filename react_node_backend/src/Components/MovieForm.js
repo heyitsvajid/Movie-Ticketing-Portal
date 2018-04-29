@@ -47,21 +47,13 @@ class MovieForm extends Component {
         if (!file) {
             return;
         }
-        if (file.type == 'image/png') {
             reader.onloadend = () => {
                 this.setState({
                     file: file,
                 });
             }
             reader.readAsDataURL(file)
-        }
-        else {
-            swal({
-                type: 'error',
-                title: 'File Upload',
-                text: 'Only PNG images allowed',
-            })
-        }
+
     }
 
     componentWillMount() {

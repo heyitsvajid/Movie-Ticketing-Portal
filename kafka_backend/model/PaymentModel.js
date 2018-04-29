@@ -360,15 +360,16 @@ function deleteBillingDetail( msg, callback ) {
 }
 
 function saveUserCardDetails( msg, callback ) {
-    console.log("In Delete Billing  ", msg);
+    console.log("In Save User Card Details " );
+    console.log(msg.data.data);
     pool.connect((err, db) => {
         if (err) {
             console.log("Error in PaymentModel request while connecting to DB");
             errHandler(err);
         }
         else {
-            var sql = 'insert into user_cards_details(user_email, cardNumber, expiryMonth, expiryYear, nameOnCard, card_zipcode, save_card) values("' + card_details.user_email + '","' + card_details.cardNumber + '","' + Number(card_details.expiryMonth) + '","' + Number(card_details.expiryYear) + '","' + card_details.nameOnCard + '","' + Number(card_details.card_zipcode) + '","true");';
-            console.log(sql)
+            var sql = 'insert into user_cards_details(user_email, cardNumber, expiryMonth, expiryYear, nameOnCard, card_zipcode, save_card) values("' + msg.data.data.card_details.user_email + '","' + msg.data.data.card_details.cardNumber + '","' + Number(msg.data.data.card_details.expiryMonth) + '","' + Number(msg.data.data.card_details.expiryYear) + '","' + msg.data.data.card_details.nameOnCard + '","' + Number(msg.data.data.card_details.card_zipcode) + '","true");';
+            console.log(sql);
             db.query(sql, (err, result) => {
                 // db.release();
                 console.log(result.insertId)
@@ -376,7 +377,7 @@ function saveUserCardDetails( msg, callback ) {
                     console.log("Error in PaymentModel while inserting data into MySQLDB");
                     errHandler(err);
                 } else {
-                            var payment_successfull = { payment_successfull: true, id: rows.insertId }
+                            var payment_successfull = { payment_successfull: true };
                             // callback(null, result[0]);
                             callback(null, payment_successfull);
 
