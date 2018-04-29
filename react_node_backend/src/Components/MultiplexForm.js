@@ -20,7 +20,7 @@ class MultiplexForm extends Component {
             name: '',
             address: '',
             city: '',
-            state_name: '',
+            state_name: 'AL',
             zipcode: '',
             contact_number: '',
             multiplex_owner_id: '',
@@ -66,6 +66,71 @@ class MultiplexForm extends Component {
         this.handleFindAllAdmins();
     }
 
+
+    validateNameFormat(name){
+        if(name == ""){
+          document.getElementById("name_error").innerHTML = "Please enter Multiplex Name";
+          return false;
+        }
+        return true;
+    }
+
+    validateAddressFormat(address){
+        if(address == ""){
+          document.getElementById("address_error").innerHTML = "Please enter Multiplex Address";
+          return false;
+        }
+        return true;
+    }
+
+    validateFile(file){
+        if(file == ""){
+          document.getElementById("file_error").innerHTML = "Please enter File";
+          return false;
+        }
+        return true;
+    }
+    
+    validateCityFormat(city){
+        if(city == ""){
+          document.getElementById("city_error").innerHTML = "Please enter City Name";
+          return false;
+        }
+        return true;
+    }
+
+    validateZipcodeFormat(zipcode){
+        if(zipcode == ""){
+          document.getElementById("zipcode_error").innerHTML = "Please enter Valid Zipcode";
+          return false;
+        }
+        return true;
+    }
+
+    validateContactNumberFormat(contact_number){
+        if(contact_number == ""){
+            document.getElementById("contact_number_error").innerHTML = "Please enter Valid Zipcode";
+            return false;
+        }
+          return true;
+    }
+
+    validateMultiplexAdminFormat(multiplexOwner){
+        if(multiplexOwner == ""){
+            document.getElementById("multiplex_owner_id_error").innerHTML = "Please Select Multiplex Owner";
+            return false;
+        }
+          return true;
+    }
+
+    validateAmenitiesFormat(amenities){
+        if(amenities.length == 0){
+          document.getElementById("amenities_error").innerHTML = "Please enter amenities";
+          return false;
+        }
+        return true;
+    }
+
     handleSubmit(e) {
         e ? e.preventDefault() : ''
         if(localStorage.getItem('roleId')!='3'){
@@ -77,31 +142,40 @@ class MultiplexForm extends Component {
         }
         else{
             debugger
-            if (!this.state.name || !this.state.address || !this.state.state_name || !this.state.city || !this.state.zipcode
-                || !this.state.multiplex_owner_id || !this.state.amenities || !this.state.screens.length > 0 || !this.state.file) {
-                swal({
-                    type: 'error',
-                    title: 'Add Multiplex',
-                    text: 'Provide all fields.',
-                })
-                return;
-            }
-            if (!this.state.zipcode.match(/(^\d{5}$)|(^\d{5}-\d{4}$)/i)) {
-                swal({
-                    type: 'error',
-                    title: 'Add Multiplex',
-                    text: 'Invalid Zipcode',
-                })
-                return;
-            }
-            if (!(this.state.contact_number.length == 10)) {
-                swal({
-                    type: 'error',
-                    title: 'Add Multiplex',
-                    text: 'Invalid Contact Number',
-                })
-                return;
-            }
+            // if (!this.state.name || !this.state.address || !this.state.state_name || !this.state.city || !this.state.zipcode
+            //     || !this.state.multiplex_owner_id || !this.state.amenities || !this.state.screens.length > 0 || !this.state.file) {
+            //     swal({
+            //         type: 'error',
+            //         title: 'Add Multiplex',
+            //         text: 'Provide all fields.',
+            //     })
+            //     return;
+            // }
+            // if (!this.state.zipcode.match(/(^\d{5}$)|(^\d{5}-\d{4}$)/i)) {
+            //     swal({
+            //         type: 'error',
+            //         title: 'Add Multiplex',
+            //         text: 'Invalid Zipcode',
+            //     })
+            //     return;
+            // }
+            // if (!(this.state.contact_number.length == 10)) {
+            //     swal({
+            //         type: 'error',
+            //         title: 'Add Multiplex',
+            //         text: 'Invalid Contact Number',
+            //     })
+            //     return;
+            // }
+            let nameErrorPresent = !this.validateNameFormat(this.state.name) ? true : false; 
+            let addressErrorPresent = !this.validateAddressFormat(this.state.address) ? true : false;
+            let cityErrorPresent = !this.validateCityFormat(this.state.city) ? true : false;
+            let zipcodeErrorPresent = !this.validateZipcodeFormat(this.state.zipcode) ? true : false;
+            let checkFilePresent = !this.validateFile(this.state.file) ? true : false;
+            let contactNumberErrorPresent = !this.validateContactNumberFormat(this.state.contact_number) ? true : false;
+            let multiplexAdminErrorPresent = !this.validateMultiplexAdminFormat(this.state.multiplex_owner_id) ? true : false;
+            let amenitiesErrorPresent = !this.validateAmenitiesFormat(this.state.amenities) ? true : false;
+
             let createNewMultiplexAPI = envURL + 'createNewMultiplex';
             var multiplex = {
                 name: this.state.name,
@@ -212,6 +286,7 @@ class MultiplexForm extends Component {
         const name = e.target.name;
         const value = e.target.value;
         this.setState({ [name]: value })
+        document.getElementById(e.target.name + "_error").innerHTML = "";
         console.log(this.state)
     }
 
@@ -425,6 +500,7 @@ class MultiplexForm extends Component {
         }
     }
 
+
     render() {
         return (
             <div>
@@ -457,11 +533,13 @@ class MultiplexForm extends Component {
                                         <label class="dashboard-label">Name</label>
                                         <input class="form-control" type="text" name="name"
                                             placeholder="Enter Multiplex Name" required="" value={this.state.name} onChange={this.handleUserInput} />
+                                        <div id = "name_error" class= "error"></div>
                                     </div>
                                     <div className="form-group">
                                         <label class="dashboard-label">Address</label>
                                         <input class="form-control" type="text" name="address"
                                             placeholder="Address Line" required="" value={this.state.address} onChange={this.handleUserInput} />
+                                        <div id = "address_error" class= "error"></div>
                                     </div>
                                     
                                     <div class="form-row">
@@ -469,6 +547,7 @@ class MultiplexForm extends Component {
                                             <label class="dashboard-label">City</label>
                                             <input class="form-control" type="text" name="city"
                                                 placeholder="City" required="" value={this.state.city} onChange={this.handleUserInput} />
+                                            <div id = "city_error" class= "error"></div>
                                         </div>
 
                                         <div className="form-group col-md-6">
@@ -526,7 +605,6 @@ class MultiplexForm extends Component {
                                                 <option value="WI">Wisconsin</option>
                                                 <option value="WY">Wyoming</option>
                                             </select>
-
                                         </div>
                                     </div>
                                     <div class="form-row">
@@ -534,12 +612,14 @@ class MultiplexForm extends Component {
                                             <label class="dashboard-label">ZipCode</label>
                                             <input class="form-control" type="text" name="zipcode"
                                                 placeholder="Zip Code" required="" value={this.state.zipcode} onChange={this.handleUserInput} />
+                                            <div id = "zipcode_error" class= "error"></div>
                                         </div>
 
                                         <div className="form-group col-md-6">
                                             <label class="dashboard-label">Contact Number</label>
                                             <input class="form-control" type="number" name="contact_number"
                                                 placeholder="Contact" required="" value={this.state.contact_number} onChange={this.handleUserInput} />
+                                            <div id = "contact_number_error" class= "error"></div>
                                         </div>
                                     </div>
 
@@ -556,11 +636,15 @@ class MultiplexForm extends Component {
                                                 })
                                             }
                                         </select>
+                                        
                                     </div>
+                                    <div id = "multiplex_owner_id_error" class= "error"></div>
                                     <div className="form-group">
                                         <label class="dashboard-label">Amenities</label>
-                                        <Creatable amenities={this.state.amenities} multiValueChange={this.multiValueChange.bind(this)} />
+                                        <Creatable name= "amenities" amenities={this.state.amenities} multiValueChange={this.multiValueChange.bind(this)} />
+                                        
                                     </div>
+                                    <div id = "amenities_error" class= "error"></div>
                                     <label class="dashboard-label">Add Multiplex Screens</label>
                                     <div class="form-row">
                                         
@@ -569,12 +653,16 @@ class MultiplexForm extends Component {
                                         <input class="form-control" type="number" name="seat_count"
                                             placeholder="Seat Count" required="" value={this.state.seat_count} onChange={this.handleUserInput} />
                                         </div>
+                                        <div id = "seat_count_error" class= "error"></div>
 
                                         <div className="form-group col-md-4">
                                             
                                         <input class="form-control" type="number" name="row_count"
                                         placeholder="Row Count" required="" value={this.state.row_count} onChange={this.handleUserInput} />
                                         </div>
+                                        
+                                        <div id = "row_count_error" class= "error"></div>
+
                                         <div className="form-group col-md-4">
                                             <input type="button" class="btn btn-info"
                                         value="Add Screen" required="" onClick={this.handleAddScreen.bind(this)} />
@@ -599,6 +687,7 @@ class MultiplexForm extends Component {
                                     <div className="form-group">
                                         <label class="dashboard-label">Multiplex Logo</label>
                                         <input id="file-upload" type="file" onChange={ this._handleChangeFile.bind(this) } />
+                                        <div id = "file_error" class= "error"></div>
                                     </div>
 
                                     <div class="form-row">
