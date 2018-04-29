@@ -473,8 +473,7 @@ class Layout extends Component {
                           </div>
                         </div> */}
                                 <p class="fd-movie__rating-runtime">
-                                    2 hr  <br />
-                                    Drama
+                                {movie.movie_length + ' mins'}  <br />
                         </p>
                             </div>
                             <ul class="fd-movie__showtimes">
@@ -485,7 +484,7 @@ class Layout extends Component {
                           </h3>
                                     <ul class="fd-movie__amentiy-list">
                                         <li class="fd-movie__amenity-icon-wrap">
-                                            <a href="#" class=" fd-movie__amenity-icon js-amenity" data-amenity-desc="This film is presented in Telugu." data-amenity-name="Telugu">Telugu</a>
+                                            {/* <a href="#" class=" fd-movie__amenity-icon js-amenity" data-amenity-desc="This film is presented in Telugu." data-amenity-name="Telugu">Telugu</a> */}
                                         </li>
                                     </ul>
                                     <ol class="fd-movie__btn-list">
