@@ -224,23 +224,23 @@ class MultiplexForm extends Component {
                     })
                 }
             });
-            this.setState({
-                update: false,
-                file: '',
-                name: '',
-                address: '',
-                city: '',
-                state_name: '',
-                zipcode: '',
-                contact_number: '',
-                multiplex_owner_id: '',
-                amenities: '',
-                seat_count: '',
-                row_count: '',
-                screens: [],
-                multiplexList: [],
-                update_id: 0
-            });
+            // this.setState({
+            //     update: false,
+            //     file: '',
+            //     name: '',
+            //     address: '',
+            //     city: '',
+            //     state_name: '',
+            //     zipcode: '',
+            //     contact_number: '',
+            //     multiplex_owner_id: '',
+            //     amenities: '',
+            //     seat_count: '',
+            //     row_count: '',
+            //     screens: [],
+            //     multiplexList: [],
+            //     update_id: 0
+            // });
             var that = this;
             setTimeout(function () {
             }, 2000);
