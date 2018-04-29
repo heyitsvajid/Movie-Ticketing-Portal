@@ -113,6 +113,14 @@ class ListAllUsers extends Component {
         //     })
         //     return;
         // }
+
+        let firstNameErrorPresent = !this.validateFirstNameFormat(this.state.first_name) ? true : false;
+        let emailErrorPresent = !this.validateEmailFormat(this.state.email) ? true : false;
+        let zipcodeErrorPresent = !this.validateZipcodeFormat(this.state.zipcode) ? true : false;
+        let phoneNumberErrorPresent = !this.validatePhoneNumberFormat(this.state.phone_number) ? true : false;
+
+        if(firstNameErrorPresent || emailErrorPresent || zipcodeErrorPresent || phoneNumberErrorPresent){ return; }
+
         let all_details = {
             id : this.state.update_id,
             first_name : this.state.first_name,
@@ -158,92 +166,54 @@ class ListAllUsers extends Component {
                     )
             }
         })
-
-        // let updateMultiplexAPI = envURL + 'updateMultiplex';
-
-        // this.state.screens.forEach(element => {
-        //     delete element._id
-        // });
-
-        // var multiplex = {
-        //     _id: this.state.update_id,
-        //     name: this.state.name,
-        //     address: this.state.address,
-        //     city: this.state.city,
-        //     state: this.state.state_name,
-        //     zipcode: this.state.zipcode,
-        //     contact_number: this.state.contact_number,
-        //     multiplex_owner_id: this.state.multiplex_owner_id,
-        //     amenities: this.state.amenities,
-        //     screen: JSON.stringify(this.state.screens),
-        // }
-
-        // const formData = new FormData();
-        // formData.append('file', this.state.file);
-        // for (var key in multiplex) {
-        //     formData.append(key, multiplex[key]);
-        // }
-        // const config = {
-        //     headers: {
-        //         'content-type': 'multipart/form-data'
-        //     }
-        // }
-        // post(updateMultiplexAPI, formData, config).then(function (res) {
-        //     if (res.data.errorMsg != '') {
-        //         swal({
-        //             type: 'error',
-        //             title: 'Update Multiplex',
-        //             text: res.data.errorMsg,
-        //         })
-        //     } else if (res.data.successMsg != '') {
-        //         swal({
-        //             type: 'success',
-        //             title: 'update Multiplex',
-        //             text: res.data.successMsg,
-        //         })
-        //     }
-        // }.bind(this));
-        // this.setState({
-        //     update: false,
-        //     file: '',
-        //     first_name: '',
-        //     last_name: '',
-        //     city: '',
-        //     state_name: '',
-        //     zipcode: '',
-        //     contact_number: '',
-        //     address: '',
-        //     email: ''
-        // })
-        // var that = this;
-        // setTimeout(function () {
-        // }, 2000);
     }
 
-    // handleUserDetail = (e) => {
-    //     console.log("In handleUserDetail, id :", e )
-    //     let display = this.state.users;
-    //     for( let i = 0; i < display.length; i++) {
-    //         if( display[i].id === e ) {
-    //             console.log("Found Match", display[i] );
-    //             this.setState({
-    //                 UserID : display[i].id,
-    //                 First_Name : display[i].first_name,
-    //                 Last_Name : display[i].last_name,
-    //                 Email : display[i].email,
-    //                 Phone_Number : display[i].phone_number,
-    //                 Address : display[i].address,
-    //                 City : display[i].city,
-    //                 State : display[i].state,
-    //                 Zipcode : display[i].zipcode,
-    //                 Role_Number : display[i].role_number
-    //             })
-    //         }
-    //     }
-    // };
+    validateEmailFormat(email){
+        const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if(email == ""){
+          document.getElementById("email_error").innerHTML = "Please enter your email";
+          return false;
+        }
+        else if(!regex.test(String(email).toLowerCase())){
+          document.getElementById("email_error").innerHTML = "Please enter valid email address";
+          return false;
+        }
+        return true;
+    }
 
+    validatePhoneNumberFormat(contact_no){
+        const regex = /^\(?([0-9]{3})\)?[-.●]?([0-9]{3})[-.●]?([0-9]{4})$/;
+        debugger
+        if(contact_no==""){
+            return true;
+        }
+        else if(!regex.test(String(contact_no).toLowerCase())){
+          document.getElementById("phone_number_error").innerHTML = "Please enter valid Contact Number";
+          return false;
+        }
+        return true;
+      }
+
+    validateZipcodeFormat(zipcode){
+        const regex = /(^\d{5}$)|(^\d{5}-\d{4}$)/;
+        if(zipcode==""){
+            return true;
+        }
+        else if(!regex.test(String(zipcode).toLowerCase())){
+          document.getElementById("zipcode_error").innerHTML = "Please enter valid Zipcode";
+          return false;
+        }
+        return true;
+    }    
+  
+    validateFirstNameFormat(first_name){
+        if(first_name.trim() == ""){
+          document.getElementById("first_name_error").innerHTML = "Please enter first name";
+          return false;
+        }
+        return true;
+    }
     
-
     handleDeleteUser = (e) => {
         swal({
             title: "Are you sure?",
@@ -628,20 +598,15 @@ class ListAllUsers extends Component {
                                         <div class="form-row">
                                             <div className="form-group col-md-6">
                                                 <label class="dashboard-label">ZipCode</label>
-                                                <input type="text" placeholder="Enter ZipCode" className="form-control" onChange={this.handleChange} id="zipcode" name='zipcode' title='Please enter 5 Digit Zipcode' />
+                                                <input value = {this.state.zipcode} type="text" placeholder="Enter ZipCode" className="form-control" onChange={this.handleChange} id="zipcode" name='zipcode' title='Please enter 5 Digit Zipcode' />
                                                 <div id = "zipcode_error" class= "error"></div>
                                             </div>
                                             <div className="form-group col-md-6">
                                                 <label class="dashboard-label">Phone Number</label>
-                                                <input type="text" placeholder="Enter Phone Number" className="form-control" onChange={this.handleChange} id="phone_number" name='phone_number' title='Please enter 10 Digit Phone Number' />
+                                                <input value = {this.state.phone_number} type="text" placeholder="Enter Phone Number" className="form-control" onChange={this.handleChange} id="phone_number" name='phone_number' title='Please enter 10 Digit Phone Number' />
                                                 <div id = "phone_number_error" class= "error"></div>
                                             </div>
                                         </div>
-
-                                        
-                                    
-
-                                        
 
                                         {/* <div className="form-group">
                                             <label class="dashboard-label">Multiplex Logo</label>

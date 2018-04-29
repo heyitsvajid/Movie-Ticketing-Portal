@@ -369,7 +369,7 @@ function saveUserCardDetails( msg, callback ) {
             errHandler(err);
         }
         else {
-            var sql = 'insert into user_cards_details(user_email, cardNumber, expiryMonth, expiryYear, nameOnCard, card_zipcode, save_card) values("' + msg.data.data.card_details.user_email + '","' + msg.data.data.card_details.cardNumber + '","' + Number(msg.data.data.card_details.expiryMonth) + '","' + Number(msg.data.data.card_details.expiryYear) + '","' + msg.data.data.card_details.nameOnCard + '","' + Number(msg.data.data.card_details.card_zipcode) + '","true");';
+            var sql = 'insert into user_cards_details(user_email, cardNumber, expiryMonth, expiryYear, nameOnCard, card_zipcode, save_card) values("' + msg.data.data.card_details.user_email + '","' + msg.data.data.card_details.cardNumber + '","' + Number(msg.data.data.card_details.expiryMonth) + '","' + Number(msg.data.data.card_details.expiryYear) + '","' + msg.data.data.card_details.nameOnCard + '","' + Number(msg.data.data.card_details.card_zipcode) + '",true);';
             console.log(sql);
             db.query(sql, (err, result) => {
                 // db.release();
