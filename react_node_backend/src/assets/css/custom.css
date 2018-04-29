@@ -1107,3 +1107,7 @@ button#footer-fanmail-submit {
 #movie-show-box{
   margin: auto;
 }
+
+#select-box{
+  font-size: 16px !important
+}
