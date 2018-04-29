@@ -4,7 +4,7 @@ import axios from 'axios';
 import { envURL, reactURL } from '../config/environment';
 import '../assets/css/style.css'
 import '../assets/css/admin.css'
-import swal from "sweetalert2";
+import swal from "sweetalert";
 import Pagination from './Pagination';
 
 class AllBillingDetails extends Component {
@@ -48,19 +48,37 @@ class AllBillingDetails extends Component {
 
     handleDeleteBillingDetail = ( e ) => {
         console.log("Delete Clicked", e );
-        let id = { id : e };
-        let url = envURL + 'deletebillingdetail';
-        
-        axios.post( url, id, { withCredentials : true } )
-            .then( (response) => {
-                console.log("After Deleting Bill, Response ", response.data);
-                swal({
-                    type: 'success',
-                    title: 'Bill Detail Deleted Successfully',
-                    text: "",
-                });
-                this.getAllBillingDetails();
-            })
+
+
+        swal({
+            title: "Are you sure?",
+            text: "",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    let id = { id : e };
+                    let url = envURL + 'deletebillingdetail';
+                    axios.post( url, id, { withCredentials : true } )
+                        .then( (response) => {
+                            console.log("After Deleting Bill, Response ", response.data);
+                            swal({
+                                type: 'success',
+                                title: "Bill Detail Deleted Successfully",
+                                text: "",
+                                icon: "success",
+                                buttons: true,
+                            });
+                            this.getAllBillingDetails();
+                        }
+                    )
+                }
+            }
+        );
+
+
     };
 
     handleDisplayOrder = (e) => {
