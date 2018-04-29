@@ -182,7 +182,7 @@ function getCardDetailsPerUser(msg, callback) {
             errHandler(err);
         } else {
             console.log("Connected to MYSQL in request of PaymentModel");
-            var sql = 'select * from user_cards_details where user_email = "' + msg.data.user_email + '" order by date(booking_date) DESC, time(booking_date) DESC LIMIT 1';
+            var sql = 'select * from user_cards_details where user_email = "' + msg.data.user_email + '" AND save_card=1 order by date(booking_date) DESC, time(booking_date) DESC LIMIT 1';
             // var sql = 'select * from user_cards_details where user_email = "jay1@gmail.com" order by date(booking_date) DESC, time(booking_date) DESC LIMIT 1';
             console.log(sql)
             db.query(sql, (err, result) => {
