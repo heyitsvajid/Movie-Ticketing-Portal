@@ -386,6 +386,11 @@ function update_basic_information_profile_request(msg, callback) {
     var id = msg.id;
     var first_name = msg.first_name;
     var last_name = msg.last_name;
+    var state_name = msg.state_name;
+    var city = msg.city;
+    var zipcode = msg.zipcode;
+    var address = msg.address;
+    var phone = msg.phone;
 
     pool.connect((err, db) => {
         if(err) {
@@ -393,9 +398,8 @@ function update_basic_information_profile_request(msg, callback) {
             errHandler(err);
         } else {
             console.log("Connected to MYSQL in update_basic_information_profile_request in usermodal");
-            var sql = "update user set first_name = " + mysql.escape(first_name) + ", last_name = " +
-                mysql.escape(last_name) + " where id = " + mysql.escape(id);
-            db.query(sql, (err, result) => {
+            var sql = "update user set first_name = ?, last_name = ?, address = ?, city = ?, state = ?, zipcode = ?, phone_number = ?";
+            db.query(sql, [first_name, last_name, address, city, state_name, zipcode, phone], (err, result) => {
                 if(err) {
                     console.log("Error in UserModal update_basic_information_profile_request while update query to DB");
                     errHandler(err);
