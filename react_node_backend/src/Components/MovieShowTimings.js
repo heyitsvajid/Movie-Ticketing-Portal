@@ -369,7 +369,7 @@ class Layout extends Component {
                                 </div>
                                 <div class="js-spotlight-ad"></div>
                                 <label class="nearby-theaters__label">Filter Ratings</label>
-                                <select name="mpaa_rating"  value={this.state.mpaa_rating} onChange={this.handleChange.bind(this)} class="mb-5 nearby-theaters__select js-nearby-theaters">
+                                <select id="select-box" name="mpaa_rating"  value={this.state.mpaa_rating} onChange={this.handleChange.bind(this)} class="mb-5 nearby-theaters__select js-nearby-theaters">
                                     <option value="#" disabled selected>MPAA Ratings</option>
                                     <option value="G">General Audience</option>
                                                 <option value="PG">PG – Parental Guidance Suggested</option>
