@@ -11,6 +11,8 @@ import { envURL, reactURL } from "../config/environment";
 import AllBillingDetails from './AllBillingDetails';
 import ListAllUsers from './ListAllUsers'
 import AdminGraphs from './AdminGraphs';
+import MultiplexAdminGraph from './MultiplexAdminGraph'
+import ShowMultiplexBillings from './ShowMultiplexBillings'
 
 class AdminDashboard extends Component {
     constructor(props) {
@@ -20,10 +22,12 @@ class AdminDashboard extends Component {
             addMovie: false,
             addMultiplex: false,
             addMultiplexAdmin: false,
-            addDashboard: true,
+            addDashboard: false,
             addUserTracking: false,
             showTimings: false,
             showBillingDetails: false,
+            showMultiplexGraphDashboard: false,
+            showMultiplexBillings: false,
             listUsers: false,
             isLoggedIn: false,
             adminEmail: '',
@@ -53,11 +57,14 @@ class AdminDashboard extends Component {
                             console.log("Admin ID:", this.state.adminId);
                             if(this.state.roleId==3){
                                 localStorage.setItem('admin_name','Fandango Admin')
+                                this.setState({addDashboard: true})
                             }
                             else{
+                                if(this.state.roleId == 2){
+                                    this.setState({showMultiplexBillings: true})
+                                }
                                 localStorage.setItem('admin_name','Admin')
                             }
-                            //From Vajid : Never remove this setState from here
                             this.setState({
                                 admin_name:localStorage.getItem('admin_name')
                             })
@@ -78,6 +85,7 @@ class AdminDashboard extends Component {
 
     handleLinkClick = (e) => {
         e.preventDefault();
+        debugger
         this.setState({
             addDashboard: e.currentTarget.value == 1,
             addUserTracking: e.currentTarget.value == 2,
@@ -86,8 +94,9 @@ class AdminDashboard extends Component {
             addMultiplexAdmin: e.currentTarget.value == 5,
             showTimings: e.currentTarget.value == 6,
             showBillingDetails: e.currentTarget.value == 7,
-            listUsers: e.currentTarget.value == 8
-
+            listUsers: e.currentTarget.value == 8,
+            showMultiplexGraphDashboard: e.currentTarget.value == 9,
+            showMultiplexBillings: e.currentTarget.value == 0
         })
         console.log(this.state);
     }
@@ -120,79 +129,12 @@ class AdminDashboard extends Component {
         let addMultiplex = 4;
         let addMultiplexAdmin = 5;
         let showTimings = 6;
-        let showBillingDetails = 7
-        let listUsers = 8
+        let showBillingDetails = 7;
+        let listUsers = 8;
+        let showMultiplexGraphDashboard = 9;
+        let showMultiplexBillings = 0;
+        debugger
         return (
-            // <body class="sticky-footer bg-dark fixed-nav" id="page-top">
-            //     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
-            //         <a class="navbar-brand" href="index.html">
-                        
-            //             {localStorage.getItem('admin_name')}
-            //         </a>
-            //         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-            //             <span class="navbar-toggler-icon"></span>
-            //         </button>
-            //         <div class="collapse navbar-collapse" id="navbarResponsive">
-            //             <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
-            //                 <li class="nav-item" value={addDashboard} onClick={this.handleLinkClick.bind(this)} data-toggle="tooltip" data-placement="right" title="" data-original-title="Dashboard">
-            //                     <a class="nav-link" href="index.html">
-            //                         <i class="fa fa-fw fa-dashboard"></i>
-            //                         <span class="nav-link-text">Analytics Dashboard</span>
-            //                     </a>
-            //                 </li>
-            //                 {localStorage.getItem('roleId')==3?
-            //                 <li class="nav-item" data-toggle="tooltip" data-placement="right" title="" data-original-title="Charts">
-            //                     <a class="nav-link" href="charts.html">
-            //                         <i class="fa fa-fw fa-area-chart"></i>
-            //                         <span class="nav-link-text">User Tracking Dashboard</span>
-            //                     </a>
-            //                 </li>:''}
-            //                 {localStorage.getItem('roleId')==3?
-            //                 <li class="nav-item" value={addMultiplexAdmin} onClick={this.handleLinkClick.bind(this)} data-toggle="tooltip" data-placement="right" title="" data-original-title="Link">
-            //                     <a class="nav-link" href="#" >
-            //                         <i class="fa fa-fw fa-link"></i>
-            //                         <span class="nav-link-text">Multiplex Admin Dashboard</span>
-            //                     </a>
-            //                 </li>:''}                          
-            //                 {localStorage.getItem('roleId')==3?
-            //                 <li class="nav-item" value={addMultiplex} onClick={this.handleLinkClick.bind(this)} data-toggle="tooltip" data-placement="right" title="" data-original-title="Link">
-            //                     <a class="nav-link" href="#" >
-            //                         <i class="fa fa-fw fa-link"></i>
-            //                         <span class="nav-link-text">Multiplex Dashboard</span>
-            //                     </a>
-            //                 </li>:''}
-            //                 <li class="nav-item" value={addMovie} onClick={this.handleLinkClick.bind(this)} data-toggle="tooltip" data-placement="right" title="" data-original-title="Link">
-            //                     <a class="nav-link" href="#">
-            //                         <i class="fa fa-fw fa-link"></i>
-            //                         <span class="nav-link-text">Movie Dashboard</span>
-            //                     </a>
-            //                 </li>
-
-            //                 {localStorage.getItem('roleId') == '2' ?
-            //                     <li class="nav-item" value={showTimings} onClick={this.handleLinkClick.bind(this)} data-toggle="tooltip" data-placement="right" title="" data-original-title="Link">
-            //                         <a class="nav-link" href="#">
-            //                             <i class="fa fa-fw fa-link"></i>
-            //                             <span class="nav-link-text">Show Timing Dashboard</span>
-            //                         </a>
-            //                     </li>
-            //                     : ''}
-
-            //             </ul>
-
-            //             <ul class="navbar-nav ml-auto">
-
-            //                 <li class="nav-item">
-            //                     <a href="/" onClick={ this.handleLogout } className="hide-logged-in">Sign Out</a>
-            //                 </li>
-            //             </ul>
-            //         </div>
-            //     </nav>
-            //     {this.state.addMovie ? this.returnMovie() : ''}
-            //     {this.state.addMultiplexAdmin ? this.returnMultiplexAdmin() : ''}
-            //     {this.state.addMultiplex ? this.returnMultiplex() : ''}
-            //     {this.state.addDashboard ? this.returnDashboard() : ''}
-            //     {this.state.addUserTracking ? this.returnMultiplex() : ''}
-            //     {this.state.showTimings ? this.returnShowTimings() : ''}
             // </body>
             <body class="app" id="admin-pages">
                 <div id="loader" class="fadeOut">
@@ -227,6 +169,16 @@ class AdminDashboard extends Component {
                             {localStorage.getItem('roleId')==3 ?
                             <li class="nav-item" value={addDashboard} onClick={this.handleLinkClick.bind(this)} data-toggle="tooltip" data-placement="right" title="" data-original-title="Link">
                                 <a class="sidebar-link" href="#" value={addMultiplexAdmin} onClick={this.handleLinkClick.bind(this)}>
+                                    <span class="icon-holder">
+                                        <i class="c-indigo-500 ti-bar-chart"></i> 
+                                        </span><span class="title">Dashboard
+                                    </span>
+                                </a>
+                            </li> : ''}
+
+                            {localStorage.getItem('roleId')==2 ?
+                            <li class="nav-item" value={showMultiplexGraphDashboard} onClick={this.handleLinkClick.bind(this)} data-toggle="tooltip" data-placement="right" title="" data-original-title="Link">
+                                <a class="sidebar-link" href="#" value={showMultiplexGraphDashboard} onClick={this.handleLinkClick.bind(this)}>
                                     <span class="icon-holder">
                                         <i class="c-indigo-500 ti-bar-chart"></i> 
                                         </span><span class="title">Dashboard
@@ -277,6 +229,15 @@ class AdminDashboard extends Component {
                                     <span class="icon-holder">
                                         <i class="c-orange-500 ti-layout-list-thumb"></i> 
                                         </span><span class="title">Show Billing Details</span>
+                                </a>
+                            </li> : ''}
+
+                            {localStorage.getItem('roleId')==2 ?
+                            <li class="nav-item" value={showMultiplexBillings} onClick={this.handleLinkClick.bind(this)} data-toggle="tooltip" data-placement="right" title="" data-original-title="Link">
+                                <a class="sidebar-link" href="#" value={showMultiplexBillings} onClick={this.handleLinkClick.bind(this)}>
+                                    <span class="icon-holder">
+                                        <i class="c-orange-500 ti-layout-list-thumb"></i> 
+                                        </span><span class="title">Show Multiplex Billing Details</span>
                                 </a>
                             </li> : ''}
 
@@ -375,6 +336,8 @@ class AdminDashboard extends Component {
                             {this.state.showTimings ? this.returnShowTimings() : ''}
                             {this.state.showBillingDetails ? this.returnBillingDetails() : ''}
                             {this.state.listUsers ? this.returnUserList() : ''}
+                            {this.state.showMultiplexGraphDashboard ? this.returnMultiplexGraph() : ''}
+                            {this.state.showMultiplexBillings ? this.returnMultiplexBillings(): ''}
                             </div>
                         </main>
                         <footer class="bdT ta-c p-30 lh-0 fsz-sm c-grey-600">
@@ -403,6 +366,40 @@ class AdminDashboard extends Component {
         </div>
         )
     }
+
+    returnMultiplexGraph() {
+        return (
+            <div class="container-fluid">
+            <h3 class="data-header">Dashboard</h3>
+            <br/>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="admin-list bgc-white bd bdrs-3 p-20 mB-20">
+                    <MultiplexAdminGraph />
+                    </div>
+                </div>
+            </div>            
+        </div>
+        )
+    }
+
+    returnMultiplexBillings() {
+        return (
+            <div class="container-fluid">
+            <h3 class="data-header">Dashboard</h3>
+            <br/>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="admin-list bgc-white bd bdrs-3 p-20 mB-20">
+                    <ShowMultiplexBillings />
+                    </div>
+                </div>
+            </div>            
+        </div>
+        )
+    }
+
+
     returnMovie() {
         return (
             <div class="container-fluid">
