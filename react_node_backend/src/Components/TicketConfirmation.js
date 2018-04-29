@@ -33,6 +33,7 @@ class TicketConfirmation extends Component {
   componentWillMount(){
     var multiplexId = localStorage.getItem('bookMultiplexId')
     var showId = localStorage.getItem('bookShowId');
+    var screenId = localStorage.getItem('bookScreenId');
     localStorage.removeItem('bookShowId');
     localStorage.removeItem('bookMultiplexId');
     if (multiplexId && showId) {

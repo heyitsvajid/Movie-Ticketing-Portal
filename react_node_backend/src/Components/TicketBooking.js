@@ -68,6 +68,11 @@ class TicketBooking extends Component {
               multiplex: res.data.data ? res.data.data : {}
             })
             var multiplex = res.data.data;
+            this.setState({
+
+              addressLine1:multiplex.address,
+              addressLine2:multiplex.city+' '+multiplex.state +' '+ multiplex.zipcode
+            })
             multiplex.show_timings.forEach(element => {
                 if(showId == element._id){
                   this.setState({
@@ -79,11 +84,12 @@ class TicketBooking extends Component {
                     bookMultiplexId:multiplexId,
                   },()=>{
                     console.log(this.state)
-                    this.setAddressAndScreen(this.state.show.screen_number)
+                    // this.setAddressAndScreen(this.state.show.screen_number)
                     return;
                   })
                 }
             });
+            debugger
           } else {
             console.error('Error Fetching all multiplex');
           }
@@ -102,6 +108,7 @@ class TicketBooking extends Component {
     var currentTickets = e.target.value == "" ? 0 : parseInt(e.target.value);
     var calculatedPrice = "$" + (currentTickets * (typeof this.state.price.adult !== "undefined" ? this.state.price.adult : 0)).toFixed(2);
     this.setState({ a_tickets: currentTickets, adult_total_amount: calculatedPrice })
+    debugger
   }
 
   handleStudentTicketChange(e) {
@@ -348,7 +355,7 @@ class TicketBooking extends Component {
                         {this.state.addressLine1}
                         <br />{this.state.addressLine2}</a> </li>
                         <li class="auditorium">
-                          <h2 id="auditoriumInfo" class="emptyCheck">{this.state.screen}</h2>
+                          <h2 id="auditoriumInfo" class="emptyCheck">Auditorium: {this.state.bookScreenId}</h2>
                         </li>
                         <li class="theaterNotes">
                           <h2 class="emptyCheck" id="notesHeader"></h2>
@@ -372,18 +379,18 @@ class TicketBooking extends Component {
 
     );
   }
-  setAddressAndScreen(id){
-    debugger;
+  // setAddressAndScreen(id){
+  //   debugger;
 
-    this.state.multiplex.screens.forEach(element => {
-        if(element._id==id){
-          this.setState({
-            screen:'Auditorium ' + element.screen_number,
-            addressLine1:this.state.multiplex.address,
-            addressLine2:this.state.multiplex.city+','+this.state.multiplex.state +','+this.state.multiplex.zipcode
-          }) 
-        }
-    });
-  }
+  //   this.state.multiplex.screens.forEach(element => {
+  //       if(element._id==id){
+  //         this.setState({
+  //           screen:'Auditorium ' + element.screen_number,
+  //           addressLine1:this.state.multiplex.address,
+  //           addressLine2:this.state.multiplex.city+','+this.state.multiplex.state +','+this.state.multiplex.zipcode
+  //         }) 
+  //       }
+  //   });
+  // }
 }
 export default withRouter(TicketBooking);
