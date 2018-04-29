@@ -319,6 +319,7 @@ class CheckoutTest extends Component {
         var dinersclub = /^3(?:0[0-5]|[68][0-9])[0-9]{11}$/;
         var discover =  /^6(?:011|5[0-9]{2})[0-9]{12}$/;
         var jcb = /^(?:2131|1800|35\d{3})\d{11}$/;
+        const regex = /(^\d{5}$)|(^\d{5}-\d{4}$)/;
         var card_number = e.target.value;
         if (!(visa.test(this.state.cardNumber) || mastercard.test(this.state.cardNumber) || amex.test(this.state.cardNumber) || dinersclub.test(this.state.cardNumber) || discover.test(this.state.cardNumber) || jcb.test(this.state.cardNumber))){
             document.getElementById('cardNumber').innerHTML = "Enter Valid Card Number"
@@ -334,7 +335,7 @@ class CheckoutTest extends Component {
         else if( this.state.lastName === null ){
             document.getElementById('lastName').innerHTML = "Enter Last Name"
         }
-        else if( this.state.cardZipCode === null || this.state.cardZipCode.length !== 5){
+        else if( this.state.cardZipCode === null || !regex.test(String(this.state.cardZipCode).toLowerCase()) ){
             document.getElementById('zipcode').innerHTML = "Enter Valid ZipCode"
         }
         else{

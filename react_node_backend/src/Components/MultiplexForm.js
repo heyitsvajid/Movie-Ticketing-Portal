@@ -100,9 +100,14 @@ class MultiplexForm extends Component {
     }
 
     validateZipcodeFormat(zipcode){
+        const regex = /(^\d{5}$)|(^\d{5}-\d{4}$)/;
         if(zipcode == ""){
           document.getElementById("zipcode_error").innerHTML = "Please enter Valid Zipcode";
           return false;
+        }
+        else if(!regex.test(String(zipcode).toLowerCase())){
+            document.getElementById("zipcode_error").innerHTML = "Please enter Valid Zipcode";
+            return false;
         }
         return true;
     }
@@ -606,6 +611,7 @@ class MultiplexForm extends Component {
                                                 <option value="WY">Wyoming</option>
                                             </select>
                                         </div>
+                                        <div id = "state_name_error" class= "error"></div>
                                     </div>
                                     <div class="form-row">
                                         <div className="form-group col-md-6">
