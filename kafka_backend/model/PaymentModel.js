@@ -104,9 +104,6 @@ function complete_Payment(msg, callback) {
                             }
                         })
                     }
-                    console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$')
-
-
                 }
             })
         }
@@ -133,6 +130,7 @@ function fetchBillingDetails(msg, callback) {
                     console.log("Transaction not found");
                     callback(null, null);
                 } else {
+                    db.release();
                     var billing_information = { billing_information: result }
                     callback(null, billing_information);
 
@@ -160,10 +158,12 @@ function fetchBillingDetailsPerUser(msg, callback) {
                     console.log("Transaction not found");
                     callback(null, null);
                 } else if(result.length > 0) {
+                    db.release();
                     console.log("Transactions found : ", result.length);
                     var billing_information = {billing_information : result}
                     callback(null, billing_information);  
                 } else{
+                    db.release();
                     console.log("0 Transactions available for this user: ", result.length);
                     var billing_information = {billing_information : 0}
                     callback(null, billing_information);  
@@ -192,6 +192,7 @@ function getCardDetailsPerUser(msg, callback) {
                     console.log("Transaction not found");
                     callback(null, null);
                 } else {
+                    db.release();
                     var billing_information = { billing_information: result }
                     callback(null, billing_information);
                 }
@@ -218,6 +219,7 @@ function getMultiplexSoldTicketsPerMonth(msg, callback) {
                     console.log("Transaction not found");
                     callback(null, null);
                 } else {
+                    db.release();
                     var billing_information = { billing_information: result }
                     callback(null, billing_information);
                 }
@@ -244,6 +246,7 @@ function getCityRevenuePerYear(msg, callback) {
                     console.log("Transaction not found");
                     callback(null, null);
                 } else {
+                    db.release();
                     var billing_information = { billing_information: result }
                     callback(null, billing_information);
                 }
@@ -270,6 +273,7 @@ function getMovieRevenuePerYear(msg, callback) {
                     console.log("Transaction not found");
                     callback(null, null);
                 } else {
+                    db.release();
                     var billing_information = { billing_information: result }
                     callback(null, billing_information);
                 }
@@ -296,6 +300,7 @@ function getTicketConfirmation(msg, callback) {
                     console.log("Transaction not found");
                     callback(null, null);
                 } else {
+                    db.release();
                     console.log(result)
                     var billing_information = { billing_information: result }
                     callback(null, billing_information);
@@ -323,6 +328,7 @@ function getCardDetails( msg, callback ) {
                     console.log("Transaction not found");
                     callback(null, null);
                 } else {
+                    db.release();
                     console.log(result)
                     var billing_information = {billing_information : result}
                     callback(null, billing_information);
@@ -352,6 +358,7 @@ function deleteBillingDetail( msg, callback ) {
                     callback(null, null);
                 }
                 else {
+                    db.release();
                     console.log(result);
                     callback(null, result);
                 }
@@ -378,6 +385,7 @@ function saveUserCardDetails( msg, callback ) {
                     console.log("Error in PaymentModel while inserting data into MySQLDB");
                     errHandler(err);
                 } else {
+                    db.release();
                             var payment_successfull = { payment_successfull: true };
                             // callback(null, result[0]);
                             callback(null, payment_successfull);

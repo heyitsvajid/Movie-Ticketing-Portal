@@ -25,6 +25,7 @@ class ShowTimingsForm extends Component {
             movieOptions: [],
             update: false,
             screen_number: '',
+            screen_id:'',
             date_time: '',
             movie_id: '',
             adult: 0,
@@ -211,6 +212,7 @@ class ShowTimingsForm extends Component {
                     <th scope="row">{item.current_index}</th>
                     <td>{item.movie.title}</td>
                     <td>{item.date_time}</td>
+                    <td>{item.screen_number}</td>   
                     <td>{item.seats_left}</td>
                     <td><input type="button" class="dashboard-form-btn link-style nav-link btn-info action-link"
                         value="Update" required="" id={item._id} onClick={this.handleShowTimingsUpdate.bind(this)} />
@@ -227,7 +229,8 @@ class ShowTimingsForm extends Component {
                             <th scope="col">#</th>
                             <th scope="col">Movie</th>
                             <th scope="col">Show Time</th>
-                            <th scope="col">Seats Left</th>
+                            <th scope="col">Auditorium</th>
+                            <th scope="col">Total Seats</th>
                             <th scope="col">Actions</th>
                         </tr>
                     </thead>
@@ -258,7 +261,8 @@ class ShowTimingsForm extends Component {
         let show_timings =
             {
                 _id: this.state.update_id,
-                screen_number: this.state.screen_number,
+                screen_number: "2",
+                screen_id: this.state.screen_number,
                 date_time: this.state.date_time.format('LLLL'),
                 sort_field: (new Date(this.state.date_time._d)).getTime(),
                 seats_left: { type: Number },
@@ -271,11 +275,14 @@ class ShowTimingsForm extends Component {
                 return;
             }
         });
+        debugger;
         this.state.multiplex.screens.forEach(element => {
             if (element._id == this.state.screen_number) {
                 show_timings.seats_left = element.seat_count;
+                show_timings.screen_number= element.screen_number
             }
         });
+        debugger;
         var apiPayload = { show: show_timings, _id: this.state.multiplex._id };
         axios.post(updateShowTimingsAPI, apiPayload)
             .then(res => {
@@ -307,10 +314,10 @@ class ShowTimingsForm extends Component {
         //     disabled: 0,
         //     student:0,
         // });
-        var that = this;
-        setTimeout(function () {
-            that.loadShowTimings()
-        }, 2000);
+        // var that = this;
+        // setTimeout(function () {
+        //     that.loadShowTimings()
+        // }, 2000);
 
     }
     handleShowTimingsUpdate(e) {
@@ -320,7 +327,7 @@ class ShowTimingsForm extends Component {
                 this.setState({
                     update_id: e.target.id,
                     update: true,
-                    screen_number: element.screen_number,
+                    screen_number: element.screen_id,
                     date_time: moment(element.date_time),
                     movie_id: element.movie._id,
                     adult: element.price.adult,
@@ -409,7 +416,7 @@ class ShowTimingsForm extends Component {
                                                 {
                                                     this.state.multiplex.screens.map(function (screen) {
                                                         return <option key={screen.screen_number}
-                                                            value={screen._id}>{'Screen :' + screen.screen_number + ' Seats: '
+                                                            value={screen._id}>{'Screen :' + screen.screen_number + ' Seats : '
                                                                 + screen.seat_count}</option>;
                                                     })
                                                 }
