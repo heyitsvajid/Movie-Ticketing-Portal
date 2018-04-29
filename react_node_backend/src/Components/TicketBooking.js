@@ -320,7 +320,7 @@ class TicketBooking extends Component {
                     <div class="message note remove"></div>
                     <div class="moviePoster">
                       <img id="moviePosterImage" alt="" 
-                      src="https://images.fandango.com/r1.0.589/redesign/static/img/default_poster_128x190.png" />
+                      src= { require('../images/' + (typeof this.state.movie.movie_logo !== "undefined" ? this.state.movie.movie_logo : "fandango_poster.png"))} />
                     </div>
                     <div class="movieInfo">
                       <ul class="movie-specs">
