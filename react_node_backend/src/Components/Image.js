@@ -92,6 +92,7 @@ class ImageUpload extends Component {
           imagePreviewUrl: reader.result
         });
       };
+      debugger;
       reader.readAsDataURL(file)
 
 
