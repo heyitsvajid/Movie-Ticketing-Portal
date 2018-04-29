@@ -1084,6 +1084,26 @@ exports.getCardDetails = function (req, res) {
     });
 }
 
+exports.saveUserCardDetails = function (req, res) {
+    console.log("Fetching Ticket Confirmation : node backend");
+    console.log(req.body)
+    let data = req.body;
+    var request_id = { request_id: 10, data };
+    kafka.make_request('fetchBillingDetails', request_id, function (err, results) {
+        console.log('Kafka Response:');
+        console.log(results);
+        if (err) {
+            console.log('Controller : Error Occurred : ');
+            console.log(err);
+            res.json(results);
+        }
+        else {
+            res.json({ results: results });
+            return;
+        }
+    });
+}
+
 
 //User Analytics:
 exports.logUserClick = function (req, res) {

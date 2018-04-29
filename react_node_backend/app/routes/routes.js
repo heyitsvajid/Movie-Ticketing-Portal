@@ -107,6 +107,8 @@ module.exports = function (app) {
 
   app.post('/getCardDetails', api_controller.getCardDetails);
 
+  app.post('/saveUserCardDetails', api_controller.saveUserCardDetails);
+
   // app.post('/getShowDetails', api_controller.getShowDetails);
   
   app.get('/getClicksPerPage', api_controller.getClicksPerPage);

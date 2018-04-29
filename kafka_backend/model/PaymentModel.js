@@ -359,6 +359,33 @@ function deleteBillingDetail( msg, callback ) {
     })
 }
 
+function saveUserCardDetails( msg, callback ) {
+    console.log("In Delete Billing  ", msg);
+    pool.connect((err, db) => {
+        if (err) {
+            console.log("Error in PaymentModel request while connecting to DB");
+            errHandler(err);
+        }
+        else {
+            var sql = 'insert into user_cards_details(user_email, cardNumber, expiryMonth, expiryYear, nameOnCard, card_zipcode, save_card) values("' + card_details.user_email + '","' + card_details.cardNumber + '","' + Number(card_details.expiryMonth) + '","' + Number(card_details.expiryYear) + '","' + card_details.nameOnCard + '","' + Number(card_details.card_zipcode) + '","true");';
+            console.log(sql)
+            db.query(sql, (err, result) => {
+                // db.release();
+                console.log(result.insertId)
+                if (err) {
+                    console.log("Error in PaymentModel while inserting data into MySQLDB");
+                    errHandler(err);
+                } else {
+                            var payment_successfull = { payment_successfull: true, id: rows.insertId }
+                            // callback(null, result[0]);
+                            callback(null, payment_successfull);
+
+                }
+            })
+        }
+    })
+}
+
 module.exports = {
     complete_Payment : complete_Payment,
     fetchBillingDetails : fetchBillingDetails,
@@ -370,6 +397,7 @@ module.exports = {
     getTicketConfirmation : getTicketConfirmation,
     deleteBillingDetail : deleteBillingDetail,
     getCardDetails : getCardDetails,
+    saveUserCardDetails : saveUserCardDetails,
     errHandler: errHandler
     //  deleteUser: deleteUser
 };
