@@ -3,6 +3,7 @@ import axios from 'axios';
 import Index from './Index';
 import EndFooter from './EndFooter';
 import { envURL, reactURL } from '../config/environment';
+import swal from 'sweetalert2'
 
 
 class Footer extends Component {
@@ -76,6 +77,14 @@ class Footer extends Component {
       { moviesNode }
       </ul>
     )
+  }
+
+  handleFanButtonClick(e){
+    swal({
+      type: 'success',
+      title: 'Congratulations',
+      text: 'You have successfully subscribed your movie updates'
+    })
   }
 
   render() {
@@ -229,7 +238,7 @@ class Footer extends Component {
                 <h3 class="heading-size-s heading-style-2">Get Updates On All Things Movies:</h3>
                 <div id="fanmail-signup" class="fanmail-module">
                   <label for="footer-fanmail-email">Sign up for FanMail:</label>
-                  <button class="fan-btn fan-btn-style-default fan-btn-size-slim" id="footer-fanmail-submit" type="button">Submit</button>
+                  <button onClick = {this.handleFanButtonClick.bind(this)} class="fan-btn fan-btn-style-default fan-btn-size-slim" id="footer-fanmail-submit" type="button">Submit</button>
                   <div>
                     <input id="footer-fanmail-email" type="email" placeholder="Enter Email Address" />
                   </div>
