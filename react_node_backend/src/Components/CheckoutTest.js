@@ -248,10 +248,14 @@ class CheckoutTest extends Component {
         //     });
     }
     getCardDetails(){
-        let getCardDetails = envURL + 'getCardDetails';
-        axios.get(getCardDetails)
+        debugger
+        let getCardDetailsPerUser = envURL + 'getCardDetailsPerUser';
+        var user_email = { user_email : localStorage.getItem("email") }
+        console.log('Sending Card Fetching Request');
+        axios.get(getCardDetailsPerUser, user_email )
             .then(res => {
-                    console.log('Fetching Movie Details');
+                debugger
+                    console.log('Fetching Card Details');
                     console.log(res.data.data);
                     this.setState({
                         cardDetails : res.data.data
