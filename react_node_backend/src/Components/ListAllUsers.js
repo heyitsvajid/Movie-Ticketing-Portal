@@ -327,8 +327,13 @@ class ListAllUsers extends Component {
                                 <br/>
                                 <br/>
                                 <br/>
+                                <h3  style={ {marginLeft : 295}}>Pages Visited By User in a Session</h3>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
                             <ComposedChart width={1000} height={400} data={this.state.finalGraphData}>
-                                <XAxis label={{ value: "Page Visited", position: 'insideLeft'}} dataKey="page" />
+                                <XAxis label={{ position: 'insideLeft'}} dataKey="page" />
                                 <YAxis label={{ value: "Time Spent on Page(sec)", angle: -90, position: 'insideLeft' }}/>
                                 <Tooltip />
 
