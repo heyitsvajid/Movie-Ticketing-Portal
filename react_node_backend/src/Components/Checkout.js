@@ -182,10 +182,7 @@ LogAPI.logUserClicks(click);
       }
       axios.post(findMultiplexByIdAPI, payload)
         .then(res => {
-            
           if (res.data.successMsg != '') {
-            console.log('Fetching multiplex by id');
-            console.log(res.data.data);
             this.setState({
               multiplex: res.data.data ? res.data.data : {},
               multiplex_id : res.data.data._id,
@@ -195,13 +192,9 @@ LogAPI.logUserClicks(click);
               multiplexState : res.data.data.state,
               multiplexZipCode : res.data.data.zipcode
             })
-            console.log("Printing Multiplex Data")
-            console.log(this.state.multiplex)
             var multiplex = res.data.data;
             multiplex.show_timings.forEach(element => {
                 if(showId == element._id){
-                    
-                    console.log(element)
                   this.setState({
                     show:element,
                     movie:element.movie,
@@ -213,8 +206,6 @@ LogAPI.logUserClicks(click);
                     movieTime : element.date_time.split(", ")[2],
                     movie_logo: element.movie.movie_logo,
                     price:element.price,
-            //   screenNumber : res.data.data.screens[0].screen_number
-                    
                   },()=>{
                     console.log(this.state)
                     // this.setAddressAndScreen(this.state.show.screen_number)
@@ -411,9 +402,6 @@ LogAPI.logUserClicks(click);
                         ;
         axios.post(completePayment, payment_details)
             .then(res => {
-                    
-                    console.log('Payment Completed');
-                    console.log(res.data.results);
                      this.setState({
                          paymentSuccess : res.data.results.data.payment_successfull
                      })
@@ -424,17 +412,6 @@ LogAPI.logUserClicks(click);
                         localStorage.setItem("cards_last_four_digits", this.state.cardNumber.slice(this.state.cardNumber.length-4, this.state.cardNumber.length))
                         localStorage.setItem("card_expiry", this.state.expiryMonth +"/"+this.state.expiryYear )
                         localStorage.setItem("bookScreenId", this.state.bookScreenId)
-                        // localStorage.removeItem('bookShowId')
-                        // localStorage.removeItem('bookMultiplexId')
-                        // localStorage.setItem('a_tickets', this.state.a_tickets)
-                        // localStorage.setItem('adult_total_amount', this.state.adult_total_amount)
-                        // localStorage.setItem('s_tickets', this.state.s_tickets)
-                        // localStorage.setItem('student_total_amount', this.state.student_total_amount)
-                        // localStorage.setItem('da_tickets', this.state.da_tickets)
-                        // localStorage.setItem('da_total_amount', this.state.da_total_amount)
-                        // localStorage.setItem('c_tickets', this.state.c_tickets)
-                        // localStorage.setItem('child_total_amount', this.state.child_total_amount)
-                        
                         window.location.href = reactURL + "confirmation" 
                     }
                     else 

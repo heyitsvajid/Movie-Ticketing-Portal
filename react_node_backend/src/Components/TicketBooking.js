@@ -61,15 +61,11 @@ class TicketBooking extends Component {
       axios.post(findMultiplexByIdAPI, payload)
         .then(res => {
           if (res.data.successMsg != '') {
-            console.log('Fetching multiplex by id');
-            console.log('Hello');
-            console.log(res.data.data);
             this.setState({
               multiplex: res.data.data ? res.data.data : {}
             })
             var multiplex = res.data.data;
             this.setState({
-
               addressLine1:multiplex.address,
               addressLine2:multiplex.city+' '+multiplex.state +' '+ multiplex.zipcode
             })
@@ -82,10 +78,6 @@ class TicketBooking extends Component {
                     bookScreenId:screenId,   
                     bookShowId:showId,
                     bookMultiplexId:multiplexId,
-                  },()=>{
-                    console.log(this.state)
-                    // this.setAddressAndScreen(this.state.show.screen_number)
-                    return;
                   })
                 }
             });
