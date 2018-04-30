@@ -239,3 +239,45 @@ it('\nFetching City revenue per month', function (done) {
             done();
         });
 });
+
+
+it('\nCreating 1000 User Account ', function (done) {
+
+    for( let i=0; i < 1000 ; i++) {
+        request.post('http://localhost:3001/signup',
+            { form: {
+                    first_name : 'Test User',
+                    username: 'test@test.asdasd',
+                    password: '123123123123',
+                    role_number : 1 } },
+            function (error, response, body) {
+                // console.log(response.body);
+                assert.equal(200, response.statusCode);
+            });
+    }
+    done();
+
+});
+
+it('\nCreating 1000 Movies ', function (done) {
+
+    for( let i=0; i < 1000 ; i++) {
+        request.post('http://localhost:3001/createNewMovie',
+            { form: {
+                    title: 'Test Movie',
+                    trailer_link: 'www.youtube.com',
+                    synopsis: 'its a great movie',
+                    release_date: '123123123123',
+                    mpaa_ratings: 'PG',
+                    movie_keywords: 'Horror',
+                    movie_length: 120,
+                    movie_definition: 'HDD',
+                } },
+            function (error, response, body) {
+                // console.log(response.body);
+                assert.equal(200, response.statusCode);
+            });
+    }
+    done();
+
+});
