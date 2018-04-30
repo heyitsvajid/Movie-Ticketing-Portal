@@ -593,7 +593,7 @@ LogAPI.logUserClicks(click);
                                     <div class="fieldContainer card display">
                                         <div class="errorText remove" id="zipError"></div>
                                         <label id="zipLabel" class="card display" for="zipInput">Billing ZIP code</label>
-                                        <input name="ExpressWebCheckout$PaymentView$zipInput" placeholder = {this.state.cardZipCode} type="text" id="zipInput" onChange = {this.handleCardZipCode} class="input card display" title="Last Name" maxlength="8" />
+                                        <input name="ExpressWebCheckout$PaymentView$zipInput" placeholder = {this.state.cardZipCode} type="text" id="zipInput" onChange = {this.handleCardZipCode} class="input card display" title="Last Name" />
                                         {/* <label for="saveCreditCardCheckBox" class="save card checkbox inline" id="saveCreditCardCheckBoxContainer">
                                         <input name="ExpressWebCheckout$PaymentView$saveCreditCardCheckBox" type="checkbox" id="saveCreditCardCheckBox" class="save card inline" />
                                         Save my credit card information
