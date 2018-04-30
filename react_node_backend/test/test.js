@@ -82,32 +82,160 @@ it('\nFinding All Users( Role Number = 1) ', function (done) {
         });
 });
 
-// it('Check bid for particular user and project', function (done) {
-//     request.post('http://localhost:3001/checkBid',
-//         { form: { projectId: 1, userId: 1 } },
-//         function (error, response, body) {
-//             console.log(response.body);
-//             assert.equal(200, response.statusCode);
-//             done();
-//         });
-// });
-//
-// it('Get user bid projects', function (done) {
-//     request.post('http://localhost:3001/getUserBidProjects',
-//         { form: { id: 1 } },
-//         function (error, response, body) {
-//             console.log(response.body);
-//             assert.equal(200, response.statusCode);
-//             done();
-//         });
-// });
-//
-// it('Get bids for project id', function (done) {
-//     request.post('http://localhost:3001/getBids',
-//         { form: { id: 6 } },
-//         function (error, response, body) {
-//             console.log(response.body);
-//             assert.equal(200, response.statusCode);
-//             done();
-//         });
-// });
+it('\nGetting Clicks per Page ', function (done) {
+    request.get('http://localhost:3001/getClicksPerPage',
+        { form: {  } },
+        function (error, response, body) {
+            // console.log(response.body);
+            assert.equal(200, response.statusCode);
+            done();
+        });
+});
+
+it('\nGetting Movies Clicks per Page' , function (done) {
+    request.get('http://localhost:3001/getMovieClicks',
+        { form: {  } },
+        function (error, response, body) {
+            // console.log(response.body);
+            assert.equal(200, response.statusCode);
+            done();
+        });
+});
+
+it('\nGetting All session Details' , function (done) {
+    request.get('http://localhost:3001/getAllSessionDetails',
+        { form: {  } },
+        function (error, response, body) {
+            // console.log(response.body);
+            assert.equal(200, response.statusCode);
+            done();
+        });
+});
+
+
+it('\nGetting User Card Details' , function (done) {
+    request.post('http://localhost:3001/getCardDetails',
+        { form: { billing_id : '144' } },
+        function (error, response, body) {
+            // console.log(response.body);
+            assert.equal(200, response.statusCode);
+            done();
+        });
+});
+
+it('\nGetting User Card Details' , function (done) {
+    request.post('http://localhost:3001/getCardDetails',
+        { form: { billing_id : '144' } },
+        function (error, response, body) {
+            // console.log(response.body);
+            assert.equal(200, response.statusCode);
+            done();
+        });
+});
+
+
+it('\nGetting Billing Details per User' , function (done) {
+    request.post('http://localhost:3001/getBillingDetailsPerUser',
+        { form: { user_email : 'jay1@gmail.com' } },
+        function (error, response, body) {
+            // console.log(response.body);
+            assert.equal(200, response.statusCode);
+            done();
+        });
+});
+
+
+it('\nGetting All Billing Details' , function (done) {
+    request.post('http://localhost:3001/getAllBillingDetails',
+        { form: {  } },
+        function (error, response, body) {
+            // console.log(response.body);
+            assert.equal(200, response.statusCode);
+            done();
+        });
+});
+
+
+it('\nGetting Ticket Confirmation Details' , function (done) {
+    request.post('http://localhost:3001/getTicketConfirmation',
+        { form: { billing_id :  '100' } },
+        function (error, response, body) {
+            // console.log(response.body);
+            assert.equal(200, response.statusCode);
+            done();
+        });
+});
+
+
+it('\nFinding Movie by ID' , function (done) {
+    request.post('http://localhost:3001/findMovieById',
+        { form: { _id :  8 } },
+        function (error, response, body) {
+            // console.log(response.body);
+            assert.equal(200, response.statusCode);
+            done();
+        });
+});
+
+
+it('\nFinding All Movies ' , function (done) {
+    request.get('http://localhost:3001/findAllMovie',
+        { form: {  } },
+        function (error, response, body) {
+            // console.log(response.body);
+            assert.equal(200, response.statusCode);
+            done();
+        });
+});
+
+
+
+it('\nChecking for existing Email' , function (done) {
+    request.post('http://localhost:3001/checkforexistingemail',
+        { form: { email :  'pradnyesh.patil@sjsu.edu' } },
+        function (error, response, body) {
+            // console.log(response.body);
+            assert.equal(200, response.statusCode);
+            done();
+        });
+});
+
+it('\nFinding user card ( email = "jay1@gmail.com" ) ', function (done) {
+    request.post('http://localhost:3001/getCardDetailsPerUser',
+        { form: { user_email : 'jay1@gmail.com' } },
+        function (error, response, body) {
+            // console.log(response.body);
+            assert.equal(200, response.statusCode);
+            done();
+        });
+});
+
+it('\nFetching Multiplex total revenue per month', function (done) {
+    request.post('http://localhost:3001/getMultiplexSoldTicketsPerMonth',
+        { form: { } },
+        function (error, response, body) {
+            // console.log(response.body);
+            assert.equal(200, response.statusCode);
+            done();
+        });
+});
+
+it('\nFetching Movie revenue per month', function (done) {
+    request.post('http://localhost:3001/getMovieRevenuePerYear',
+        { form: { } },
+        function (error, response, body) {
+            // console.log(response.body);
+            assert.equal(200, response.statusCode);
+            done();
+        });
+});
+
+it('\nFetching City revenue per month', function (done) {
+    request.post('http://localhost:3001/getCityRevenuePerYear',
+        { form: { } },
+        function (error, response, body) {
+            // console.log(response.body);
+            assert.equal(200, response.statusCode);
+            done();
+        });
+});
