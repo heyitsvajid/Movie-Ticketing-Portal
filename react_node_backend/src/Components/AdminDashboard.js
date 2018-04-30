@@ -85,7 +85,6 @@ class AdminDashboard extends Component {
 
     handleLinkClick = (e) => {
         e.preventDefault();
-        debugger
         this.setState({
             addDashboard: e.currentTarget.value == 1,
             addUserTracking: e.currentTarget.value == 2,
@@ -133,7 +132,6 @@ class AdminDashboard extends Component {
         let listUsers = 8;
         let showMultiplexGraphDashboard = 9;
         let showMultiplexBillings = 0;
-        debugger
         return (
             // </body>
             <body class="app" id="admin-pages">
@@ -312,7 +310,7 @@ class AdminDashboard extends Component {
                                 </li> */}
                                 <li class="dropdown">
                                     <a href="" class="dropdown-toggle no-after peers fxw-nw ai-c lh-1" data-toggle="dropdown">
-                                        <div class="peer mR-10"><img class="w-2r bdrs-50p" src="https://randomuser.me/api/portraits/men/10.jpg" alt=""/></div>
+                                        <div class="peer mR-10"><img class="w-2r bdrs-50p" src="https://lh3.googleusercontent.com/D5AU3S7KdruENbWx12-s9mJZFloRHJO1RRUzogcVS0n0S8GHXdYrtCmbGLav0EI4t5AH-EJ_itF0ZA=w511-h512-rw-no" alt=""/></div>
                                         <a href="/" onClick={ this.handleLogout } className="hide-logged-in">Sign Out</a>
                                     </a>
                                     <ul class="dropdown-menu fsz-sm">
@@ -435,7 +433,7 @@ class AdminDashboard extends Component {
     returnBillingDetails() {
         return (
             <div class="container-fluid">
-            <h3 class="data-header">Movie Dashboard</h3>
+            <h3 class="data-header">All Billing Details</h3>
             <br/>
             <div class="row">
                 <div class="col-md-12">

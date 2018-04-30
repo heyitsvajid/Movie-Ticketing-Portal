@@ -117,7 +117,7 @@ class AllBillingDetails extends Component {
                 const multiplex_zipcode = "" + list_element.multiplex_zipcode + "";
                 if(list_element.user_email.match(strRegExPattern) || list_element.movie_name.match(strRegExPattern) || 
                 list_element.multiplex_name.match(strRegExPattern) || multiplex_zipcode.match(strRegExPattern)
-                || list_element.user_name.match(strRegExPattern) ){
+                || list_element.user_name.match(strRegExPattern) || this.checkDate(strRegExPattern, list_element.booking_date)){
                     searched_array.push(list_element);
                 }
               }
@@ -127,6 +127,16 @@ class AllBillingDetails extends Component {
         else{
           this.getAllBillingDetails();
         }
+    }
+
+    checkDate(regex, booking_date){
+        const monthNames = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"];
+        var date = new Date(booking_date);
+        var month_name = monthNames[date.getMonth()];
+        var year = date.getFullYear().toString();
+        if(year.match(regex) || month_name.match(regex)){ return true };
+        return false;
     }
 
     handleNextPaginationButton(e) {
