@@ -433,7 +433,7 @@ class ShowTimingsForm extends Component {
                                                 minDate={moment()}
                                                 showTimeSelect
                                                 timeFormat="HH:mm"
-                                                excludeTimes={[moment().hours(17).minutes(0), moment().hours(18).minutes(30)]}
+                                                // excludeTimes={[moment().hours(17).minutes(0), moment().hours(18).minutes(30)]}
                                                 dateFormat="LLL"
                                                 timeIntervals={15}
                                                 timeCaption="Time"
