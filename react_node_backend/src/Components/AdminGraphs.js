@@ -274,10 +274,19 @@ class AdminGraphs extends Component {
                           margin={{top: 5, right: 30, left: 20, bottom: 5}}>
                         <CartesianGrid strokeDasharray="3 3"/>
                         <XAxis dataKey="movie_name"/>
+
+                            <defs>
+                                <linearGradient id="colorUv6" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="30%" stopColor="#4FC3F7" stopOpacity={0.9}/>
+                                    <stop offset="70%" stopColor="#4FC3F7" stopOpacity={0.5}/>
+                                </linearGradient>
+
+                            </defs>
+
                         <YAxis/>
                         <Tooltip/>
                         <Legend />
-                        <Bar dataKey="total_revenue" fill="#ffcc00" />
+                        <Bar dataKey="total_revenue" fill="url(#colorUv6)" fillOpacity={0.7} />
                     </BarChart>
                     </div>
                 </div>
@@ -304,9 +313,18 @@ class AdminGraphs extends Component {
                             <CartesianGrid strokeDasharray="3 3"/>
                             <XAxis dataKey="multiplex_city"/>
                             <YAxis/>
+
+                            <defs>
+                                <linearGradient id="colorUv5" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="30%" stopColor="#4DD0E1" stopOpacity={0.9}/>
+                                    <stop offset="70%" stopColor="#4DD0E1" stopOpacity={0.5}/>
+                                </linearGradient>
+
+                            </defs>
+
                             <Tooltip/>
                             <Legend />
-                            <Bar dataKey="total_revenue" fill="#ffcc00" />
+                            <Bar dataKey="total_revenue" fill="url(#colorUv5)" fillOpacity={0.7} />
                         </BarChart>
                     </div>
                 </div>
@@ -333,9 +351,18 @@ class AdminGraphs extends Component {
                             <CartesianGrid strokeDasharray="3 3"/>
                             <XAxis dataKey="multiplex_name"/>
                             <YAxis/>
+
+                            <defs>
+                                <linearGradient id="colorUv4" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="30%" stopColor="#7986CB" stopOpacity={0.9}/>
+                                    <stop offset="70%" stopColor="#7986CB" stopOpacity={0.6}/>
+                                </linearGradient>
+
+                            </defs>
+
                             <Tooltip/>
                             <Legend />
-                            <Bar dataKey="total_revenue" fill="#ffcc00" />
+                            <Bar dataKey="total_revenue" fill="url(#colorUv4)" fillOpacity={0.7} />
                         </BarChart>
                     </div>
                 </div>
@@ -360,10 +387,19 @@ class AdminGraphs extends Component {
                         <ComposedChart width={1300} height={250} data={this.state.userClickAnalytics}>
                             <XAxis dataKey="pageName" />
                             <YAxis />
+
+                            <defs>
+                                <linearGradient id="colorUv3" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="30%" stopColor="#81C784" stopOpacity={1}/>
+                                    <stop offset="70%" stopColor="#81C784" stopOpacity={0.5}/>
+                                </linearGradient>
+
+                            </defs>
+
                             <Tooltip />
                             <Legend />
                             <CartesianGrid stroke="#f5f5f5" />
-                            <Area type="monotone" dataKey="count" fill="#8884d8" stroke="#8884d8" />
+                            <Area type="monotone" dataKey="count" fill="url(#colorUv3)" stroke="#8884d8" />
                             {/*<Bar dataKey="coun" barSize={20} fill="#413ea0" />*/}
                         </ComposedChart>
                     </div>
@@ -388,9 +424,16 @@ class AdminGraphs extends Component {
                         <RadarChart cx={650} cy={250} outerRadius={150} width={1300} height={500} data={this.state.leastPagesVisited}>
                             <PolarGrid />
                             <PolarAngleAxis dataKey="pageName" />
+                            <defs>
+                                <linearGradient id="colorUv2" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="30%" stopColor="#FF5252" stopOpacity={0.8}/>
+                                    <stop offset="70%" stopColor="#FF5252" stopOpacity={0.3}/>
+                                </linearGradient>
+
+                            </defs>
                             <PolarRadiusAxis angle={90}/>
                         
-                            <Radar name="Count" dataKey="count" stroke="#82ca9d" fill="#82ca9d" fillOpacity={0.6}/>
+                            <Radar name="Count" dataKey="count" stroke="#D50000" fill="#FF5252" fillOpacity={0.7}/>
                             <Legend />
                             
                         </RadarChart>          
@@ -425,11 +468,18 @@ class AdminGraphs extends Component {
                         <BarChart width={1300} height={300} data={this.state.movieClickAnalytics}
                           margin={{top: 5, right: 30, left: 20, bottom: 5}}>
                             <CartesianGrid strokeDasharray="3 3"/>
+                            <defs>
+                                <linearGradient id="colorUv1" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="30%" stopColor="#5C6BC0" stopOpacity={0.8}/>
+                                    <stop offset="70%" stopColor="#5C6BC0" stopOpacity={0.5}/>
+                                </linearGradient>
+
+                            </defs>
                             <XAxis dataKey="movieName"/>
                             <YAxis/>
                             <Tooltip/>
                             <Legend />
-                            <Bar dataKey="count" fill="#ffcc00" />
+                            <Bar dataKey="count"  fillOpacity={0.7} fill="url(#colorUv1)" />
                         </BarChart>
                     </div>
                 </div>
@@ -455,8 +505,8 @@ class AdminGraphs extends Component {
                            margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                             <defs>
                                 <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
-                                    <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
+                                    <stop offset="5%" stopColor="#8884d8" stopOpacity={1}/>
+                                    <stop offset="95%" stopColor="#8884d8" stopOpacity={0.2}/>
                                 </linearGradient>
 
                             </defs>

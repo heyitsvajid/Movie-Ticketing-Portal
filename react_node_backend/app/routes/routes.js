@@ -112,6 +112,7 @@ module.exports = function (app) {
   // app.post('/getShowDetails', api_controller.getShowDetails);
   
   app.get('/getClicksPerPage', api_controller.getClicksPerPage);
+
   app.get('/getMovieClicks', api_controller.getMovieClicks);
 
 

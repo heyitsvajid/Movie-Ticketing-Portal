@@ -331,9 +331,18 @@ class ListAllUsers extends Component {
                                 <XAxis label={{ value: "Page Visited", position: 'insideLeft'}} dataKey="page" />
                                 <YAxis label={{ value: "Time Spent on Page(sec)", angle: -90, position: 'insideLeft' }}/>
                                 <Tooltip />
+
+                                <defs>
+                                    <linearGradient id="colorUv6" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="30%" stopColor="#8884d8" stopOpacity={0.9}/>
+                                        <stop offset="70%" stopColor="#8884d8" stopOpacity={0.5}/>
+                                    </linearGradient>
+
+                                </defs>
+
                                 <Legend />
                                 <CartesianGrid stroke="#f5f5f5" />
-                                <Area type="monotone" dataKey="time" fill="#8884d8" stroke="#8884d8" />
+                                <Area type="monotone" dataKey="time" fill="url(#colorUv6)" stroke="#8884d8" />
                             </ComposedChart>
                             </div>
                         </div>

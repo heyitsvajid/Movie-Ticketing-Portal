@@ -202,8 +202,8 @@ function multiplexSearch(data, callback) {
         $or: [ { city: { $regex: data.data.searchQuery, $options:"$i" } },
                { state: { $regex: data.data.searchQuery, $options:"$i" } },
                { zipcode: { $regex: data.data.searchQuery, $options:"$i" } },
-               { name: { $regex: data.data.searchQuery, $options:"$i" } }
-               // { "show_timings.movie.title" : { $regex: data.data.searchQuery, $options:"$i" } }
+               { name: { $regex: data.data.searchQuery, $options:"$i" } },
+               { "show_timings.movie.title" : { $regex: data.data.searchQuery, $options:"$i" } }
         ]
         },
         function (err, searchResults) {
