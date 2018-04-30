@@ -1111,3 +1111,21 @@ button#footer-fanmail-submit {
 #select-box{
   font-size: 16px !important
 }
+
+.row.gap-20.masonry.pos-r.image-edit-form {
+  width: 100% !important;
+}
+
+#save-email-form{
+  float: right;
+  margin-top: 3%;
+}
+
+.form-edit{
+  margin-left: 0px !important;
+}
+
+.diplay-image{
+  width: 20% !important;
+  height: 20% !important;
+}

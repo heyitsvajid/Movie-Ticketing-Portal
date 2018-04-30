@@ -140,13 +140,13 @@ class ProfileImage extends Component {
         let requireImagePath = this.state.requireImagePath;
         let imagePreviewUrl = this.state.imagePreviewUrl;
         if (imagePreviewUrl) {
-            return <img alt="" class="avatar img-circle" src={this.state.imagePreviewUrl} width='200px' height='200px' />;
+            return <img class="diplay-image" alt="" class="avatar img-circle" src={this.state.imagePreviewUrl} />;
         } else if (requireImagePath != '') {
             var abc = require('../images/' + requireImagePath);
-            return <img alt="" class="avatar img-circle" src={abc} width='200px' height='200px' />;
+            return <img alt="" class="avatar img-circle diplay-image" src={abc} />;
         }
         else {
-            return <img alt="" src="http://www.investeqcapital.com/images/tlpteam/no-image.png" class="avatar img-circle" width='200px' height='200px' />
+            return <img alt="" src="http://www.investeqcapital.com/images/tlpteam/no-image.png" class="avatar img-circle diplay-image" />
         }
 
     }
@@ -163,14 +163,30 @@ class ProfileImage extends Component {
 
 
         return (
-                    <form id="dashboard-form" onSubmit={this._handleSubmit}>
-                        {this.renderImage()}
-                        <br/><hr/><br/>
-                            <input id="file-upload" type="file" onChange={this._handleImageChange} />
-                            <div class="large-6 columns right-25">
-                        <a id="save-email" class="btn save-button" onClick={this._handleSubmit}>Save</a>
+            <div class="row gap-20 masonry pos-r image-edit-form" style={{position: 'relative', height: '450px'}}>
+                <div class="masonry-item col-md-12 form-edit" style={{position: 'absolute', top: '0px'}}>
+                    <div class="bgc-white p-20 bd">
+                        <div class="mT-30">
+                        <form  id="dashboard-form" class='form-horizontal' onSubmit={this._handleSubmit}>
+                            <div className="form-group">
+                                
+                            </div>
+
+                            {this.renderImage()}
+
+                            <div className="form-group">
+                                <label class="dashboard-label">Profile Image</label>
+                                <input id="file-upload" type="file" onChange={this._handleImageChange} />
+                                
+                            </div>
+                        
+                        </form>
                         </div>
-                    </form>
+                    </div>
+                    <a id="save-email-form" class="btn save-button" onClick={this._handleSubmit}>Save</a>
+                </div>
+                
+            </div>
 
         )
     }
