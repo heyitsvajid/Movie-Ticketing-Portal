@@ -85,7 +85,7 @@ LogAPI.logUserClicks(click);
         review: this.state.review_content != "" ? this.state.review_content : "No Content Supplied!",
         title: this.state.title != "" ? this.state.title : "Untitled",
         user_id: 12,
-        user_name: "Vajid"
+        user_name: localStorage.getItem('first_name')
     }
 
     var apiPayload = { review: review, movie_id: localStorage.getItem("movieID") };

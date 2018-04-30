@@ -11,7 +11,7 @@ var AnalyticsModel = require('./model/AnalyticsModal');
 
 //Kafka Topics
 var user_topic = 'user_request';
-var response_topic = 'response_topic';
+var response_topic = 'topic_response';
 var multiplex_topic = 'multiplex_request';
 var movie_topic = 'movie_request';
 var showtiming_topic = 'showtiming_request';
