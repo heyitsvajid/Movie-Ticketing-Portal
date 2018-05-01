@@ -856,35 +856,44 @@ class AccountSettings extends Component {
                     <div class="large-12 columns">
                         <label class="" for="userExpDate">Expiration Date</label>
                         <br/>
-                        <select name="ctl00$ctl00$GlobalBody$Body$ExpirationMonth" id="ExpirationMonth" value={this.state.ExpirationMonth} onChange={this.handleChange} class="user-card-month">
-                          <option value="">Month</option>
-                          <option value="1">January</option>
-                          <option value="2">February</option>
-                          <option value="3">March</option>
-                          <option value="4">April</option>
-                          <option value="5">May</option>
-                          <option value="6">June</option>
-                          <option value="7">July</option>
-                          <option value="8">August</option>
-                          <option value="9">September</option>
-                          <option value="10">October</option>
-                          <option value="11">November</option>
-                          <option value="12">December</option>
-                        </select>
-                        <select name="ctl00$ctl00$GlobalBody$Body$ExpirationYear" id="ExpirationYear" value={this.state.ExpirationYear} onChange={this.handleChange} class="user-card-year">
-                          <option value="">Year</option>
-                          <option value="2018">2018</option>
-                          <option value="2019">2019</option>
-                          <option value="2020">2020</option>
-                          <option value="2021">2021</option>
-                          <option value="2022">2022</option>
-                          <option value="2023">2023</option>
-                          <option value="2024">2024</option>
-                          <option value="2025">2025</option>
-                          <option value="2026">2026</option>
-                          <option value="2027">2027</option>
-                          <option value="2028">2028</option>
-                        </select>
+                        <div class="form-row">
+                            <div className="form-group col-md-2">
+                                <select name="ctl00$ctl00$GlobalBody$Body$ExpirationMonth" id="ExpirationMonth" value={this.state.ExpirationMonth} onChange={this.handleChange} class="user-card-month">
+                                    <option value="">Month</option>
+                                    <option value="1">January</option>
+                                    <option value="2">February</option>
+                                    <option value="3">March</option>
+                                    <option value="4">April</option>
+                                    <option value="5">May</option>
+                                    <option value="6">June</option>
+                                    <option value="7">July</option>
+                                    <option value="8">August</option>
+                                    <option value="9">September</option>
+                                    <option value="10">October</option>
+                                    <option value="11">November</option>
+                                    <option value="12">December</option>
+                                 </select>
+                            </div>
+
+                            <div className="form-group col-md-6">
+                                <select name="ctl00$ctl00$GlobalBody$Body$ExpirationYear" id="ExpirationYear" value={this.state.ExpirationYear} onChange={this.handleChange} class="user-card-year">
+                                    <option value="">Year</option>
+                                    <option value="2018">2018</option>
+                                    <option value="2019">2019</option>
+                                    <option value="2020">2020</option>
+                                    <option value="2021">2021</option>
+                                    <option value="2022">2022</option>
+                                    <option value="2023">2023</option>
+                                    <option value="2024">2024</option>
+                                    <option value="2025">2025</option>
+                                    <option value="2026">2026</option>
+                                    <option value="2027">2027</option>
+                                    <option value="2028">2028</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        
                     </div>
                     <div class="large-6 payment-zip columns ">
                         <label class="" for="">Billing ZIP Code</label>

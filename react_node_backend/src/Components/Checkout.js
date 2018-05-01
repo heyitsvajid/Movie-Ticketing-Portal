@@ -41,8 +41,8 @@ class CheckoutTest extends Component {
             multiplexState : null,
             multiplexZipCode : null,
             cardNumber : null,
-            expiryMonth : "0",
-            expiryYear : "0",
+            expiryMonth : "1",
+            expiryYear : "2018",
             firstName : null,
             lastName : null,
             cardZipCode : null,
@@ -252,13 +252,14 @@ LogAPI.logUserClicks(click);
                     console.log(res.data.results.billing_information[0]);
                     if(typeof res.data.results.billing_information[0] !== "undefined"){
                     var card_details = res.data.results.billing_information[0]
+                    debugger
                     this.setState({
                         cardDetails : card_details,
                         cardNumber : card_details.cardNumber,
                         expiryMonth : card_details.expiryMonth,
                         expiryYear : card_details.expiryYear,
-                        firstName : card_details.nameOnCard.split(" ")[0],
-                        lastName : card_details.nameOnCard.split(" ")[1],
+                        firstName :  card_details.nameOnCard.split(" ")[0] != "null" ? card_details.nameOnCard.split(" ")[0] : "",
+                        // lastName : card_details.nameOnCard.split(" ")[1],
                         cardZipCode : card_details.card_zipcode
                     })
                 }
@@ -282,12 +283,14 @@ LogAPI.logUserClicks(click);
             expiryMonth : e.target.value
         })
         document.getElementById('validMonth').innerHTML = ""
+        document.getElementById('validYear').innerHTML = "";
     }
     handleExpiryYear(e){
         e.preventDefault()
         this.setState({
             expiryYear : e.target.value
         })
+        document.getElementById('validMonth').innerHTML = ""
         document.getElementById('validYear').innerHTML = ""
     }
     handleFirstName(e){
@@ -326,11 +329,12 @@ LogAPI.logUserClicks(click);
         var card_number = e.target.value
         if (!(visa.test(this.state.cardNumber) || mastercard.test(this.state.cardNumber) || amex.test(this.state.cardNumber) || dinersclub.test(this.state.cardNumber) || discover.test(this.state.cardNumber) || jcb.test(this.state.cardNumber))){
             document.getElementById('cardNumber').innerHTML = "Enter Valid Card Number"
-        }else if( this.state.expiryMonth === "0" ){
-            document.getElementById('validMonth').innerHTML = "Select Expiry Month"
         }
-        else if( this.state.expiryYear === "year" || this.state.expiryYear === "0"  ){
-            document.getElementById('validYear').innerHTML = "Select Expiry Year"
+        // else if( this.state.expiryMonth === "0" ){
+        //     document.getElementById('validMonth').innerHTML = "Select Expiry Month"
+        // }
+        else if( this.state.expiryMonth === "0" || this.state.expiryYear === "year" || this.state.expiryYear === "0"  ){
+            document.getElementById('validYear').innerHTML = "Select Expiry Date"
         }
         else if(this.checkCardExpiry(this.state.expiryMonth, this.state.expiryYear)){
             document.getElementById('validMonth').innerHTML = "Your Card is expired"
@@ -338,9 +342,9 @@ LogAPI.logUserClicks(click);
         else if( this.state.firstName === null ){
             document.getElementById('firstName').innerHTML = "Enter First Name"
         }
-        else if( this.state.lastName === null ){
-            document.getElementById('lastName').innerHTML = "Enter Last Name"
-        }
+        // else if( this.state.lastName === null ){
+        //     document.getElementById('lastName').innerHTML = "Enter Last Name"
+        // }
         else if( this.state.cardZipCode === null || !regex.test(String(this.state.cardZipCode).toLowerCase()) ){
             document.getElementById('zipcode').innerHTML = "Enter Valid ZipCode"
         }
@@ -434,7 +438,7 @@ LogAPI.logUserClicks(click);
     }
 
   render() {
-    if(this.state.cardNumber != null){
+    if(this.state.expiryMonth != "1" && this.state.expiryYear != "2018"){
         var monthSelectBox = document.getElementById("expMonthDropdown");
         monthSelectBox[this.state.expiryMonth -1].selected = true;
         var yearSelectBox = document.getElementById("expYearDropdown");
@@ -563,13 +567,13 @@ LogAPI.logUserClicks(click);
                                         <div class="fieldContainer  card display">
                                           <div class="errorText remove" id="firstNameError"></div>
                                           <label id="firstNameLabel" class="card name display" for="firstNameInput">First name</label>
-                                          <input name="ExpressWebCheckout$PaymentView$firstNameInput" placeholder = {this.state.firstName} type="text" id="firstNameInput" onChange = {this.handleFirstName} class="input card name display" maxlength="50" title="First Name" />
+                                          <input name="ExpressWebCheckout$PaymentView$firstNameInput" value = {this.state.firstName} placeholder = "Enter first name displayed on card" type="text" id="firstNameInput" onChange = {this.handleFirstName} class="input card name display" maxlength="50" title="First Name" />
                                         </div>
                                         <div style = {{color : "red"}} id = "firstName"></div>
                                         <div class="fieldContainer  card display">
                                           <div class="errorText remove" id="lastNameError"></div>
                                           <label id="lastNameLabel" class="card name display" for="lastNameInput">Last name</label>
-                                          <input name="ExpressWebCheckout$PaymentView$lastNameInput" placeholder = {this.state.lastName} type="text" id="lastNameInput" onChange = {this.handleLastName} class="input card name display" maxlength="50" title="Last Name" />
+                                          <input name="ExpressWebCheckout$PaymentView$lastNameInput" value = {this.state.lastName} placeholder = "Enter last name displayed on card" type="text" id="lastNameInput" onChange = {this.handleLastName} class="input card name display" maxlength="50" title="Last Name" />
                                         </div>
                                         <div style = {{color : "red"}} id = "lastName"></div>
                                     </div>
