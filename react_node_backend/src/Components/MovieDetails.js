@@ -108,13 +108,13 @@ LogAPI.logUserClicks(click);
             if (res.data.errorMsg != '') {
                 swal({
                     type: 'error',
-                    title: 'Add Show Time',
+                    title: 'Add Review',
                     text: res.data.errorMsg,
                 })
             } else if (res.data.successMsg != '') {
                 swal({
                     type: 'success',
-                    title: 'Add Show',
+                    title: 'Add Review',
                     text: res.data.successMsg,
                 })
             }
