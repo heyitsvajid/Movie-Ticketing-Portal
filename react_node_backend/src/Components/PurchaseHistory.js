@@ -85,7 +85,7 @@ class PurchaseHistory extends Component {
                 adult: showTime.price.adult,
                 child: showTime.price.child,
                 student: showTime.price.student,
-                disabled: showTime.disabled
+                disabled: showTime.price.disabled
               })
             }
           });
