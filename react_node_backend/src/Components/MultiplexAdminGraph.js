@@ -50,7 +50,6 @@ class AdminGraphs extends Component {
                             console.log("multiplexAdminGraphData", res.data );
                             var result = res.data.data?res.data.data:[]
                             let graphData = []
-                            debugger
                             result.forEach(element => {
                                 graphData.push({
                                     name:element.movie_name,

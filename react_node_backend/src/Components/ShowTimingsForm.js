@@ -400,8 +400,11 @@ class ShowTimingsForm extends Component {
                                             <option value="" disabled>Movie</option>
                                             {
                                                 this.state.movieList.map(function (movie) {
-                                                    return <option key={movie._id}
+                                                    if(new Date(movie.release_date)<new Date()){
+                                                        debugger
+                                                        return <option key={movie._id}
                                                         value={movie._id}>{movie.title}</option>;
+                                                    }
                                                 })
                                             }
                                         </select>

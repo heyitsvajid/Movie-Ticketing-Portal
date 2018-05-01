@@ -54,7 +54,7 @@ class Layout extends Component {
             .then((response) => {
                 console.log("After checking the session", response.data);
                 if (response.data.session === 'valid') {
-                    if (response.data.result.role_number === 1) {
+                    if (response.data.result.role_number != 3) {
                         //ShowTimings Logging
                         let click = {
                             pageClick: {
@@ -425,6 +425,12 @@ class Layout extends Component {
         )
     }
 
+    handleMovieClick(e){
+        e.preventDefault();
+        localStorage.setItem("movieID", e.target.id);
+        window.location.href = reactURL + "movie_details";
+    }
+
     renderMultiplexShowTimings() {
         debugger
         let multiplexNodes = this.state.processedmultiplexList.map((multiplex, index) => {
@@ -448,13 +454,13 @@ class Layout extends Component {
                             <div class="fd-movie__poster">
                                 <a href="#">
 
-                                    <img src={imageSource}
-                                        style={{ width: 134, height: 167, position: 'absolute', top: this.props.top, left: this.props.left }} alt={movie.title} />
+                                    <img src={imageSource} id={movie._id}
+                                        style={{ width: 134, height: 167, position: 'absolute', top: this.props.top, left: this.props.left }} alt={movie.title} onClick={this.handleMovieClick.bind(this)}/>
                                 </a>
                             </div>
                             <div class="fd-movie__details">
                                 <h3 class="fd-movie__title font-sans-serif font-lg font-300 uppercase">
-                                    <a class="dark" href="#">{movie.title}</a>
+                                    <a class="dark" href="#" id={movie._id} onClick={this.handleMovieClick.bind(this)}>{movie.title}</a>
                                     {/* <button class="icon icon-follow-gray fd-movie__follow-icon js-heartsAndStars-heart" data-type="Movie" data-id="211110" data-name="AMEERPET 2 AMERICA" data-is-favorite="false">
                           </button> */}
                                 </h3>

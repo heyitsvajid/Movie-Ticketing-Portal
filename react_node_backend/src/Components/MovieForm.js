@@ -35,7 +35,8 @@ class MovieForm extends Component {
             movie_keywords: [],
             update_id: 0,
             currentPage: 1, 
-            perPageRows: 10
+            perPageRows: 10,
+            movie_logo:''
         }
     }
     _handleChangeFile(e) {
@@ -65,7 +66,7 @@ class MovieForm extends Component {
         if(localStorage.getItem('roleId')!='3'){
             swal({
                 type: 'error',
-                title: 'Add Multiplex',
+                title: 'Add Movie',
                 text: 'Access Denied.',
             })
         }
@@ -332,7 +333,7 @@ class MovieForm extends Component {
             return;
         }
         if (!this.state.title || !this.state.trailer_link || !this.state.release_date || !this.state.mpaa_ratings || !this.state.movie_keywords
-            || !this.state.file || !this.state.movie_length || !this.state.movie_definition) {
+         || !this.state.movie_length || !this.state.movie_definition) {
             swal({
                 type: 'error',
                 title: 'Add Movie',
@@ -343,6 +344,7 @@ class MovieForm extends Component {
         let updateMovieAPI = envURL + 'updateMovie';
         var movie = {
             _id: this.state.update_id,
+            movie_logo:this.state.movie_logo,
             title: this.state.title,
             trailer_link: this.state.trailer_link,
             release_date: this.state.release_date.format('L'),
@@ -350,6 +352,7 @@ class MovieForm extends Component {
             movie_keywords: this.state.movie_keywords,
             movie_length: this.state.movie_length,
             movie_definition: this.state.movie_definition,
+            synopsis:this.state.synopsis
         }
 
         const formData = new FormData();
@@ -409,7 +412,8 @@ class MovieForm extends Component {
                     movie_keywords: element.movie_keywords,
                     movie_length: element.movie_length,
                     movie_definition: element.movie_definition,
-                    synopsis : element.synopsis
+                    synopsis : element.synopsis,
+                    movie_logo:element.movie_logo
                 })
                 return;
             }

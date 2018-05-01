@@ -86,14 +86,15 @@ class ImageUpload extends Component {
     let reader = new FileReader();
     let file = e.target.files[0];
 
+    if(file){
       reader.onloadend = () => {
         this.setState({
           file: file,
           imagePreviewUrl: reader.result
         });
       };
-      debugger;
       reader.readAsDataURL(file)
+    }
 
 
   }

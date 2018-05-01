@@ -426,20 +426,22 @@ exports.createNewMultiplex = function (req, res) {
             return;
 
         } else {
-            let { path: tempPath, originalFilename } = files.file[0];
-            let copyToPath = "./src/images/_" + Date.now() + '_' + originalFilename;
-            let dbPath = '_' + Date.now() + '_' + originalFilename;
             try {
-                fs.readFile(tempPath, (err, data) => {
-                    if (err) throw err;
-                    fs.writeFile(copyToPath, data, (err) => {
+            let dbPath = 'default.jpeg';
+            if(files.file){
+                let { path: tempPath, originalFilename } = files.file[0];
+                let copyToPath = "./src/images/_" + Date.now() + '_' + originalFilename;
+                dbPath = '_' + Date.now() + '_' + originalFilename;
+                    fs.readFile(tempPath, (err, data) => {
                         if (err) throw err;
-                        // delete temp image
-                        fs.unlink(tempPath, () => {
+                        fs.writeFile(copyToPath, data, (err) => {
+                            if (err) throw err;
+                            // delete temp image
+                            fs.unlink(tempPath, () => {
+                            });
                         });
                     });
-                });
-
+            }            
                 console.log("createNewMultiplex_request : node backend");
                 let data = fields;
                 data.dbPath = dbPath;
@@ -476,19 +478,21 @@ exports.updateMultiplex = function (req, res) {
             return;
         } else {
             try {
-                let { path: tempPath, originalFilename } = files.file[0];
-                let copyToPath = "./src/images/_" + Date.now() + '_' + originalFilename;
-                let dbPath = '_' + Date.now() + '_' + originalFilename;
-                fs.readFile(tempPath, (err, data) => {
-                    if (err) throw err;
-                    fs.writeFile(copyToPath, data, (err) => {
+                let dbPath = fields.multiplex_logo;
+                if(files.file){
+                    let { path: tempPath, originalFilename } = files.file[0];
+                    let copyToPath = "./src/images/_" + Date.now() + '_' + originalFilename;
+                    dbPath = '_' + Date.now() + '_' + originalFilename;
+                    fs.readFile(tempPath, (err, data) => {
                         if (err) throw err;
-                        // delete temp image
-                        fs.unlink(tempPath, () => {
+                        fs.writeFile(copyToPath, data, (err) => {
+                            if (err) throw err;
+                            // delete temp image
+                            fs.unlink(tempPath, () => {
+                            });
                         });
-                    });
-                });
-
+                    });    
+                }
                 console.log("createNewMultiplex_request : node backend");
                 let data = fields;
                 data.dbPath = dbPath;
@@ -541,10 +545,10 @@ exports.findAllMovie = function (req, res) {
     console.log("findAllMovie_request : node backend");
     let data = { data: req.body, request_code: 1 };
 
-    console.log(data);
+//    console.log(data);
     kafka.make_request('movie_request', data, function (err, results) {
         console.log('Kafka Response:');
-        console.log(results);
+  //      console.log(results);
         if (err) {
             console.log('Controller : Error Occurred : ');
             console.log(err);
@@ -637,6 +641,8 @@ exports.updateMovie = function (req, res) {
     // Post Project API
     console.log('update Movie API Called');
     let form = new multiparty.Form();
+    
+    
     form.parse(req, (err, fields, files) => {
         var resultObject = {
             successMsg: '',
@@ -648,19 +654,24 @@ exports.updateMovie = function (req, res) {
             res.json(resultObject);
             return;
         } else {
+            let dbPath = fields.movie_logo[0];
             try {
-                let { path: tempPath, originalFilename } = files.file[0];
-                let copyToPath = "./src/images/_" + Date.now() + '_' + originalFilename;
-                let dbPath = '_' + Date.now() + '_' + originalFilename;
-                fs.readFile(tempPath, (err, data) => {
-                    if (err) throw err;
-                    fs.writeFile(copyToPath, data, (err) => {
+                if(files.file){
+                    console.log("updateMovie_request : updating image");
+
+                    let { path: tempPath, originalFilename } = files.file[0];
+                    let copyToPath = "./src/images/_" + Date.now() + '_' + originalFilename;
+                    dbPath = '_' + Date.now() + '_' + originalFilename;
+                    fs.readFile(tempPath, (err, data) => {
                         if (err) throw err;
-                        // delete temp image
-                        fs.unlink(tempPath, () => {
+                        fs.writeFile(copyToPath, data, (err) => {
+                            if (err) throw err;
+                            // delete temp image
+                            fs.unlink(tempPath, () => {
+                            });
                         });
-                    });
-                });
+                    });    
+                }
 
                 console.log("updateMovie_request : node backend");
                 let data = fields;
@@ -1202,17 +1213,6 @@ exports.logUserClick = function (req, res) {
     }
     console.log("Adding Log");
     winston.info({ pageClick: req.body.pageClick });
-
-    //Reading Log
-    // var lineReader = require('readline').createInterface({
-    //     input: require('fs').createReadStream('./logging/useranalytics.log')
-    // });
-
-    // lineReader.on('line', function (line) {
-    //     var jsonConvert = JSON.parse(line);
-    //     console.log('Line from file:', jsonConvert);
-    // });
-
     try {
         if (req.session.email !== null && req.session.email !== undefined && req.session.email !== 'admin@fandango.com') {
             let nwTime = new Date().getTime();
@@ -1231,17 +1231,15 @@ exports.logUserClick = function (req, res) {
                 req.session.pageTime.push(timeSpentOnPage);
                 req.session.lastPage = req.body.pageClick.pageName;
                 console.log(req.session);
+                res.send("Log added for " + username + " for page - " + req.body.pageClick.pageName + " at " + req.body.pageClick.timeStamp);
             }
         } else {
             res.json("No Username provided")
         }
     }
     catch (err) {
-        console.log(err);
+    console.log(err);
     }
-
-    res.send("Log added for " + username + " for page - " + req.body.pageClick.pageName + " at " + req.body.pageClick.timeStamp);
-
 
 }
 
@@ -1297,7 +1295,6 @@ exports.logout = function (req, res) {
         catch (err) {
             console.log();
         }
-
     }
     else {
         console.log('Session does not exist');
@@ -1306,35 +1303,35 @@ exports.logout = function (req, res) {
     return;
 };
 
-exports.getClicksPerPage = function (req, res) {
-    var pageNumbers = {"Fandango Home": 0, "MovieShowTime": 1}
+// exports.getClicksPerPage = function (req, res) {
+//     var pageNumbers = {"Fandango Home": 0, "MovieShowTime": 1}
 
-    var pageClicks = [{pageName: "Fandango Home", count: 0}, {pageName: "MovieShowTime", count: 0}]
-    // var pageClicks = [{"Fandango Home": 0, "MovieShowTime": 0}];
-    var lineReader = require('readline').createInterface({
-        input: require('fs').createReadStream('./logging/useranalytics.log')
-    });
+//     var pageClicks = [{pageName: "Fandango Home", count: 0}, {pageName: "MovieShowTime", count: 0}]
+//     // var pageClicks = [{"Fandango Home": 0, "MovieShowTime": 0}];
+//     var lineReader = require('readline').createInterface({
+//         input: require('fs').createReadStream('./logging/useranalytics.log')
+//     });
 
-    lineReader.on('line', function (line) {
-        var jsonConvert = JSON.parse(line);
-        if(jsonConvert["message"]["pageClick"] != undefined){
-            if(pageClicks["" + jsonConvert["message"]["pageClick"]["pageName"] +""] != undefined){
-                pageClicks["" + jsonConvert["message"]["pageClick"]["pageName"] +""] += 1;
-            }
-        }
-    }).on('close', function () {
-        res.json(pageClicks)
-    });
-};
+//     lineReader.on('line', function (line) {
+//         var jsonConvert = JSON.parse(line);
+//         if(jsonConvert["message"]["pageClick"] != undefined){
+//             if(pageClicks["" + jsonConvert["message"]["pageClick"]["pageName"] +""] != undefined){
+//                 pageClicks["" + jsonConvert["message"]["pageClick"]["pageName"] +""] += 1;
+//             }
+//         }
+//     }).on('close', function () {
+//         res.json(pageClicks)
+//     });
+// };
 
 exports.getAllSessionDetails = function (req, res) {
     console.log("findAllMovie_request : node backend");
     let data = { request_code: 1 };
 
-    console.log(data);
+    //console.log(data);
     kafka.make_request('logUserTrack_topic', data, function (err, results) {
         console.log('Kafka Response:');
-        console.log(results);
+        //console.log(results);
         if (err) {
             console.log('Controller : Error Occurred : ');
             console.log(err);
@@ -1392,7 +1389,6 @@ exports.getMovieClicks = function (req, res) {
                         element.count += 1;
                     }
                 });
-
                 if(!moviePresent){
                     var movieObject = {movieName: jsonConvert["message"]["movieClick"]["name"], count: 1};
                     movies.push(movieObject);

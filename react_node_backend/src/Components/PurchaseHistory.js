@@ -66,6 +66,13 @@ class PurchaseHistory extends Component {
           else {
             this.props.history.push('/adminDashboard');
           }
+        }        else{
+          this.props.history.push('/login');
+          swal({
+            type: 'error',
+            title: 'Login Required',
+            text: 'Login to See Transaction History',
+        })          
         }
       })
 

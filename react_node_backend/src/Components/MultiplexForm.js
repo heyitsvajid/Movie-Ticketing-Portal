@@ -33,7 +33,8 @@ class MultiplexForm extends Component {
             multiplexAdminList:[],
             update_id: 0,
             currentPage: 1, 
-            perPageRows: 5
+            perPageRows: 5,
+            multiplex_logo:''
         }
     }
     _handleChangeFile(e) {
@@ -380,7 +381,7 @@ class MultiplexForm extends Component {
     updateMultiplex(e) {
         e ? e.preventDefault() : ''
         if (!this.state.name || !this.state.address || !this.state.state_name || !this.state.city || !this.state.zipcode
-            || !this.state.multiplex_owner_id || !this.state.amenities || !this.state.screens.length > 0 || !this.state.file) {
+            || !this.state.multiplex_owner_id || !this.state.amenities || !this.state.screens.length > 0) {
             swal({
                 type: 'error',
                 title: 'Add Multiplex',
@@ -421,6 +422,7 @@ class MultiplexForm extends Component {
             multiplex_owner_id: this.state.multiplex_owner_id,
             amenities: this.state.amenities,
             screen: JSON.stringify(this.state.screens),
+            multiplex_logo:this.state.multiplex_logo
         }
 
         const formData = new FormData();
@@ -474,6 +476,7 @@ class MultiplexForm extends Component {
         this.state.multiplexList.forEach(element => {
             if (element._id == e.target.id) {
                 this.setState({
+                    multiplex_logo:element.multiplex_logo,
                     update_id: e.target.id,
                     update: !this.state.update,
                     name: element.name,
@@ -563,7 +566,7 @@ class MultiplexForm extends Component {
 
                                         <div className="form-group col-md-6">
                                             <label class="dashboard-label">State</label>
-                                            <select class="form-control" onChange={this.handleUserInput} id="state" name='state_name' required >
+                                            <select class="form-control" value={this.state.state_name} onChange={this.handleUserInput} id="state" name='state_name' required >
                                                 <option value="AL">Alabama</option>
                                                 <option value="AK">Alaska</option>
                                                 <option value="AZ">Arizona</option>

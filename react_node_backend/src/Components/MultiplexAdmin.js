@@ -91,8 +91,11 @@ class MultiplexAdmin extends Component {
                 }
                 else if( response.data.successMsg !== '' ) {
                     console.log(response.data);
-                    alert("Multiplex Admin Added Successfully");
-                    window.location.reload(true);
+                    swal({
+                        type: 'success',
+                        title: 'Create Admin',
+                        text: 'Multiplex Admin Created Successfully',
+                    })           
                 }
             } );
 

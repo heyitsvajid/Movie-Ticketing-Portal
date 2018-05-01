@@ -262,6 +262,7 @@ class AllBillingDetails extends Component {
                 <tr>
                     <th scope="row"> {item.current_index} </th>
                     <td> <a href="#myModal" id={item.id} data-toggle="modal" onClick={this.renderModal}  > { item.movie_name } </a>  </td>
+                    <td> { item.user_name } </td>
                     <td> { item.multiplex_name } </td>
                     <td> { item.booking_date } </td>
                     <td> { number_of_tickets } </td>
@@ -295,6 +296,7 @@ class AllBillingDetails extends Component {
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col"> Movie Name</th>
+                        <th scope="col"> User Name</th>
                         <th scope="col"> Multiplex Name</th>
                         <th scope="col"> Booking Date</th>
                         <th scope="col"> Number of Tickets</th>

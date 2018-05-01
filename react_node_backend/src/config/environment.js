@@ -2,7 +2,7 @@
 
 //Local
 var envURL = 'http://localhost:3001/'
-var reactURL= 'http://localhost3000/'
+var reactURL= 'http://localhost:3000/'
 
 
 //EC2 Instance

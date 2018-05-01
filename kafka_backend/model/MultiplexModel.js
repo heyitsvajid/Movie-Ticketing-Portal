@@ -79,15 +79,15 @@ function updateMultiplex(multiplex, path, callback) {
         errHandler(err);
       }
       if (updateMultiplex) {
-        updateMultiplex.name = multiplex.name[0],
-          updateMultiplex.address = multiplex.address[0],
-          updateMultiplex.city = multiplex.city[0],
-          updateMultiplex.state = multiplex.state[0],
-          updateMultiplex.zipcode = multiplex.zipcode[0],
-          updateMultiplex.contact_number = multiplex.contact_number[0],
-          updateMultiplex.multiplex_owner_id = multiplex.multiplex_owner_id[0],
-          updateMultiplex.amenities = multiplex.amenities[0],
-          updateMultiplex.screens = JSON.parse(multiplex.screen[0]),
+        updateMultiplex.name = multiplex.name[0]
+          updateMultiplex.address = multiplex.address[0]
+          updateMultiplex.city = multiplex.city[0]
+          updateMultiplex.state = multiplex.state[0]
+          updateMultiplex.zipcode = multiplex.zipcode[0]
+          updateMultiplex.contact_number = multiplex.contact_number[0]
+          updateMultiplex.multiplex_owner_id = multiplex.multiplex_owner_id[0]
+          updateMultiplex.amenities = multiplex.amenities[0]
+          updateMultiplex.screens = JSON.parse(multiplex.screen[0])
           updateMultiplex.multiplex_logo = path
         updateMultiplex.save(function (err, multiplex) {
           if (err) {
