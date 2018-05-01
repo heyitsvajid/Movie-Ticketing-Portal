@@ -953,7 +953,7 @@ a.movie-details__mop-link {
 }
 
 .admin-list{
-  margin-left: -10%;
+  margin-left: -3%;
 }
 
 form#dashboard-form {
@@ -1132,4 +1132,8 @@ button#footer-fanmail-submit {
 
 li.fd-movie.show-box {
   height: 192px !important;
+}
+
+.cancel-update{
+  margin-left: 15% !important;
 }

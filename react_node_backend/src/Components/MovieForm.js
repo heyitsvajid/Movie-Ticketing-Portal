@@ -77,8 +77,9 @@ class MovieForm extends Component {
             let keywordsErrorPresent = !this.validateKeywordsFormat(this.state.movie_keywords) ? true : false;
             let checkFilePresent = !this.validateFile(this.state.file) ? true : false;
             let synopsisErrorPresent = !this.validateSynopsisFormat(this.state.synopsis) ? true : false;
+            let timeErrorPresent = !this.validateTimeFormat(this.state.release_date) ? true : false;
 
-            if (titleErrorPresent || trailerLinkErrorPresent || movieTimeErrorPresent || keywordsErrorPresent
+            if (timeErrorPresent || titleErrorPresent || trailerLinkErrorPresent || movieTimeErrorPresent || keywordsErrorPresent
                 || synopsisErrorPresent) {
                 // swal({
                 //     type: 'error',
@@ -153,9 +154,17 @@ class MovieForm extends Component {
     }
 
     validateMovieTimeFormat(movie_length){
-        if(movie_length.trim() == ""){
+        if(movie_length.toString().trim() == ""){
           document.getElementById("movie_length_error").innerHTML = "Please enter movie length";
           return false;
+        }
+        return true;
+    }
+
+    validateTimeFormat(date){
+        if(this.state.release_date == null){
+            document.getElementById("time_error").innerHTML = "Please enter a release date"
+            return false;
         }
         return true;
     }
@@ -322,25 +331,24 @@ class MovieForm extends Component {
 
     updateMovie(e) {
         e ? e.preventDefault() : ''
-        var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
-        var regex = new RegExp(expression);
-        if (!(this.state.trailer_link.match(regex))) {
-            swal({
-                type: 'error',
-                title: 'Add Movie',
-                text: 'Invalid Url',
-            })
+
+        let titleErrorPresent = !this.validateTitleFormat(this.state.title) ? true : false; 
+        let trailerLinkErrorPresent = !this.validateTrailerLinkFormat(this.state.trailer_link) ? true : false;
+        let movieTimeErrorPresent = !this.validateMovieTimeFormat(this.state.movie_length) ? true : false;
+        let keywordsErrorPresent = !this.validateKeywordsFormat(this.state.movie_keywords) ? true : false;
+        let synopsisErrorPresent = !this.validateSynopsisFormat(this.state.synopsis) ? true : false;
+        let timeErrorPresent = !this.validateTimeFormat(this.state.release_date) ? true : false;
+
+        if (timeErrorPresent || titleErrorPresent || trailerLinkErrorPresent || movieTimeErrorPresent
+            || synopsisErrorPresent) {
+            // swal({
+            //     type: 'error',
+            //     title: 'Add Movie',
+            //     text: 'Provide all fields.',
+            // })
             return;
         }
-        if (!this.state.title || !this.state.trailer_link || !this.state.release_date || !this.state.mpaa_ratings || !this.state.movie_keywords
-         || !this.state.movie_length || !this.state.movie_definition) {
-            swal({
-                type: 'error',
-                title: 'Add Movie',
-                text: 'Provide all fields.',
-            })
-            return;
-        }
+
         let updateMovieAPI = envURL + 'updateMovie';
         var movie = {
             _id: this.state.update_id,
@@ -375,7 +383,7 @@ class MovieForm extends Component {
             } else if (res.data.successMsg != '') {
                 swal({
                     type: 'success',
-                    title: 'update Movie',
+                    title: 'Update Movie',
                     text: res.data.successMsg,
                 })
             }
@@ -390,7 +398,8 @@ class MovieForm extends Component {
             movie_keywords: '',
             movie_length: '',
             movie_definition: '',
-            update_id: 0
+            update_id: 0,
+            synopsis: ''
         });
         var that = this;
         setTimeout(function () {
@@ -400,6 +409,15 @@ class MovieForm extends Component {
 
     handleMovieUpdate(e) {
         e ? e.preventDefault() : ''
+
+        document.getElementById("title_error").innerHTML = "";
+        document.getElementById("trailer_link_error").innerHTML = "";
+        document.getElementById("time_error").innerHTML = "";
+        document.getElementById("movie_length_error").innerHTML = "";
+        document.getElementById("synopsis_error").innerHTML = "";
+        document.getElementById("keywords_error").innerHTML = "";
+        document.getElementById("file_error").innerHTML = "";
+
         this.state.movieList.forEach(element => {
             if (element._id == e.target.id) {
                 this.setState({
@@ -499,6 +517,7 @@ class MovieForm extends Component {
                                                 minDate={moment()}
                                                 placeholderText="Select a release date"
                                             />
+                                             <div id = "time_error" class= "error"></div>
                                         </div>
                                     </div>
 
@@ -570,6 +589,7 @@ class MovieForm extends Component {
     }
 
     handleChange(date) {
+        document.getElementById("time_error").innerHTML = "";
         this.setState({
             release_date: date
         });

@@ -23,7 +23,7 @@ class MultiplexForm extends Component {
             state_name: 'AL',
             zipcode: '',
             contact_number: '',
-            multiplex_owner_id: '',
+            multiplex_owner_id: '#',
             amenities: '',
             seat_count: '',
             row_count: '',
@@ -39,6 +39,7 @@ class MultiplexForm extends Component {
     }
     _handleChangeFile(e) {
         e.preventDefault();
+        document.getElementById("file_error").innerHTML = "";
         let reader = new FileReader();
         let file = e.target.files[0];
         // eslint-disable-next-line
@@ -86,7 +87,7 @@ class MultiplexForm extends Component {
 
     validateFile(file){
         if(file == ""){
-          document.getElementById("file_error").innerHTML = "Please Add File";
+          document.getElementById("file_error").innerHTML = "Please add File";
           return false;
         }
         return true;
@@ -152,7 +153,6 @@ class MultiplexForm extends Component {
             })
         }
         else{
-            debugger
             // if (!this.state.name || !this.state.address || !this.state.state_name || !this.state.city || !this.state.zipcode
             //     || !this.state.multiplex_owner_id || !this.state.amenities || !this.state.screens.length > 0 || !this.state.file) {
             //     swal({
@@ -186,6 +186,9 @@ class MultiplexForm extends Component {
             let contactNumberErrorPresent = !this.validateContactNumberFormat(this.state.contact_number) ? true : false;
             let multiplexAdminErrorPresent = !this.validateMultiplexAdminFormat(this.state.multiplex_owner_id) ? true : false;
             let amenitiesErrorPresent = !this.validateAmenitiesFormat(this.state.amenities) ? true : false;
+
+            if(nameErrorPresent || addressErrorPresent || cityErrorPresent || zipcodeErrorPresent || checkFilePresent || contactNumberErrorPresent
+                || multiplexAdminErrorPresent || amenitiesErrorPresent){ return; }
 
             let createNewMultiplexAPI = envURL + 'createNewMultiplex';
             var multiplex = {
@@ -225,23 +228,23 @@ class MultiplexForm extends Component {
                     })
                 }
             });
-            // this.setState({
-            //     update: false,
-            //     file: '',
-            //     name: '',
-            //     address: '',
-            //     city: '',
-            //     state_name: '',
-            //     zipcode: '',
-            //     contact_number: '',
-            //     multiplex_owner_id: '',
-            //     amenities: '',
-            //     seat_count: '',
-            //     row_count: '',
-            //     screens: [],
-            //     multiplexList: [],
-            //     update_id: 0
-            // });
+            this.setState({
+                update: false,
+                file: '',
+                name: '',
+                address: '',
+                city: '',
+                state_name: '',
+                zipcode: '',
+                contact_number: '',
+                multiplex_owner_id: '#',
+                amenities: '',
+                seat_count: '',
+                row_count: '',
+                screens: [],
+                multiplexList: [],
+                update_id: 0
+            });
             var that = this;
             setTimeout(function () {
             }, 2000);
@@ -378,8 +381,48 @@ class MultiplexForm extends Component {
 
     }
 
+    handleCancelClick(e){
+        document.getElementById("name_error").innerHTML = "";
+        document.getElementById("address_error").innerHTML = "";
+        document.getElementById("city_error").innerHTML = "";
+        document.getElementById("zipcode_error").innerHTML = "";
+        document.getElementById("contact_number_error").innerHTML = "";
+        document.getElementById("state_name_error").innerHTML = "";
+        document.getElementById("multiplex_owner_id_error").innerHTML = "";
+        document.getElementById("amenities_error").innerHTML = "";
+        document.getElementById("file_error").innerHTML = "";
+
+        this.setState({
+            update: false,
+            file: '',
+            name: '',
+            address: '',
+            city: '',
+            state_name: '',
+            zipcode: '',
+            contact_number: '',
+            multiplex_owner_id: "#",
+            amenities: '',
+            seat_count: '',
+            row_count: '',
+            screens: [],
+            update_id: 0
+        })
+    }
+
     updateMultiplex(e) {
-        e ? e.preventDefault() : ''
+        e ? e.preventDefault() : ''        
+
+        let nameErrorPresent = !this.validateNameFormat(this.state.name) ? true : false; 
+        let addressErrorPresent = !this.validateAddressFormat(this.state.address) ? true : false;
+        let cityErrorPresent = !this.validateCityFormat(this.state.city) ? true : false;
+        let zipcodeErrorPresent = !this.validateZipcodeFormat(this.state.zipcode) ? true : false;
+        let contactNumberErrorPresent = !this.validateContactNumberFormat(this.state.contact_number) ? true : false;
+        let multiplexAdminErrorPresent = !this.validateMultiplexAdminFormat(this.state.multiplex_owner_id) ? true : false;
+        
+
+        if(nameErrorPresent || addressErrorPresent || cityErrorPresent || zipcodeErrorPresent || contactNumberErrorPresent
+            || multiplexAdminErrorPresent){ return; }
         if (!this.state.name || !this.state.address || !this.state.state_name || !this.state.city || !this.state.zipcode
             || !this.state.multiplex_owner_id || !this.state.amenities || !this.state.screens.length > 0) {
             swal({
@@ -459,7 +502,7 @@ class MultiplexForm extends Component {
             state_name: '',
             zipcode: '',
             contact_number: '',
-            multiplex_owner_id: '',
+            multiplex_owner_id: '#',
             amenities: '',
             seat_count: '',
             row_count: '',
@@ -473,12 +516,22 @@ class MultiplexForm extends Component {
     }
     handleMultiplexUpdate(e) {
         e ? e.preventDefault() : ''
+        document.getElementById("name_error").innerHTML = "";
+        document.getElementById("address_error").innerHTML = "";
+        document.getElementById("city_error").innerHTML = "";
+        document.getElementById("zipcode_error").innerHTML = "";
+        document.getElementById("contact_number_error").innerHTML = "";
+        document.getElementById("state_name_error").innerHTML = "";
+        document.getElementById("multiplex_owner_id_error").innerHTML = "";
+        document.getElementById("amenities_error").innerHTML = "";
+        document.getElementById("file_error").innerHTML = "";
+
         this.state.multiplexList.forEach(element => {
             if (element._id == e.target.id) {
                 this.setState({
                     multiplex_logo:element.multiplex_logo,
                     update_id: e.target.id,
-                    update: !this.state.update,
+                    update: true,
                     name: element.name,
                     address: element.address,
                     city: element.city,
@@ -537,7 +590,7 @@ class MultiplexForm extends Component {
                 <h3>{this.state.update ? 'Update' : 'Add New'} Multiplex</h3>
                 <hr />
                 
-                <div class="row gap-20 masonry pos-r" style={{position: 'relative', height: '986px'}}>
+                <div class="row gap-20 masonry pos-r" style={{position: 'relative', height: '1086px'}}>
                     <div class="masonry-item col-md-6" style={{position: 'absolute', top: '0px'}}>
                         <div class="bgc-white p-20 bd">
                             <div class="mT-30">
@@ -643,7 +696,7 @@ class MultiplexForm extends Component {
                                         <br/>
                                         <select class="form-control" value={this.state.multiplex_owner_id}
                                             onChange={this.handleUserInput} name="multiplex_owner_id" id="multiplex_owner_id">
-                                                <option value="" disabled>Multiplex Owner</option>
+                                                <option value="#" disabled>Multiplex Owner</option>
                                             {
                                                 this.state.multiplexAdminList.map(function (admin) {
                                                     return <option key={admin.id}
@@ -714,7 +767,7 @@ class MultiplexForm extends Component {
                                         </div>
 
                                         <div className="form-group col-md-3">
-                                            <input type="reset" class="dashboard-form-btn btn btn-default" value="Cancel" />
+                                            <input onClick = {this.handleCancelClick.bind(this)} type="reset" class="dashboard-form-btn cancel-update btn btn-default" value="Cancel" />
                                             
                                         </div>
                                     </div>

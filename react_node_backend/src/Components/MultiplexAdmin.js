@@ -85,9 +85,8 @@ class MultiplexAdmin extends Component {
             .then( (response) => {
                 console.log("response from Kafka", response.data );
                 if( response.data.errorMsg !== '' ) {
-                    this.setState({
-                        error : "Email is already used for Multiplex Admin"
-                    })
+                    document.getElementById("email_error").innerHTML = "Email is already used for Multiplex Admin";
+                    
                 }
                 else if( response.data.successMsg !== '' ) {
                     console.log(response.data);
@@ -95,7 +94,18 @@ class MultiplexAdmin extends Component {
                         type: 'success',
                         title: 'Create Admin',
                         text: 'Multiplex Admin Created Successfully',
-                    })           
+                    })
+                    this.setState({
+                        first_name: "",
+                        last_name: "",
+                        password: "",
+                        email: "",
+                        address: "",
+                        city: "",
+                        state_name: "AL",
+                        zipcode: "",
+                        phone_number: ""
+                    }) 
                 }
             } );
 
@@ -152,10 +162,10 @@ class MultiplexAdmin extends Component {
     }
 
     validateStateFormat(state_name){
-        if(state_name.trim() == ""){
-          document.getElementById("state_name_error").innerHTML = "Please enter state";
-          return false;
-        }
+        // if(state_name.trim() == ""){
+        // //   document.getElementById("state_name_error").innerHTML = "Please enter state";
+        //   return false;
+        // }
         return true;
     }
 
@@ -205,8 +215,12 @@ class MultiplexAdmin extends Component {
         let emailErrorPresent = !this.validateEmailFormat(this.state.email) ? true : false;
         let zipcodeErrorPresent = !this.validateZipcodeFormat(this.state.zipcode) ? true : false;
         let phoneNumberErrorPresent = !this.validatePhoneNumberFormat(this.state.phone_number) ? true : false;
+        let cityErrorPresent = !this.validateCityFormat(this.state.city) ? true : false;
+        let passwordErrorPresent = !this.validatePasswordFormat(this.state.password) ? true : false;
+        let addressErrorPresent = !this.validateAddressFormat(this.state.password) ? true : false;
 
-        if(firstNameErrorPresent || emailErrorPresent || zipcodeErrorPresent || phoneNumberErrorPresent){ return; }
+        if(firstNameErrorPresent || emailErrorPresent || zipcodeErrorPresent || phoneNumberErrorPresent || cityErrorPresent || passwordErrorPresent 
+            || addressErrorPresent){ return; }
 
         let all_details = {
             id : this.state.update_id,
@@ -342,6 +356,14 @@ class MultiplexAdmin extends Component {
 
     handleUserUpdate(e) {
         e ? e.preventDefault() : ''
+        document.getElementById("first_name_error").innerHTML = "";
+        document.getElementById("last_name_error").innerHTML = "";
+        document.getElementById("password_error").innerHTML = "";
+        document.getElementById("email_error").innerHTML = "";
+        document.getElementById("address_error").innerHTML = "";
+        document.getElementById("city_error").innerHTML = "";
+        document.getElementById("zipcode_error").innerHTML = "";
+        document.getElementById("phone_number_error").innerHTML = "";
         this.state.multiplexAdminList.forEach(element => {
             if (element.id == e.target.id) {
                 document.getElementById("password-div").style.display = "none";
