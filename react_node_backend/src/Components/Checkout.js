@@ -104,6 +104,20 @@ LogAPI.logUserClicks(click);
     
     }
 
+    checkCardExpiry(month, year){
+        var date = new Date();
+
+        if(date.getFullYear() > year){ return true;}
+
+        else if(date.getFullYear() == year){
+            if((date.getMonth() + 1) > month){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     getUserDetails(){
         this.setState({
             name : localStorage.getItem("name"),
@@ -229,7 +243,6 @@ LogAPI.logUserClicks(click);
         let getCardDetailsPerUser = envURL + 'getCardDetailsPerUser';
         var user_email = { user_email : localStorage.getItem("email") }
         console.log('Sending Card Fetching Request');
-        debugger
         if(user_email.user_email !== null){
         axios.post(getCardDetailsPerUser, user_email )
             .then(res => {
@@ -317,6 +330,9 @@ LogAPI.logUserClicks(click);
         }
         else if( this.state.expiryYear === "year" || this.state.expiryYear === "0"  ){
             document.getElementById('validYear').innerHTML = "Select Expiry Year"
+        }
+        else if(this.checkCardExpiry(this.state.expiryMonth, this.state.expiryYear)){
+            document.getElementById('validMonth').innerHTML = "Your Card is expired"
         }
         else if( this.state.firstName === null ){
             document.getElementById('firstName').innerHTML = "Enter First Name"
@@ -411,6 +427,12 @@ LogAPI.logUserClicks(click);
     }
 
   render() {
+    if(this.state.cardNumber != null){
+        var monthSelectBox = document.getElementById("expMonthDropdown");
+        monthSelectBox[this.state.expiryMonth -1].selected = true;
+        var yearSelectBox = document.getElementById("expYearDropdown");
+        yearSelectBox.value = this.state.expiryYear;
+    }
     
     return (
     <div>
@@ -489,7 +511,7 @@ LogAPI.logUserClicks(click);
                                         <label id="expLabel" class="card display" for="expMonthDropdown">Expiration date</label>  
                                         <div class="expiry-latest expMonthDropdown">
                                           <select name="ExpressWebCheckout$PaymentView$expMonthDropdown" id="expMonthDropdown" size="1" onChange = {this.handleExpiryMonth} class="card inline">
-                                              <option selected="selected" value={this.state.expiryMonth}>{this.state.expiryMonth !== "0" ? this.state.expiryMonth : "Month"}</option>
+                                              {/* <option selected="selected" value={this.state.expiryMonth}>{this.state.expiryMonth !== "0" ? this.state.expiryMonth : "Month"}</option> */}
                                               <option value="1">01 - January</option>
                                               <option value="2">02 - February</option>
                                               <option value="3">03 - March</option>
@@ -506,18 +528,18 @@ LogAPI.logUserClicks(click);
                                         </div>
                                         <div class="expiry-latest expYearDropdown">
                                           <select name="ExpressWebCheckout$PaymentView$expYearDropdown" id="expYearDropdown" onChange = {this.handleExpiryYear} class="card inline">
-                                              <option selected="selected" value={this.state.expiryYear}>{this.state.expiryYear !== "0" ? this.state.expiryYear : "Year"}</option>
-                                              <option value="2018">18</option>
-                                              <option value="2019">19</option>
-                                              <option value="2020">20</option>
-                                              <option value="2021">21</option>
-                                              <option value="2022">22</option>
-                                              <option value="2023">23</option>
-                                              <option value="2024">24</option>
-                                              <option value="2025">25</option>
-                                              <option value="2026">26</option>
-                                              <option value="2027">27</option>
-                                              <option value="2028">28</option>
+                                              {/* <option selected="selected" value={this.state.expiryYear}>{this.state.expiryYear !== "0" ? this.state.expiryYear : "Year"}</option> */}
+                                              <option value="2018">2018</option>
+                                              <option value="2019">2019</option>
+                                              <option value="2020">2020</option>
+                                              <option value="2021">2021</option>
+                                              <option value="2022">2022</option>
+                                              <option value="2023">2023</option>
+                                              <option value="2024">2024</option>
+                                              <option value="2025">2025</option>
+                                              <option value="2026">2026</option>
+                                              <option value="2027">2027</option>
+                                              <option value="2028">2028</option>
                                           </select>
                                         </div>
 
