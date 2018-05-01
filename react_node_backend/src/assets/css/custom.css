@@ -1129,3 +1129,7 @@ button#footer-fanmail-submit {
   width: 20% !important;
   height: 20% !important;
 }
+
+li.fd-movie.show-box {
+  height: 192px !important;
+}

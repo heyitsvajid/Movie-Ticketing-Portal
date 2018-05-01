@@ -97,7 +97,6 @@ class Layout extends Component {
                                 if (!groups[groupName]) {
                                     groups[groupName] = [];
                                 }
-                                debugger;
                                 let selectedDate = new Date(this.state.selectedDate);
                                 let showDate = new Date(item.show_timings[i].sort_field);
                                 let mpaa_rating = 'mpaa_ratings' in item.show_timings[i] ?item.show_timings[i].movie.mpaa_ratings[0]:"#";
@@ -282,6 +281,11 @@ class Layout extends Component {
         )
     };
 
+    showMovie(e){
+        localStorage.setItem("movieID", e.target.dataset.movieid)
+        window.location.href = reactURL + "movie_details"
+    }
+
     formatAMPM(ts) {
         var date = new Date(ts);
         var hours = date.getHours();
@@ -390,10 +394,7 @@ class Layout extends Component {
                                     <div class="hide fd-showtimes__error-msg js-fd-showtimes__error-msg"></div>
                                 </div>
                                 <section class="more-theaters-links">
-                                    <a href="#" class="dark more-theaters-links__link">Movie Times by Cities</a>
-                                    <a href="#" class="dark more-theaters-links__link">Movie Times by States</a>
-                                    <a href="#" class="dark more-theaters-links__link">Movie Times by Zip Codes</a>
-                                    <a href="#" class="dark more-theaters-links__link">Movie Times by Theaters</a>
+                                   
                                 </section>
                             </div>
                             <div class="width-25 tablet-width-100">
@@ -425,124 +426,123 @@ class Layout extends Component {
         )
     }
 
-    handleMovieClick(e){
-        e.preventDefault();
-        localStorage.setItem("movieID", e.target.id);
-        window.location.href = reactURL + "movie_details";
-    }
-
     renderMultiplexShowTimings() {
-        debugger
+
         let multiplexNodes = this.state.processedmultiplexList.map((multiplex, index) => {
-            let moviesNodes = multiplex.show_timings.map((movie_shows, index) => {
-                let timeNodes;
-                let movie = {};
-                var imageSource = '';
-                timeNodes = movie_shows.shows.map((show, index) => {
-                    movie = show.movie;
-                    imageSource = require('../images/' + movie.movie_logo) ? require('../images/' + movie.movie_logo) : ''
-                    return (
-                        <li class="fd-movie__btn-list-item show-time" >
-                            <a class="btn showtime-btn showtime-btn--available"
-                                id={show._id + ',' + multiplex._id + ',' + show.screen_number} onClick={this.onShowTimeClick.bind(this)} >{this.formatAMPM(show.sort_field)}</a>
-                        </li>
-                    )
+            if(multiplex.show_timings.length >0){
+                var hasShowTimings = false;
+                multiplex.show_timings.forEach(movie => {
+                    if(movie.shows.length > 0){
+                        hasShowTimings = true;
+                    }
                 });
-                if (movie_shows.shows.length > 0) {
-                    return (
-                        <li class="fd-movie">
-                            <div class="fd-movie__poster">
-                                <a href="#">
-
-                                    <img src={imageSource} id={movie._id}
-                                        style={{ width: 134, height: 167, position: 'absolute', top: this.props.top, left: this.props.left }} alt={movie.title} onClick={this.handleMovieClick.bind(this)}/>
-                                </a>
-                            </div>
-                            <div class="fd-movie__details">
-                                <h3 class="fd-movie__title font-sans-serif font-lg font-300 uppercase">
-                                    <a class="dark" href="#" id={movie._id} onClick={this.handleMovieClick.bind(this)}>{movie.title}</a>
-                                    {/* <button class="icon icon-follow-gray fd-movie__follow-icon js-heartsAndStars-heart" data-type="Movie" data-id="211110" data-name="AMEERPET 2 AMERICA" data-is-favorite="false">
-                          </button> */}
-                                </h3>
-                                {/* <div class="fd-star-rating__container">
-                          <div class="js-fd-star-rating fd-star-rating " data-star-rating="4">
-                              <a class="fd-star-rating__star icon icon-star-rating-small js-heartsAndStars-star" data-action="rate" data-id="211110" data-isnew="true" data-show-caption="true" data-value="5" title="Loved It">
-                              </a>
-                              <a class="fd-star-rating__star icon icon-star-rating-small js-heartsAndStars-star" data-action="rate" data-id="211110" data-isnew="true" data-show-caption="true" data-value="4" title="Really Liked It">
-                              </a>
-                              <a class="fd-star-rating__star icon icon-star-rating-small js-heartsAndStars-star" data-action="rate" data-id="211110" data-isnew="true" data-show-caption="true" data-value="3" title="Liked It">
-                              </a>
-                              <a class="fd-star-rating__star icon icon-star-rating-small js-heartsAndStars-star" data-action="rate" data-id="211110" data-isnew="true" data-show-caption="true" data-value="2" title="Disliked It">
-                              </a>
-                              <a class="fd-star-rating__star icon icon-star-rating-small js-heartsAndStars-star" data-action="rate" data-id="211110" data-isnew="true" data-show-caption="true" data-value="1" title="Hated It">
-                              </a>
-                          </div>
-                        </div> */}
-                                <p class="fd-movie__rating-runtime">
-                                {movie.movie_length + ' mins'}  <br />
-                        </p>
-                            </div>
-                            <ul class="fd-movie__showtimes">
-                                <li class="fd-movie__showtimes-variant">
-                                    <h3 class="fd-movie__showtimes__tick-headline font-serif">
-                                        <span class="icon icon-ticket"></span>
-                                        Select a movie time to buy Standard Showtimes
-                          </h3>
-                                    <ul class="fd-movie__amentiy-list">
-                                        <li class="fd-movie__amenity-icon-wrap">
-                                            {/* <a href="#" class=" fd-movie__amenity-icon js-amenity" data-amenity-desc="This film is presented in Telugu." data-amenity-name="Telugu">Telugu</a> */}
-                                        </li>
-                                    </ul>
-                                    <ol class="fd-movie__btn-list">
-
-                                        {timeNodes}</ol>
+                if(hasShowTimings){
+                    let moviesNodes = multiplex.show_timings.map((movie_shows, index) => {
+                        let timeNodes;
+                        let movie = {};
+                        var imageSource = '';
+                        timeNodes = movie_shows.shows.map((show, index) => {
+                            movie = show.movie;
+                            imageSource = require('../images/' + movie.movie_logo) ? require('../images/' + movie.movie_logo) : ''
+                            return (
+                                <li class="fd-movie__btn-list-item show-time" >
+                                    <a class="btn showtime-btn showtime-btn--available"
+                                        id={show._id + ',' + multiplex._id + ',' + show.screen_number} onClick={this.onShowTimeClick.bind(this)} >{this.formatAMPM(show.sort_field)}</a>
                                 </li>
-                            </ul>           </li>)
-                } else {
-                    return (<div></div>);
+                            )
+                        });
+                        if (movie_shows.shows.length > 0) {
+                            return (
+                                <li class="fd-movie show-box">
+                                    <div class="fd-movie__poster">
+                                        <a href="#">
+        
+                                            <img src={imageSource} data-movieid = {movie._id} onClick={this.showMovie.bind(this)}
+                                                style={{ width: 134, height: 190, position: 'absolute', top: this.props.top, left: this.props.left }} alt={movie.title} />
+                                        </a>
+                                    </div>
+                                    <div class="fd-movie__details">
+                                        <h3 class="fd-movie__title font-sans-serif font-lg font-300 uppercase">
+                                            <a data-movieid = {movie._id} class="dark" href="#" onClick={this.showMovie.bind(this)}>{movie.title}</a>
+                                            
+                                        </h3>
+                                        <p class="fd-movie__rating-runtime">
+                                        {movie.movie_length + ' mins'}  <br />
+                                </p>
+                                    </div>
+                                    <ul class="fd-movie__showtimes">
+                                        <li class="fd-movie__showtimes-variant">
+                                            <h3 class="fd-movie__showtimes__tick-headline font-serif">
+                                                <span class="icon icon-ticket"></span>
+                                                Select a movie time to buy Standard Showtimes
+                                  </h3>
+                                            <ul class="fd-movie__amentiy-list">
+                                                <li class="fd-movie__amenity-icon-wrap">
+                                                    {/* <a href="#" class=" fd-movie__amenity-icon js-amenity" data-amenity-desc="This film is presented in Telugu." data-amenity-name="Telugu">Telugu</a> */}
+                                                </li>
+                                            </ul>
+                                            <ol class="fd-movie__btn-list">
+        
+                                                {timeNodes}</ol>
+                                        </li>
+                                    </ul>           </li>)
+                        } else {
+                            
+                        }
+        
+                    });
+                    
+                    return (
+                        <ul>
+                            <li class="fd-theater" data-theater-id="AAFRF">
+                                <div class="fd-theater__header">
+                                    <div class="fd-theater__promoted-amenity-wrap">
+                                        <span class="icon icon-amenity-print-at-home-tickets fd-theater__promoted-amenity js-amenity" data-amenity-name="Print at Home Tickets" data-amenity-desc="Print your tickets, go directly to the ticket taker and skip the box office line at many theaters.">Print at Home Tickets
+                            </span>
+                                        <span class="icon icon-amenity-mobile-tickets fd-theater__promoted-amenity js-amenity" data-amenity-name="Mobile Tickets" data-amenity-desc="Send your ticket to your mobile device, go directly to the ticket taker and skip the box office line at many theaters.">Mobile Tickets
+                            </span>
+                                    </div>
+                                    <div class="fd-theater__name-wrap">
+                                        <h3 class="fd-theater__name font-sans-serif font-lg font-300 uppercase">
+                                            {/* <a class="light" href="#">hell</a> */}
+                                            {/* <img class = "abc" width="100px" height="100px" src={require('../assets/static_images/img9.png')} alt="New york" /> */}
+                                            <a class="light" href="#">{multiplex.name}</a>
+                                            <button class="icon icon-follow-white fd-theater__follow-icon js-heartsAndStars-heart" data-type="Theater" data-id="AAFRF" data-name="Towne 3 Cinemas" data-is-favorite="false">
+                                            </button>
+                                        </h3>
+                                    </div>
+                                    <div class="fd-theater__address-wrap">
+                                        <span>{multiplex.address},</span>
+                                        <span>
+                                            {multiplex.city},
+                            {multiplex.state},
+                            {multiplex.zipcode}
+                                        </span>
+                                    </div>
+                                    {/* <div class="fd-theater__links">
+                            <a href="//www.fandango.com/maps/DrivingDirections.aspx?tid=AAFRF" target="_blank" rel="nofollow" class="font-sans-serif-cond font-sm">MAP</a>
+                            <a class="fd-theater__amenities js-amenity font-sans-serif-cond font-sm" href="#" data-amenity-name="Theater Amenities" data-amenity-desc="<ul class=&quot;fd-theater__amenities-list&quot;><li>Print at Home Tickets</li><li>Mobile Tickets</li></ul>">AMENITIES</a>
+                          </div> */}
+                                </div>
+                                <ul id="movie-show-box">
+                                    {moviesNodes}
+                                </ul>
+                                {/* <div class="fd-theater__future-dates">
+                          <h3 class="fd-theater__future-dates-text heading-size-s font-serif">More movies available on future dates.</h3>
+                          <a href="/towne-3-cinemas-AAFRF/theater-page" class="btn">See Coming Attractions</a>
+                      </div> */}
+                            </li>
+                        </ul>)
                 }
-
-            });
-
-            return (
-                <ul>
-                    <li class="fd-theater" data-theater-id="AAFRF">
-                        <div class="fd-theater__header">
-                            <div class="fd-theater__promoted-amenity-wrap">
-                                <span class="icon icon-amenity-print-at-home-tickets fd-theater__promoted-amenity js-amenity" data-amenity-name="Print at Home Tickets" data-amenity-desc="Print your tickets, go directly to the ticket taker and skip the box office line at many theaters.">Print at Home Tickets
-                    </span>
-                                <span class="icon icon-amenity-mobile-tickets fd-theater__promoted-amenity js-amenity" data-amenity-name="Mobile Tickets" data-amenity-desc="Send your ticket to your mobile device, go directly to the ticket taker and skip the box office line at many theaters.">Mobile Tickets
-                    </span>
-                            </div>
-                            <div class="fd-theater__name-wrap">
-                                <h3 class="fd-theater__name font-sans-serif font-lg font-300 uppercase">
-                                    <a class="light" href="/towne-3-cinemas-AAFRF/theater-page">{multiplex.name}</a>
-                                    <button class="icon icon-follow-white fd-theater__follow-icon js-heartsAndStars-heart" data-type="Theater" data-id="AAFRF" data-name="Towne 3 Cinemas" data-is-favorite="false">
-                                    </button>
-                                </h3>
-                            </div>
-                            <div class="fd-theater__address-wrap">
-                                <span>{multiplex.address},</span>
-                                <span>
-                                    {multiplex.city},
-                    {multiplex.state},
-                    {multiplex.zipcode}
-                                </span>
-                            </div>
-                            {/* <div class="fd-theater__links">
-                    <a href="//www.fandango.com/maps/DrivingDirections.aspx?tid=AAFRF" target="_blank" rel="nofollow" class="font-sans-serif-cond font-sm">MAP</a>
-                    <a class="fd-theater__amenities js-amenity font-sans-serif-cond font-sm" href="#" data-amenity-name="Theater Amenities" data-amenity-desc="<ul class=&quot;fd-theater__amenities-list&quot;><li>Print at Home Tickets</li><li>Mobile Tickets</li></ul>">AMENITIES</a>
-                  </div> */}
-                        </div>
-                        <ul id="movie-show-box">
-                            {moviesNodes}
-                        </ul>
-                        {/* <div class="fd-theater__future-dates">
-                  <h3 class="fd-theater__future-dates-text heading-size-s font-serif">More movies available on future dates.</h3>
-                  <a href="/towne-3-cinemas-AAFRF/theater-page" class="btn">See Coming Attractions</a>
-              </div> */}
-                    </li>
-                </ul>)
+                else{
+                    return <div></div>
+                }
+                
+            }
+            else{
+                return<div></div>
+            }
+            
         });
         return (
             <div>
@@ -554,7 +554,6 @@ class Layout extends Component {
 
     onShowTimeClick(e) {
         e.preventDefault();
-        debugger;
         //alert(e.target.id)
         var arr = e.target.id.split(',');
         if (arr.length == 3) {

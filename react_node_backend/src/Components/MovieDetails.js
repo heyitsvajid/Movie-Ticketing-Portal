@@ -49,6 +49,7 @@ LogAPI.logUserClicks(click);
     let findMovieByIdAPI = envURL + 'findMovieById';
     //var movieId = localStorage.getItem('movieIdforDetails')
     var movieId = localStorage.getItem("movieID");
+    debugger
     if (movieId) {
       var payload = {
         _id: movieId
@@ -128,7 +129,7 @@ LogAPI.logUserClicks(click);
     const monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
     let day = new Date(this.state.movie.release_date).getDate();
-    let month_name = monthNames[new Date().getMonth() + 1];
+    let month_name = monthNames[new Date(this.state.movie.release_date).getMonth()];
     let year = new Date(this.state.movie.release_date).getFullYear()
     const final_date = "" + month_name + " " + day + ", " + year;
     return final_date;
