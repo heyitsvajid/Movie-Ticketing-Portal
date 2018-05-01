@@ -373,7 +373,7 @@ LogAPI.logUserClicks(click);
         var billingInformation = {  user_email : localStorage.getItem('email'),
                                     user_name : localStorage.getItem('first_name'),
                                     amount : (Number(Number(conv_fee)+Number(total))).toFixed(2),
-                                    tax : (parseInt(conv_fee)).toFixed(2),
+                                    tax : (Number(conv_fee)).toFixed(2),
                                     movie_id : this.state.movie_id,
                                     movie_name : this.state.movieName,
                                     show_time : this.state.showTime,
@@ -762,7 +762,7 @@ LogAPI.logUserClicks(click);
                                       <td class="paymentLogo"><span class=""></span></td>
                                       <td class="total-wrap">Total:</td>
                                       <td class="">
-                                        <span class="total" id="purchaseTotal">${ Number(Number(total)+Number(conv_fee))}</span>
+                                        <span class="total" id="purchaseTotal">${ Number(Number(total)+Number(conv_fee)).toFixed(2)}</span>
                                         <input name="ExpressWebCheckout$OrderSummaryView$purchaseTotalHidden" type="hidden" id="purchaseTotalHidden" value="11.50" />
                                       </td>
                                   </tr>

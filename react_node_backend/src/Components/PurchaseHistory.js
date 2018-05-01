@@ -35,7 +35,8 @@ class PurchaseHistory extends Component {
       child_count: 0,
       student_count: 0,
       disabled_count: 0,
-      total: 0
+      total: 0,
+      tax: 0
     })
     this.getBillingDetailsPerUser = this.getBillingDetailsPerUser.bind(this)
     this.renderModal = this.renderModal.bind(this)
@@ -123,7 +124,8 @@ class PurchaseHistory extends Component {
               child_count: bill.child_tickets,
               student_count: bill.student_tickets,
               disabled_count: bill.disabled_tickets,
-              total: bill.amount
+              total: bill.amount,
+              tax: bill.tax
             })
           })
           .catch(err => {
@@ -335,6 +337,12 @@ class PurchaseHistory extends Component {
                                       <td class="text-center">{this.state.disabled_count}</td>
                                       <td class="text-right">${((typeof this.state.disabled_count !== "undefined" && typeof this.state.disabled !== "undefined") ? ((this.state.disabled_count) * (this.state.disabled)) : 0).toFixed(2)}</td>
                                     </tr>
+                                    <tr>
+                                      <td class="emptyrow"></td>
+                                      <td class="emptyrow"></td>
+                                      <td class="emptyrow text-center"><strong>Convenience Fee</strong></td>
+                                      <td class="emptyrow text-right">${this.state.tax.toFixed(2)}</td>
+                                    </tr>                                
                                     <tr>
                                       <td class="emptyrow"></td>
                                       <td class="emptyrow"></td>
