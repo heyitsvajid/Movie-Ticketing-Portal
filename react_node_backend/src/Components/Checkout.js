@@ -52,7 +52,8 @@ class CheckoutTest extends Component {
             s_tickets : 0,
             paymentSuccess : false,
             cardDetails : null,
-            save_card : false
+            save_card : false,
+            
             // cvv : null
         }
         this.getUserDetails = this.getUserDetails.bind(this)
@@ -363,10 +364,14 @@ LogAPI.logUserClicks(click);
                                     nameOnCard : this.state.firstName + " " + this.state.lastName, 
                                     card_zipcode : this.state.cardZipCode
                                 }
+
+    let conv_fee = Number((1.5)*( Number(this.state.a_tickets) + Number(this.state.c_tickets) + Number(this.state.da_tickets) + Number(this.state.s_tickets))).toFixed(2)    
+    let total =  (Number(this.state.adult_total_amount) + Number(this.state.child_total_amount) + Number(this.state.da_total_amount) + Number(this.state.student_total_amount)).toFixed(2)
+                        
         var billingInformation = {  user_email : localStorage.getItem('email'),
                                     user_name : localStorage.getItem('first_name'),
-                                    amount : ( Number(this.state.adult_total_amount) + Number(this.state.child_total_amount) + Number(this.state.da_total_amount) + Number(this.state.student_total_amount)).toFixed(2),
-                                    tax : this.state.tax,
+                                    amount : (Number(Number(conv_fee)+Number(total))).toFixed(2),
+                                    tax : (parseInt(conv_fee)).toFixed(2),
                                     movie_id : this.state.movie_id,
                                     movie_name : this.state.movieName,
                                     show_time : this.state.showTime,
@@ -433,9 +438,14 @@ LogAPI.logUserClicks(click);
         var yearSelectBox = document.getElementById("expYearDropdown");
         yearSelectBox.value = this.state.expiryYear;
     }
-    
+    let conv_fee = Number((1.5)*( Number(this.state.a_tickets) + Number(this.state.c_tickets) + Number(this.state.da_tickets) + Number(this.state.s_tickets))).toFixed(2)    
+    let total =  (Number(this.state.adult_total_amount) + Number(this.state.child_total_amount) + Number(this.state.da_total_amount) + Number(this.state.student_total_amount)).toFixed(2)
+    console.log(total)
+    console.log(conv_fee)
+
     return (
-    <div>
+
+<div>
       <form  id="form1">
         <div class="aspNetHidden">
           <input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="" />
@@ -716,7 +726,7 @@ LogAPI.logUserClicks(click);
                                       <td class="price">{this.state.c_tickets+ " x $"+ (typeof this.state.price.child !== "undefined" ?  this.state.price.child.toFixed(2) : "00.00" )}</td>
                                       <td class="math">${this.state.child_total_amount}</td>
                                   </tr>
-                                  {/* <tr class="feesRow pricing">
+                                   <tr class="feesRow pricing">
                                       <td class="type heading" colspan="2">
                                         <a href="javascript:toggleConvenience()">Convenience Fee</a>
                                         <div  class="convenienceFeeFlyout">
@@ -736,18 +746,21 @@ LogAPI.logUserClicks(click);
                                             </table>
                                         </div>
                                       </td>
-                                      <td class="math">$1.50 {this.state.ticketPrice}</td>
+                                      {/* <td class="price">{( Number(this.state.a_tickets) + Number(this.state.c_tickets) + Number(this.state.da_tickets) + Number(this.state.s_tickets)).toFixed(2)}</td>
+                                      <td class="price">$1.50</td> */}
+
+                                      <td class="math">${ Number(conv_fee).toFixed(2)}</td>
                                   </tr>
-                                  <tr class="feesRow pricing discountRow membersonly ">
+                                  {/* <tr class="feesRow pricing discountRow membersonly ">
                                       <td class="type heading"><a href="#" data-reveal-id="tc_287">150 VIP+ POINTS</a></td>
                                       <td class="price"></td>
                                       <td class="math">INCLUDED</td>
-                                  </tr> */}
+                                  </tr>  */}
                                   <tr class="totalRow">
                                       <td class="paymentLogo"><span class=""></span></td>
                                       <td class="total-wrap">Total:</td>
                                       <td class="">
-                                        <span class="total" id="purchaseTotal">${ ( Number(this.state.adult_total_amount) + Number(this.state.child_total_amount) + Number(this.state.da_total_amount) + Number(this.state.student_total_amount)).toFixed(2)}</span>
+                                        <span class="total" id="purchaseTotal">${ Number(Number(total)+Number(conv_fee))}</span>
                                         <input name="ExpressWebCheckout$OrderSummaryView$purchaseTotalHidden" type="hidden" id="purchaseTotalHidden" value="11.50" />
                                       </td>
                                   </tr>

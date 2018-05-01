@@ -107,7 +107,7 @@ class Layout extends Component {
 
                                         if(mpaa_rating==this.state.mpaa_rating){
                                             groups[groupName].push(item.show_timings[i]);
-                                        }else if(mpaa_rating=='#'){
+                                        }else if(this.state.mpaa_rating=='#'){
                                             groups[groupName].push(item.show_timings[i]);     
                                         }else{
                                             console.log('Movie doest satisfy MPAA_Rating selected')
@@ -158,7 +158,7 @@ class Layout extends Component {
                                     && selectedDate.getYear() == showDate.getYear()) {
                                         if(mpaa_rating==this.state.mpaa_rating){
                                             groups[groupName].push(item.show_timings[i]);
-                                        }else if(mpaa_rating=='#'){
+                                        }else if(this.state.mpaa_rating=='#'){
                                             groups[groupName].push(item.show_timings[i]);     
                                         }else{
                                             console.log('Movie doest satisfy MPAA_Rating selected')
