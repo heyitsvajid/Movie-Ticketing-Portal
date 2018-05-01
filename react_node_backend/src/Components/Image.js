@@ -86,16 +86,27 @@ class ImageUpload extends Component {
     let reader = new FileReader();
     let file = e.target.files[0];
 
-    if(file){
-      reader.onloadend = () => {
-        this.setState({
-          file: file,
-          imagePreviewUrl: reader.result
-        });
-      };
-      reader.readAsDataURL(file)
-    }
-
+      // eslint-disable-next-line
+      if (!file) {
+          return;
+      }
+      if ( file.type === 'image/png' ||  file.type === 'image/jpg' || file.type === "image/jpeg" ) {
+          reader.onloadend = () => {
+              this.setState({
+                  file: file,
+                  imagePreviewUrl: reader.result
+              });
+          };
+          reader.readAsDataURL(file)
+      }
+      else {
+          swal({
+              type: 'error',
+              title: 'File Upload',
+              text: 'Only PNG/JPG/JPEG images allowed',
+          });
+          document.getElementById("file-upload").value = "";
+      }
 
   }
 
