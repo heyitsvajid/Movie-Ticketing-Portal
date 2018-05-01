@@ -88,7 +88,6 @@ class Layout extends Component {
                     if (res.data.successMsg != '') {
                         console.log('Fetching all multiplex as per search');
                         console.log(res.data.data);
-
                         var multiplexes = res.data.data.length > 0 ? res.data.data : [];
                         multiplexes.forEach(item => {
                             var groups = {};
@@ -99,7 +98,7 @@ class Layout extends Component {
                                 }
                                 let selectedDate = new Date(this.state.selectedDate);
                                 let showDate = new Date(item.show_timings[i].sort_field);
-                                let mpaa_rating = 'mpaa_ratings' in item.show_timings[i] ?item.show_timings[i].movie.mpaa_ratings[0]:"#";
+                                let mpaa_rating = 'mpaa_ratings' in item.show_timings[i].movie ?item.show_timings[i].movie.mpaa_ratings[0]:"#";
 
                                 
                                 if (selectedDate.getDate() == showDate.getDate()
@@ -108,7 +107,7 @@ class Layout extends Component {
 
                                         if(mpaa_rating==this.state.mpaa_rating){
                                             groups[groupName].push(item.show_timings[i]);
-                                        }else if(mpaa_rating=='#'){
+                                        }else if(this.state.mpaa_rating=='#'){
                                             groups[groupName].push(item.show_timings[i]);     
                                         }else{
                                             console.log('Movie doest satisfy MPAA_Rating selected')
@@ -153,13 +152,13 @@ class Layout extends Component {
                                 }
                                 let selectedDate = new Date(this.state.selectedDate);
                                 let showDate = new Date(item.show_timings[i].sort_field);
-                                let mpaa_rating = 'mpaa_ratings' in item.show_timings[i] ?item.show_timings[i].movie.mpaa_ratings[0]:"#";
+                                let mpaa_rating = 'mpaa_ratings' in item.show_timings[i].movie ?item.show_timings[i].movie.mpaa_ratings[0]:"#";
                                 if (selectedDate.getDate() == showDate.getDate()
                                     && selectedDate.getDay() == showDate.getDay()
                                     && selectedDate.getYear() == showDate.getYear()) {
                                         if(mpaa_rating==this.state.mpaa_rating){
                                             groups[groupName].push(item.show_timings[i]);
-                                        }else if(mpaa_rating=='#'){
+                                        }else if(this.state.mpaa_rating=='#'){
                                             groups[groupName].push(item.show_timings[i]);     
                                         }else{
                                             console.log('Movie doest satisfy MPAA_Rating selected')
@@ -272,11 +271,13 @@ class Layout extends Component {
     }
 
     handleChange = (e) => {
+        
         e.preventDefault();
         this.setState({
                 [e.target.name] : e.target.value,
             }, () => {
                 console.log(this.state)
+                this.processDataAsSelectedDate()
             }
         )
     };
