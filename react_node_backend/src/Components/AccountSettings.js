@@ -134,49 +134,60 @@ class AccountSettings extends Component {
         let pattern3 = new RegExp(/(^\d{5}$)|(^\d{5}-\d{4}$)/);
         let test3 = pattern3.test(this.state.ZipCode);
 
-        if( !test1 && !test2) {
-            console.log("First Name and Last name don't have digits check");
-            if( this.state.FirstName !== '' ) {
-                console.log(" First Name is not empty");
-                if( this.state.ZipCode === null || this.state.ZipCode === ''  ) {
-                    console.log("Empty Zipcode");
-                    this.sendSaveBasicInfo();
-                }
-                else {
-                    if( test3 ) {
-                        console.log("Zipcode Valid");
+        let pattern4 = new RegExp(/^\(?([0-9]{3})\)?[-.●]?([0-9]{3})[-.●]?([0-9]{4})$/);
+        let test4 = pattern4.test(this.state.phone);
+
+
+        if(test4){
+            if( !test1 && !test2) {
+                console.log("First Name and Last name don't have digits check");
+                if( this.state.FirstName !== '' ) {
+                    console.log(" First Name is not empty");
+                    if( this.state.ZipCode === null || this.state.ZipCode === ''  ) {
+                        console.log("Empty Zipcode");
                         this.sendSaveBasicInfo();
                     }
                     else {
-                        this.setState({
-                            error : 'Invalid Zipcode'
-                        })
+                        if( test3 ) {
+                            console.log("Zipcode Valid");
+                            this.sendSaveBasicInfo();
+                        }
+                        else {
+                            this.setState({
+                                error : 'Invalid Zipcode'
+                            })
+                        }
                     }
                 }
+                else {
+                    this.setState({
+                        error : 'First Name can\'t be empty'
+                    })
+                }
+    
+                // let url = envURL+'updateprofilebasicinfo';
+                // axios.post( url, profiledetails, { withCredentials : true} )
+                //     .then( (response) => {
+                //         console.log("Response from Db in Update Profile : ", response.data );
+                //         swal("Updated Successfully!", "", "success");
+                //     } )
             }
             else {
                 this.setState({
-                    error : 'First Name can\'t be empty'
+                    error : 'Please enter valid names'
                 })
             }
-
-            // let url = envURL+'updateprofilebasicinfo';
-            // axios.post( url, profiledetails, { withCredentials : true} )
-            //     .then( (response) => {
-            //         console.log("Response from Db in Update Profile : ", response.data );
-            //         swal("Updated Successfully!", "", "success");
-            //     } )
         }
         else {
             this.setState({
-                error : 'Please enter valid names'
+                error : 'Please enter valid contact number'
             })
         }
+        
     };
 
     sendSaveBasicInfo = () => {
         console.log("All test Passed in save Basic Info");
-
         let profiledetails = {
             id : localStorage.getItem('userid'),
             first_name : this.state.FirstName,
@@ -297,6 +308,7 @@ class AccountSettings extends Component {
 
         let pattern2 = new RegExp(/(^\d{5}$)|(^\d{5}-\d{4}$)/);
         let test2 = pattern2.test(this.state.cardZipCode);
+        const regex = /^\(?([0-9]{3})\)?[-.●]?([0-9]{3})[-.●]?([0-9]{4})$/;
 
         if( test1 ) {
             console.log("Test Passed");
@@ -559,7 +571,7 @@ class AccountSettings extends Component {
                         </div>
                         <div class="large-6 columns">
                           <label >State</label>
-                          <select class="form-control" onChange={this.handleChange} id="state_name" onChange = {this.handleChange} >
+                          <select class="form-control" value={this.state.state_name} onChange={this.handleChange} id="state_name" onChange = {this.handleChange} >
                                 <option value="AL">Alabama</option>
                                 <option value="AK">Alaska</option>
                                 <option value="AZ">Arizona</option>

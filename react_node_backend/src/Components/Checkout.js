@@ -222,31 +222,7 @@ LogAPI.logUserClicks(click);
           console.error(err);
         });
 
-    // } else {
-    //   this.props.history.push('/movies')
-    // }
 
-/////////////////////////////////////////////////////////////////////
-
-
-
-        // let getMultiplexById = envURL + 'getMultiplexById';
-        // axios.get(getMultiplexById)
-        //     .then(res => {
-        //             console.log('Fetching Multiplex Details');
-        //             console.log(res.data.data);
-        //             this.setState({
-        //                 multiplex_id : res.data.data.multiplex_id,
-        //                 multiplexName: res.data.data.name,
-        //                 multiplexAddress : res.data.data.address,
-        //                 multiplexCity : res.data.data.city,
-        //                 multiplexState : res.data.data.state,
-        //                 multiplexZipCode : res.data.data.zipcode
-        //             })
-        //     })
-        //     .catch(err => {
-        //         console.error(err);
-        //     });
     }
     getCardDetails(){
         
@@ -314,12 +290,7 @@ LogAPI.logUserClicks(click);
         })
         document.getElementById('lastName').innerHTML = ""
     }
-    // handleCvv(e){
-    //     e.preventDefault()
-    //     this.setState({
-    //         cvv : e.target.value
-    //     })
-    // }
+
     handleCardZipCode(e){
         e.preventDefault()
         this.setState({
@@ -338,7 +309,7 @@ LogAPI.logUserClicks(click);
         var discover =  /^6(?:011|5[0-9]{2})[0-9]{12}$/;
         var jcb = /^(?:2131|1800|35\d{3})\d{11}$/;
         const regex = /(^\d{5}$)|(^\d{5}-\d{4}$)/;
-        var card_number = e.target.value;
+        var card_number = e.target.value
         if (!(visa.test(this.state.cardNumber) || mastercard.test(this.state.cardNumber) || amex.test(this.state.cardNumber) || dinersclub.test(this.state.cardNumber) || discover.test(this.state.cardNumber) || jcb.test(this.state.cardNumber))){
             document.getElementById('cardNumber').innerHTML = "Enter Valid Card Number"
         }else if( this.state.expiryMonth === "0" ){
@@ -356,6 +327,7 @@ LogAPI.logUserClicks(click);
         else if( this.state.cardZipCode === null || !regex.test(String(this.state.cardZipCode).toLowerCase()) ){
             document.getElementById('zipcode').innerHTML = "Enter Valid ZipCode"
         }
+        
         else{
             
                         localStorage.setItem('a_tickets', this.state.a_tickets)
@@ -582,87 +554,6 @@ LogAPI.logUserClicks(click);
                                   </li>
                                 </ul>
                                
-                                {/* <h3 class="payment-subheader">Or Use Other Payment Method</h3>
-                                <ul class="payment">
-                                  <li class="applepayPayment js-payment-method applepay" data-payment-method="applepay">
-                                      <div class="applepayPaymentGhost"></div>
-                                      <div class="promo errorText remove" id="applepayError"></div>
-                                      <input type="radio" id="applepayPaymentRadioBtn" title="paymentType" value="applepay" name="ExpressWebCheckout$PaymentView$paymentType" class="paymentRadio radio" />
-                                      <label id="applepay"><span class="applepay"></span></label>
-                                      <a id="applepayTellMeMore">Tell Me More</a>
-                                      <div class="applepayMessage remove fieldContainer paymentMessage">If you are planning to use a gift card or promo code with your purchase, make sure to add them before you click the “Apple Pay” button below. After clicking the “Apple Pay” button, you will see the Apple payment sheet where you will finalize your order.</div>
-                                      <div class="paymentMessageText errorText remove"></div>
-                                  </li>
-                                  <li class="paypalonetouchPayment js-payment-method paypalonetouch" data-payment-method="paypalonetouch">
-                                      <div class="paypalonetouchPaymentGhost"></div>
-                                      <div class="promo errorText remove" id="paypalonetouchError"></div>
-                                      <input type="radio" id="paypalonetouchPaymentRadioBtn" title="paymentType" value="paypalonetouch" name="ExpressWebCheckout$PaymentView$paymentType" class="paymentRadio radio" />
-                                      <label id="paypalonetouch"><span class="paypalonetouch"></span></label>
-                                      <a id="paypalonetouchTellMeMore">Tell Me More</a>
-                                      <div class="paypalonetouchMessage remove fieldContainer paymentMessage">After clicking "Continue to Paypal" you will be directed to PayPal and will return to Fandango to finalize your purchase.</div>
-                                      <div class="paymentMessageText errorText remove"></div>
-                                  </li>
-                                  <li class="visaCheckoutPayment js-payment-method visacheckout" data-payment-method="visacheckout">
-                                      <div class="visaCheckoutPaymentGhost"></div>
-                                      <div class="promo errorText remove" id="visaCheckoutError"></div>
-                                      <input value="visacheckout" name="ExpressWebCheckout$PaymentView$paymentType" type="radio" id="visaCheckoutPaymentRadioBtn" title="paymentType" class="paymentRadio radio" />
-                                      <label id="visacheckout"><span class="visacheckout">Visa Checkout</span></label>
-                                      <a class="link v-learn" href="#" >Tell Me More</a>
-                                      <div class="visaCheckoutMessage remove fieldContainer paymentMessage">
-                                        After clicking the "Visa Checkout" button below, you will be directed to Visa Checkout and will return to Fandango to finalize your purchase.
-                                      </div>
-                                      <div class="paymentMessageText errorText remove"></div>
-                                  </li>
-                                  <li class="masterPassPayment js-payment-method masterpass" data-payment-method="masterpass">
-                                      <div class="masterPassPaymentGhost"></div>
-                                      <div class="promo errorText remove" id="masterPassError"></div>
-                                      <input value="masterPass" name="ExpressWebCheckout$PaymentView$paymentType" type="radio" id="masterPassPaymentRadioBtn" title="paymentType" class="paymentRadio radio" />
-                                      <label id="masterPass"><span class="masterPass">MasterPass</span></label>
-                                      <a class="link" href="javascript:customPopup('https://www.mastercard.com/mc_us/wallet/learnmore/en/US/','MPWindow','700','700');return false;" onclick="customPopup('https://www.mastercard.com/mc_us/wallet/learnmore/en/US/', 'MPWindow','700','700');return false;" >Tell Me More</a>
-                                      <div class="masterPassMessage remove fieldContainer paymentMessage">
-                                        After clicking the "Masterpass" button below, you will be directed to Masterpass and will return to Fandango to finalize your purchase.
-                                      </div>
-                                      <div class="paymentMessageText errorText remove"></div>
-                                  </li>
-                                  <li class="paymentLink actionContainer fandangoGift">
-                                      <div class="paymentLinkFandangoGiftGhost"></div>
-                                      <div class="cta ctaDropdown" id="fandangoGiftCard">Use Fandango Gift card</div>
-                                      <div class="fieldContainer fandangoGiftcard remove">
-                                        <div class="errorText" id="giftcardError"></div>
-                                        <p>Please enter your gift card number and PIN or claim code. <a href="http://tickets.fandango.com/GiftCardInfo.aspx" onclick="customPopup('http://tickets.fandango.com/GiftCardInfo.aspx','Fandango', 760,630);return false;">Need help?</a></p>
-                                        <div class="fieldControls fandangoGiftcard remove">
-                                            <div class="giftCardNumber fandangoGiftcard remove">
-                                              <label for="fandangoGiftCardNo" class="fandangoGiftcard remove">Card Number or Claim Code</label>
-                                              <input name="ExpressWebCheckout$PaymentView$fandangoGiftCardNo" type="text" id="fandangoGiftCardNo" class="fandangoGiftcard remove" />
-                                            </div>
-                                            <div class="giftCardPin fandangoGiftcard remove-block">
-                                              <label for="fandangoGiftCardPin" class="fandangoGiftcard remove" >PIN <span>(if available)</span></label>
-                                              <input name="ExpressWebCheckout$PaymentView$fandangoGiftCardPin" type="text" id="fandangoGiftCardPin" class="fandangoGiftcard remove" size="4" maxlength="4" />
-                                            </div>
-                                        </div>
-                                        <div class="fieldActions applySection fandangoGiftcard remove">
-                                            <button class="button small fandangoGiftcard remove" id="applyGift" onclick="javascript:return false;">Apply</button>
-                                            <span id="giftcardSpinner" class="spinner fandangoGiftcard remove"></span>
-                                        </div>
-                                      </div>
-                                  </li>
-                                  <li class="paymentLink actionContainer promotion">
-                                      <div class="paymentLinkPromoGhost"></div>
-                                      <div class="cta ctaDropdown" id="promoCode">Use Promo code</div>
-                                      <div class="fieldContainer promo remove">
-                                        <div class="promo errorText " id="promoError"></div>
-                                        <div class="fieldControls">
-                                            <input name="ExpressWebCheckout$PaymentView$promoCodeNo" type="text" id="promoCodeNo" class="promo remove" maxlength="20" /> 
-                                        </div>
-                                        <div class="fieldActions applySection promo remove">
-                                            <button class="button small promo remove" id="applyPromo" onclick="javascript:return false;">Apply</button> 
-                                            <span id="promoSpinner" class="spinner promo remove"></span>
-                                        </div>
-                                        <div class="notes " id="promoMsg"></div>
-                                        <input type="hidden" id="isnewuserclaimcodeapplied" value="False" />
-                                      </div>
-                                  </li>
-                                </ul> */}
                             </fieldset>
                           </div>
                           <div class="module-standard saveInformationPassword remove">

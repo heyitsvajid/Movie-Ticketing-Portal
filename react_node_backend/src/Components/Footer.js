@@ -41,10 +41,16 @@ class Footer extends Component {
 
   renderLatestMovies() {
     let eightMovies = [];
+    let new_movies = [];
     var movies = this.state.movieList;
+
+    for(i = 0; i < movies.length; i++){
+      new Date(movies[i].release_date) >= new Date() ? new_movies.push(movies[i]) : "";
+    }
+
     if(movies.length>0){
-      for(var i=0;i<this.state.movieList.length;i++){
-        movies[i] != undefined && new Date(movies[i].release_date) > Date.now() ? eightMovies.push(movies[i]) : ""
+      for(var i=0;i<8;i++){
+        new_movies[i] != undefined ? eightMovies.push(new_movies[i]) : eightMovies.push("Coming Soon")
       }  
     }
     let moviesNode = eightMovies.map((item, index) => {
@@ -66,7 +72,7 @@ class Footer extends Component {
         <li key={item == "Coming Soon" ? "" : item._id} class="media narrow footer-coming-soon--list-item">
           { movieAnchorTag}
           <div class="footer-coming-soon--info-block poster-thumb-size-s">
-            <a class="heading-style-1 movie-header footer-coming-soon--heading" href="#" data-movieID = {item._id} onClick = {this.showMovieDetailsPage.bind(this)}>{item.title}</a>
+            <a class="heading-style-1 movie-header footer-coming-soon--heading" href="#" data-movieID = {item._id} onClick = {item == "Coming Soon" ? "" : this.showMovieDetailsPage.bind(this)}>{item == "Coming Soon" ? "Coming Soon" : item.title}</a>
           </div>
         </li>
       )

@@ -140,14 +140,14 @@ class AllBillingDetails extends Component {
     }
 
     handleNextPaginationButton(e) {
-        const total_pages = this.state.searchedMovieList.length > 0 ? this.state.searchedMovieList.length/this.state.perPageRows : 0;
-        if(this.state.searchedMovieList != [] && this.state.currentPage != Math.ceil(total_pages)){
+        const total_pages = this.state.searchedBillingDetails.length > 0 ? this.state.searchedBillingDetails.length/this.state.perPageRows : 0;
+        if(this.state.searchedBillingDetails != [] && this.state.currentPage != Math.ceil(total_pages)){
           this.setState({currentPage: Number(this.state.currentPage + 1)})      
         }
       }
     
     handlePrevPaginationButton(e) {
-        if(this.state.searchedMovieList != [] && this.state.currentPage != 1){
+        if(this.state.searchedBillingDetails != [] && this.state.currentPage != 1){
             this.setState({currentPage: Number(this.state.currentPage - 1)})
         }
     }

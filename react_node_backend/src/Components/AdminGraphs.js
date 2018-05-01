@@ -22,7 +22,7 @@ class AdminGraphs extends Component {
             movieReviewGraph: [],
             userSessionAnalytics:[],
             movieClickAnalytics: [],
-            defaultGraph1State: ""
+            defaultGraph1State: "",
         }
         this.getMovieRevenuePerYear = this.getMovieRevenuePerYear.bind(this);
         this.populateSelectBoxForMovieRevenueYears = this.populateSelectBoxForMovieRevenueYears.bind(this);
@@ -70,7 +70,6 @@ class AdminGraphs extends Component {
                     }
 
                     console.log("FinalArray in movie ratings", finalArrayToShowInGraph);
-
                     this.setState({
                         movieList: res.data.data ? res.data.data : [],
                         movieReviewGraph: finalArrayToShowInGraph
@@ -213,7 +212,7 @@ class AdminGraphs extends Component {
     getUserClickDetails() {
         axios.get(envURL + 'getClicksPerPage', null, { withCredentials: true })
             .then((response) => {
-                console.log("User logging data", response.data);
+                console.log("User logging data", response.data)
                 this.setState({
                     userClickAnalytics: response.data
                 }, () => {
@@ -250,6 +249,18 @@ class AdminGraphs extends Component {
 
 
     render() {
+        var data = [];  
+        this.state.userClickAnalytics.forEach(element => {
+            data.push(element);
+        });
+
+        var data1 = [];
+        this.state.movieReviewGraph.forEach(element => {
+            if (element.movie_name == "BLUMHOUSE'S TRUTH OR DARE"){
+                element.movie_name = "TRUTH OR DARE"
+            }
+            data1.push(element);
+        })
         return (
             <div>
                 <div class="row">
@@ -383,8 +394,8 @@ class AdminGraphs extends Component {
                             </div>
                         </div>
                         
-                        <br/>                            
-                        <ComposedChart width={1300} height={250} data={this.state.userClickAnalytics}>
+                        <br/>
+                        <ComposedChart width={1300} height={250} data={data.reverse()}>
                             <XAxis dataKey="pageName" />
                             <YAxis />
 
@@ -400,8 +411,9 @@ class AdminGraphs extends Component {
                             <Legend />
                             <CartesianGrid stroke="#f5f5f5" />
                             <Area type="monotone" dataKey="count" fill="url(#colorUv3)" stroke="#8884d8" />
-                            {/*<Bar dataKey="coun" barSize={20} fill="#413ea0" />*/}
+                    
                         </ComposedChart>
+
                     </div>
                 </div>
                 <hr/>
@@ -501,7 +513,7 @@ class AdminGraphs extends Component {
                         </div>
                         
                         <br/>                            
-                        <AreaChart width={1300} height={250} data={ this.state.movieReviewGraph }
+                        <AreaChart width={1300} height={250} data={ data1 }
                            margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                             <defs>
                                 <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">

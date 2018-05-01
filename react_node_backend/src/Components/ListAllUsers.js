@@ -159,7 +159,7 @@ class ListAllUsers extends Component {
                                     address: ''
                                 })
                                 this.getAllUsers();
-                                swal( "Email Updated Successfully!", "", "success" );
+                                swal( "Profile Updated Successfully!", "", "success" );
                                 document.getElementById("user-update").style.display = "none";
                             })
                         }

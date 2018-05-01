@@ -5,6 +5,7 @@ import Header from './Header'
 import Footer from './Footer'
 import { envURL, reactURL } from '../config/environment';
 import swal from 'sweetalert2'
+
 var LogAPI = require('../utils/logging');
 
 class MovieDetails extends Component {
@@ -16,7 +17,8 @@ class MovieDetails extends Component {
       img:'',
       rating: 0,
       title: "",
-      review_content: ""
+      review_content: "",
+      isLoggedIn: false
     }
   }
   
@@ -35,7 +37,15 @@ LogAPI.logUserClicks(click);
   }
 
   fetchDataFromServer(){
-    
+
+    axios.get(envURL + 'isLoggedIn', {withCredentials: true})
+            .then((response) => {
+                console.log("After checking the session", response.data);
+                if(response.data.session === 'valid') {
+                    this.setState({isLoggedIn: true})
+                }
+            }
+        )
     let findMovieByIdAPI = envURL + 'findMovieById';
     //var movieId = localStorage.getItem('movieIdforDetails')
     var movieId = localStorage.getItem("movieID");
@@ -84,7 +94,8 @@ LogAPI.logUserClicks(click);
         rating: this.state.rating,
         review: this.state.review_content != "" ? this.state.review_content : "No Content Supplied!",
         title: this.state.title != "" ? this.state.title : "Untitled",
-        user_id: 12,
+        user_id: localStorage.userid,
+        //oca,
         user_name: localStorage.getItem('first_name')
     }
 
@@ -117,7 +128,7 @@ LogAPI.logUserClicks(click);
     const monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
     let day = new Date(this.state.movie.release_date).getDate();
-    let month_name = monthNames[new Date().getMonth()];
+    let month_name = monthNames[new Date().getMonth() + 1];
     let year = new Date(this.state.movie.release_date).getFullYear()
     const final_date = "" + month_name + " " + day + ", " + year;
     return final_date;
@@ -222,12 +233,15 @@ LogAPI.logUserClicks(click);
     
     }
   }
+
+
+  handleSessionChange(e){
+    this.props.history.push("/login")
+  }
+
+
   render() {
-    
-
-    
-
-    let movie_image, trailer_link, keywords_list = null;
+    let movie_image, trailer_link, keywords_list, review_link = null;
     if(this.state.movie.movie_logo != undefined){
       movie_image = <img class="movie-details__movie-img visual-thumb" src = {require('../images/' + this.state.movie.movie_logo)} alt="Blumhouse's Truth or Dare (2018) Movie Poster" />
       trailer_link = <a href = "https://www.youtube.com/embed/tgbNymZ7vqY"><img id="img-link" src={require('../images/' + this.state.movie.movie_logo)} alt="Truth or Dare: Trailer 1" itemprop="image" /></a>
@@ -241,6 +255,17 @@ LogAPI.logUserClicks(click);
           </li>
         )
     });
+
+    if(this.state.isLoggedIn){
+      review_link = <a data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo" class="fan-review__write-review-cta cta" href="https://www.fandango.com/blumhouses-truth-or-dare-2018_208538/writeuserreviews">
+      Tell Us What You Think</a>
+    }
+    else{
+      review_link =<a href="#" class="fan-review__write-review-cta cta" onClick={this.handleSessionChange.bind(this)}>
+      Tell Us What You Think</a>
+    }
+
+    
       
     }
     return (
@@ -294,9 +319,9 @@ LogAPI.logUserClicks(click);
                         </a>
                         <ul class="movie-details__detail">
                           <li>{'release_date' in this.state.movie?
-                          (new Date())>(new Date(this.state.movie.release_date))?'Released':'':'Coming Soon'
+                          (new Date())>=(new Date(this.state.movie.release_date))?'Released':'':'Coming Soon'
                         }
-                        Released</li>
+                        </li>
                           <li class="release-date movie-details__release-date">
                           {'release_date' in this.state.movie? this.getReleaseDate(this.state.movie.release_date) :''}
                           </li>
@@ -335,7 +360,7 @@ LogAPI.logUserClicks(click);
                               </p>
                           </div>
                           <span class="date-picker__location-text">Need Help?</span>
-                          <div class="contact-info" >Contact us on 123-456-7890 or email us at support@fanfdango.com</div>
+                          <div class="contact-info" >Contact us on +1-(213)-245-3398 or email us at support@fanfdango.com</div>
                         </div>
                     </div>
                     <div class="js-movie-showtimes__container mop__showtimes-container hide">
@@ -550,8 +575,7 @@ LogAPI.logUserClicks(click);
                         </div>
                         <div class="fan-reviews__decoration-bottom"></div>
                     </div>
-                    <a data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo" class="fan-review__write-review-cta cta" href="https://www.fandango.com/blumhouses-truth-or-dare-2018_208538/writeuserreviews">
-                    Tell Us What You Think</a>
+                    {review_link}
                   </section>
                   
                  

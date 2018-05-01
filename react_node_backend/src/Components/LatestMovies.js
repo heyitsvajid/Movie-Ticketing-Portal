@@ -47,10 +47,17 @@ class Layout extends Component {
 
   renderLatestMovies() {
     let eightMovies = [];
+    let new_movies = [];
+
     var movies = this.state.movieList;
+
+    for(i = 0; i < movies.length; i++){
+      new Date(movies[i].release_date) <= new Date() ? new_movies.push(movies[i]) : "";
+    }
+
     if(movies.length>0){
       for(var i=0;i<8;i++){
-        movies[i] != undefined && new Date(movies[i].release_date) ? eightMovies.push(movies[i]) : eightMovies.push("Coming Soon");
+        new_movies[i] != undefined ? eightMovies.push(new_movies[i]) : eightMovies.push("Coming Soon");
       }  
     }
     let moviesNode = eightMovies.map((item, index) => {

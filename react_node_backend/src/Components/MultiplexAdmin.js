@@ -244,7 +244,7 @@ class MultiplexAdmin extends Component {
                                     update: false
                                 })
                                 this.handleFindAllAdmins();
-                                swal( "Email Updated Successfully!", "", "success" );
+                                swal( "Profile Updated Successfully!", "", "success" );
                                 document.getElementById("password-div").style.display = "block";
                             })
                         }
