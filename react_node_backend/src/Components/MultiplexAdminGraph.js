@@ -89,7 +89,7 @@ class AdminGraphs extends Component {
                         </div>
                         
                         <br/>                            
-                        <BarChart width={1300} height={300} data={this.state.multiplexAdminGraphData}
+                        <BarChart width={1250} height={400} data={this.state.multiplexAdminGraphData}
                           margin={{top: 5, right: 30, left: 20, bottom: 5}}>
                             <CartesianGrid strokeDasharray="3 3"/>
                             <XAxis dataKey="name"/>

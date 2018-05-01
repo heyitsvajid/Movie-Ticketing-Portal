@@ -281,7 +281,7 @@ class AdminGraphs extends Component {
                             
                         </div>
                         <br/>                            
-                        <BarChart width={1300} height={300} data={this.state.movieRevenuePerSelectedYear}
+                        <BarChart width={1250} height={350} data={this.state.movieRevenuePerSelectedYear}
                           margin={{top: 5, right: 30, left: 20, bottom: 5}}>
                         <CartesianGrid strokeDasharray="3 3"/>
                         <XAxis dataKey="movie_name"/>
@@ -306,7 +306,7 @@ class AdminGraphs extends Component {
                     <div className="form-group col-md-12">
                         <div class="row">
                             <div className="form-group col-md-4 ">
-                                <h3 class="c-grey-900 mB-20">City Wise Revenue/Year($)</h3>
+                                <h3 class="c-grey-900 mB-20">Cities Revenue/Year($)</h3>
                             </div>
                             <div className="form-group col-md-2 ">
                                 <label class="dashboard-label center-head">Year</label>
@@ -319,7 +319,7 @@ class AdminGraphs extends Component {
                         </div>
                         
                         <br/>                            
-                        <BarChart width={1300} height={300} data={this.state.cityRevenuePerSelectedYear}
+                        <BarChart width={1250} height={350} data={this.state.cityRevenuePerSelectedYear}
                                 margin={{top: 5, right: 30, left: 20, bottom: 5}}>
                             <CartesianGrid strokeDasharray="3 3"/>
                             <XAxis dataKey="multiplex_city"/>
@@ -357,7 +357,7 @@ class AdminGraphs extends Component {
                         </div>
                         
                         <br/>                            
-                        <BarChart width={1300} height={300} data={this.state.lastMonthMultiplexRevenue}
+                        <BarChart width={1250} height={350} data={this.state.lastMonthMultiplexRevenue}
                           margin={{top: 5, right: 30, left: 20, bottom: 5}}>
                             <CartesianGrid strokeDasharray="3 3"/>
                             <XAxis dataKey="multiplex_name"/>
@@ -395,7 +395,7 @@ class AdminGraphs extends Component {
                         </div>
                         
                         <br/>
-                        <ComposedChart width={1300} height={250} data={data.reverse()}>
+                        <ComposedChart width={1250} height={350} data={data.reverse()}>
                             <XAxis dataKey="pageName" />
                             <YAxis />
 
@@ -433,7 +433,7 @@ class AdminGraphs extends Component {
                             </div>
                         </div>
                         <br/>             
-                        <RadarChart cx={650} cy={250} outerRadius={150} width={1300} height={500} data={this.state.leastPagesVisited}>
+                        <RadarChart cx={650} cy={250} outerRadius={150} width={1250} height={400} data={this.state.leastPagesVisited}>
                             <PolarGrid />
                             <PolarAngleAxis dataKey="pageName" />
                             <defs>
@@ -477,7 +477,7 @@ class AdminGraphs extends Component {
                             </div>
                         </div>
                         <br/>        
-                        <BarChart width={1300} height={300} data={this.state.movieClickAnalytics}
+                        <BarChart width={1250} height={350} data={this.state.movieClickAnalytics}
                           margin={{top: 5, right: 30, left: 20, bottom: 5}}>
                             <CartesianGrid strokeDasharray="3 3"/>
                             <defs>
@@ -513,7 +513,7 @@ class AdminGraphs extends Component {
                         </div>
                         
                         <br/>                            
-                        <AreaChart width={1300} height={250} data={ data1 }
+                        <AreaChart width={1250} height={350} data={ data1 }
                            margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                             <defs>
                                 <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">

@@ -245,7 +245,7 @@ class PurchaseHistory extends Component {
         </div>
         <div id="myModal" class="modal fade">
           <div class="modal-dialog purchase-modal">
-            <div class="modal-content">
+            <div class="modal-content content-width">
               <div class="modal-body">
                 <section >
                   <div id="tqpSection" class="showtime">

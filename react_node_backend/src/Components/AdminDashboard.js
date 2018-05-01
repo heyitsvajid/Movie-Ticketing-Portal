@@ -244,7 +244,7 @@ class AdminDashboard extends Component {
                                 <a class="sidebar-link" href="#" value={listUsers} onClick={this.handleLinkClick.bind(this)}>
                                     <span class="icon-holder">
                                         <i class="c-teal-500 ti-view-list-alt"></i> 
-                                        </span><span class="title">Show List Users</span>
+                                        </span><span class="title">Show Users List</span>
                                 </a>
                             </li> : ''}
 
@@ -384,7 +384,7 @@ class AdminDashboard extends Component {
     returnMultiplexBillings() {
         return (
             <div class="container-fluid">
-            <h3 class="data-header">Dashboard</h3>
+            <h3 class="data-header">All Multiplex Billings</h3>
             <br/>
             <div class="row">
                 <div class="col-md-12">
