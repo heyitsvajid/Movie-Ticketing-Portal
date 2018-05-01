@@ -60,6 +60,7 @@ class MultiplexForm extends Component {
                 title: 'File Upload',
                 text: 'Only PNG/JPG/JPEG images allowed',
             })
+            document.getElementById("file-upload").value = "";
         }
     }
 
