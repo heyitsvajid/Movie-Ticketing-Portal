@@ -4,16 +4,15 @@ import axios from 'axios';
 import { envURL, reactURL } from '../config/environment';
 import '../assets/css/style.css'
 import '../assets/css/admin.css'
-import swal from "sweetalert2";
+import swal from "sweetalert";
 import Pagination from './Pagination';
 
-class ShowMultiplexBillings extends Component {
+class AllBillingDetails extends Component {
 
     constructor() {
         super();
         this.state = {
             billing_details : [],
-            multiplex:{},
             searchedBillingDetails: [],
             adult_tickets : '',
             student_tickets : '',
@@ -24,17 +23,58 @@ class ShowMultiplexBillings extends Component {
             priceof_child_tickets : '',
             priceof_disabled_tickets : '',
             currentPage: 1, 
-            perPageRows: 20
+            perPageRows: 20,
+            allMultiplex : {},
+            movie_name: null,
+            movieDate: null,
+            movieTime: null,
+            isLoggedIn: false,
+            bills: null,
+            all_bills: null,
+            index: 0,
+            cardNumber: "00000",
+            cardExpiry: "00/00",
+            multiplexName: null,
+            multiplexAddress: null,
+            multiplexCity: null,
+            multiplexZipcode: null,
+            screenNumber: 0,
+            bill_no: null,
+            allMultiplex: {},
+            adult: 0,
+            child: 0,
+            student: 0,
+            disabled: 0,
+            adult_count: 0,
+            child_count: 0,
+            student_count: 0,
+            disabled_count: 0,
+            total: 0
         };
+        this.renderModal = this.renderModal.bind(this)
     }
 
     componentWillMount(){
-      debugger
         this.getAllBillingDetails();
+        this.getAllMultiplex()
     }
 
-    getAllBillingDetails(){
+    getAllMultiplex() {
+        let findAllMultiplex = envURL + 'findAllMultiplex';
+        axios.get(findAllMultiplex)
+          .then(res => {
+              console.log("All Multiplex Data")
+            console.log(res.data.data)
+            this.setState({
+              allMultiplex: res.data.data
+            })
+          })
+          .catch(err => {
+            console.error(err);
+          });
+      }
 
+    getAllBillingDetails(){        
         let findAllMultiplexAPI = envURL + 'findAllMultiplex';
         axios.get(findAllMultiplexAPI)
             .then(res => {
@@ -63,9 +103,7 @@ class ShowMultiplexBillings extends Component {
                                 if(element.multiplex_id==adminMultiplex._id){
                                     billsToShow.push(element)
                                 }
-                            });
-                            
-                
+                            }); 
                             this.setState({
                                 billing_details : billsToShow,
                                 searchedBillingDetails: billsToShow,
@@ -86,52 +124,103 @@ class ShowMultiplexBillings extends Component {
             .catch(err => {
                 console.error(err);
             });
-
-
     }
 
     handleDeleteBillingDetail = ( e ) => {
         console.log("Delete Clicked", e );
-        let id = { id : e };
-        let url = envURL + 'deletebillingdetail';
-        
-        axios.post( url, id, { withCredentials : true } )
-            .then( (response) => {
-                console.log("After Deleting Bill, Response ", response.data);
-                swal({
-                    type: 'success',
-                    title: 'Bill Detail Deleted Successfully',
-                    text: "",
-                });
-                this.getAllBillingDetails();
-            })
+
+
+        swal({
+            title: "Are you sure?",
+            text: "",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    let id = { id : e };
+                    let url = envURL + 'deletebillingdetail';
+                    axios.post( url, id, { withCredentials : true } )
+                        .then( (response) => {
+                            console.log("After Deleting Bill, Response ", response.data);
+                            swal({
+                                type: 'success',
+                                title: "Bill Detail Deleted Successfully",
+                                text: "",
+                                icon: "success",
+                                buttons: true,
+                            });
+                            this.getAllBillingDetails();
+                        }
+                    )
+                }
+            }
+        );
+
+
     };
 
-    handleDisplayOrder = (e) => {
-        let billdetailsarray = this.state.billing_details;
-        let id = e;
-        console.log("In Display Bill ", billdetailsarray);
-        console.log("Display BIlling Detail", e );
-        for( let i =0 ; i < billdetailsarray.length ; i++) {
-            if( billdetailsarray[i].id === id ) {
-                console.log("Found Billing Details", billdetailsarray[i] );
-                let showtime = new Date(billdetailsarray[i].show_time) ;
+
+
+
+    renderModal(e) {
+        e.preventDefault();
+        this.state.billing_details.forEach(bill => {
+    
+          if (Number(e.target.id) === bill.id) {
+    
+            this.state.allMultiplex.forEach(multiplex => {
+              multiplex.show_timings.forEach(showTime => {
+                if (showTime._id === bill.show_id) {
+                  this.setState({
+                    adult: showTime.price.adult,
+                    child: showTime.price.child,
+                    student: showTime.price.student,
+                    disabled: showTime.price.disabled
+                  })
+                }
+              });
+    
+            });
+    
+    
+    
+            console.log(bill.screen_number);
+            let getCardDetails = envURL + 'getCardDetails';
+            let getShowDetails = envURL + 'getShowDetails';
+            var cardTransactionNumber = { cardTransactionNumber: bill.transaction_card_id }
+            axios.post(getCardDetails, cardTransactionNumber)
+              .then(res => {
                 this.setState({
-                    adult_tickets : billdetailsarray[i].adult_tickets,
-                    student_tickets : billdetailsarray[i].student_tickets,
-                    child_tickets : billdetailsarray[i].child_tickets,
-                    disabled_tickets : billdetailsarray[i].disabled_tickets,
-                    movie_name : billdetailsarray[i].movie_name,
-                    multiplex_address : billdetailsarray[i].multiplex_address,
-                    amount : billdetailsarray[i].amount,
-                    time: showtime.getHours() +' : '+ showtime.getMinutes(),
-                    date: showtime.getDate()+' : '+parseInt(showtime.getMonth()+1)+' : '+showtime.getUTCFullYear()
-                }, () => {
-                    console.log(this.state);
-                } )
-            }
-        }
-    };
+                  movie_name: bill.movie_name,
+                  movieDate: bill.show_time.split(" ")[0] + " " + bill.show_time.split(" ")[1] + " " + bill.show_time.split(" ")[2] + " " + bill.show_time.split(" ")[3],
+                  movieTime: bill.show_time.split(" ")[4] + " " + bill.show_time.split(" ")[5],
+                  cardNumber: "***** " + res.data.results.billing_information[0].cardNumber.slice(res.data.results.billing_information[0].cardNumber.length - 4, res.data.results.billing_information[0].cardNumber.length),
+                  cardExpiry: res.data.results.billing_information[0].expiryMonth + "/" + res.data.results.billing_information[0].expiryYear,
+                  multiplexName: bill.multiplex_name,
+                  multiplexAddress: bill.multiplex_address,
+                  multiplexCity: bill.multiplex_city,
+                  multiplexZipcode: bill.multiplex_zipcode,
+                  screenNumber: bill.screen_number,
+                  bill_no: bill.id,
+                  adult_count: bill.adult_tickets,
+                  child_count: bill.child_tickets,
+                  student_count: bill.student_tickets,
+                  disabled_count: bill.disabled_tickets,
+                  total: bill.amount
+                })
+              })
+              .catch(err => {
+                console.error(err);
+              });
+          }
+        })
+    
+    
+        debugger
+      }
+
 
     handleSearchBar(e){
         var searched_array = [];
@@ -143,7 +232,7 @@ class ShowMultiplexBillings extends Component {
                 const multiplex_zipcode = "" + list_element.multiplex_zipcode + "";
                 if(list_element.user_email.match(strRegExPattern) || list_element.movie_name.match(strRegExPattern) || 
                 list_element.multiplex_name.match(strRegExPattern) || multiplex_zipcode.match(strRegExPattern)
-                || list_element.user_name.match(strRegExPattern) ){
+                || list_element.user_name.match(strRegExPattern) || this.checkDate(strRegExPattern, list_element.booking_date)){
                     searched_array.push(list_element);
                 }
               }
@@ -155,15 +244,25 @@ class ShowMultiplexBillings extends Component {
         }
     }
 
+    checkDate(regex, booking_date){
+        const monthNames = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"];
+        var date = new Date(booking_date);
+        var month_name = monthNames[date.getMonth()];
+        var year = date.getFullYear().toString();
+        if(year.match(regex) || month_name.match(regex)){ return true };
+        return false;
+    }
+
     handleNextPaginationButton(e) {
-        const total_pages = this.state.searchedMovieList.length > 0 ? this.state.searchedMovieList.length/this.state.perPageRows : 0;
-        if(this.state.searchedMovieList != [] && this.state.currentPage != Math.ceil(total_pages)){
+        const total_pages = this.state.searchedBillingDetails.length > 0 ? this.state.searchedBillingDetails.length/this.state.perPageRows : 0;
+        if(this.state.searchedBillingDetails != [] && this.state.currentPage != Math.ceil(total_pages)){
           this.setState({currentPage: Number(this.state.currentPage + 1)})      
         }
       }
     
     handlePrevPaginationButton(e) {
-        if(this.state.searchedMovieList != [] && this.state.currentPage != 1){
+        if(this.state.searchedBillingDetails != [] && this.state.currentPage != 1){
             this.setState({currentPage: Number(this.state.currentPage - 1)})
         }
     }
@@ -199,7 +298,8 @@ class ShowMultiplexBillings extends Component {
             return (
                 <tr>
                     <th scope="row"> {item.current_index} </th>
-                    <td> <a href="#myModal" data-toggle="modal" onClick={this.handleDisplayOrder.bind(this, item.id )} > { item.movie_name } </a>  </td>
+                    <td> <a href="#myModal" id={item.id} data-toggle="modal" onClick={this.renderModal}  > { item.movie_name } </a>  </td>
+                    <td> { item.user_name } </td>
                     <td> { item.multiplex_name } </td>
                     <td> { item.booking_date } </td>
                     <td> { number_of_tickets } </td>
@@ -233,6 +333,7 @@ class ShowMultiplexBillings extends Component {
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col"> Movie Name</th>
+                        <th scope="col"> User Name</th>
                         <th scope="col"> Multiplex Name</th>
                         <th scope="col"> Booking Date</th>
                         <th scope="col"> Number of Tickets</th>
@@ -255,7 +356,7 @@ class ShowMultiplexBillings extends Component {
                                             <div class="row">
                                                 <div class="col-xs-12 modal-invoice-header">
                                                     <div class="text-center">
-                                                        <h2 id="transaction-purchase-header">Invoice for purchase #33221</h2>
+                                                        <h2 id="transaction-purchase-header">Invoice for purchase #{this.state.bill_no}</h2>
                                                     </div>
                                                     <hr/>
                                                     <div class="row invoice-row">
@@ -264,23 +365,23 @@ class ShowMultiplexBillings extends Component {
                                                                 <div class="panel-heading box-heading">Movie and Screen</div>
                                                                 <div class="panel-body billing-body">
                                                                     <strong>Movie:  </strong>
-                                                                    { this.state.movie_name } <br/>
+                                                                    {this.state.movie_name}<br />
                                                                     <strong>Date:   </strong>
-                                                                    { this.state.date } <br/>
+                                                                    {this.state.movieDate}<br />
                                                                     <strong>Time:    </strong>
-                                                                    { this.state.time } <br/>
+                                                                    {this.state.movieTime}<br />
                                                                     <strong>Auditorium:   </strong>
-                                                                    Hard-Coded
+                                                                    {this.state.screenNumber}
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="col-xs-12 col-md-3 col-lg-3">
                                                             <div class="panel panel-default height">
-                                                                <div class="panel-heading box-heading">Payment Information Hard-Coded</div>
+                                                                <div class="panel-heading box-heading">Payment Information</div>
                                                                 <div class="panel-body billing-body">
-                                                                    <strong>Card Name:</strong> Visa<br/>
-                                                                    <strong>Card Number:</strong> ***** 332<br/>
-                                                                    <strong>Exp Date:</strong> 09/2020<br/>
+                                                                {/* <strong>Card Name:</strong> Visa<br/> */}
+                                                                <strong>Card Number:</strong> {this.state.cardNumber}<br />
+                                                                <strong>Exp Date:</strong> {this.state.cardExpiry}<br />
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -288,7 +389,9 @@ class ShowMultiplexBillings extends Component {
                                                             <div class="panel panel-default height">
                                                                 <div class="panel-heading box-heading">Multiplex Address</div>
                                                                 <div class="panel-body billing-body">
-                                                                    <p> { this.state.multiplex_address } </p> <br/>
+                                                                <strong>{this.state.multiplexName}</strong><br />
+                                                                {this.state.multiplexAddress}<br />
+                                                                {this.state.multiplexCity} <strong>{this.state.multiplexZipcode}</strong><br />
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -298,7 +401,7 @@ class ShowMultiplexBillings extends Component {
                                             <div class="row">
                                                 <div class="col-xs-12 modal-invoice-header">
                                                     <div class="text-center">
-                                                        <h2 id="transaction-purchase-header">Invoice for purchase #</h2>
+                                                        <h2 id="transaction-purchase-header">Invoice for purchase #{this.state.bill_no}</h2>
                                                     </div>
                                                     <hr/>
                                                 </div>
@@ -310,40 +413,50 @@ class ShowMultiplexBillings extends Component {
                                                             <h3 class="text-center summary-header"><strong>Order summary</strong></h3>
                                                         </div>
                                                         <div class="panel-body">
-                                                            <div class="table-responsive">
-                                                                <table class="table table-condensed">
-                                                                    <thead>
-                                                                    <tr>
-                                                                        <td><strong>Ticket Type</strong></td>
-                                                                        <td class="text-center"><strong>Quantity</strong></td>
-                                                                    </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                    <tr>
-                                                                        <td>Adult</td>
-                                                                        <td class="text-center"> { this.state.adult_tickets } </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td>Students</td>
-                                                                        <td class="text-center"> { this.state.student_tickets } </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td>Child</td>
-                                                                        <td class="text-center"> { this.state.child_tickets } </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td>Disabled</td>
-                                                                        <td class="text-center"> { this.state.child_tickets } </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td class="emptyrow"></td>
-                                                                        <td class="emptyrow"></td>
-                                                                        <td class="emptyrow text-center"><strong>Total</strong></td>
-                                                                        <td class="emptyrow text-right"> { this.state.amount } </td>
-                                                                    </tr>
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
+                                                        <div class="table-responsive">
+                                                            <table class="table table-condensed">
+                                                            <thead>
+                                                                <tr>
+                                                                <td><strong>Ticket Type</strong></td>
+                                                                <td class="text-center"><strong>Price</strong></td>
+                                                                <td class="text-center"><strong>Quantity</strong></td>
+                                                                <td class="text-right"><strong>Total</strong></td>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                <td>Adult</td>
+                                                                <td class="text-center">${(typeof this.state.adult !== "undefined" ? this.state.adult : 0).toFixed(2)}</td>
+                                                                <td class="text-center">{this.state.adult_count}</td>
+                                                                <td class="text-right">${((typeof this.state.adult_count !== "undefined" && typeof this.state.adult !== "undefined") ? ((this.state.adult_count) * (this.state.adult)) : 0).toFixed(2)}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                <td>Students</td>
+                                                                <td class="text-center">${(typeof this.state.student !== "undefined" ? this.state.student : 0).toFixed(2)}</td>
+                                                                <td class="text-center">{this.state.student_count}</td>
+                                                                <td class="text-right">${((typeof this.state.student_count !== "undefined" && typeof this.state.student !== "undefined") ? ((this.state.student_count) * (this.state.student)) : 0).toFixed(2)}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                <td>Child</td>
+                                                                <td class="text-center">${(typeof this.state.child !== "undefined" ? this.state.child : 0).toFixed(2)}</td>
+                                                                <td class="text-center">{this.state.child_count}</td>
+                                                                <td class="text-right">${((typeof this.state.child_count !== "undefined" && typeof this.state.child !== "undefined") ? ((this.state.child_count) * (this.state.child)) : 0).toFixed(2)}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                <td>Disabled</td>
+                                                                <td class="text-center">${(typeof this.state.disabled !== "undefined" ? this.state.disabled : 0).toFixed(2)}</td>
+                                                                <td class="text-center">{this.state.disabled_count}</td>
+                                                                <td class="text-right">${((typeof this.state.disabled_count !== "undefined" && typeof this.state.disabled !== "undefined") ? ((this.state.disabled_count) * (this.state.disabled)) : 0).toFixed(2)}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                <td class="emptyrow"></td>
+                                                                <td class="emptyrow"></td>
+                                                                <td class="emptyrow text-center"><strong>Total</strong></td>
+                                                                <td class="emptyrow text-right">${(this.state.total).toFixed(2)}</td>
+                                                                </tr>
+                                                            </tbody>
+                                                            </table>
+                                                        </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -365,4 +478,4 @@ class ShowMultiplexBillings extends Component {
     }
 }
 
-export default withRouter(ShowMultiplexBillings);
+export default withRouter(AllBillingDetails);
