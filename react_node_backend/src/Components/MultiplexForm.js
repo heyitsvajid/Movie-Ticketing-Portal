@@ -46,19 +46,19 @@ class MultiplexForm extends Component {
         if (!file) {
             return;
         }
-        if (file.type == 'image/png') {
+        if ( file.type === 'image/png' ||  file.type === 'image/jpg' || file.type === "image/jpeg" ) {
             reader.onloadend = () => {
                 this.setState({
                     file: file,
                 });
-            }
+            };
             reader.readAsDataURL(file)
         }
         else {
             swal({
                 type: 'error',
                 title: 'File Upload',
-                text: 'Only PNG images allowed',
+                text: 'Only PNG/JPG/JPEG images allowed',
             })
         }
     }
