@@ -346,8 +346,13 @@ LogAPI.logUserClicks(click);
         }
         
         else{
+
             
+    let conv_fee = Number((1.5)*( Number(this.state.a_tickets) + Number(this.state.c_tickets) + Number(this.state.da_tickets) + Number(this.state.s_tickets))).toFixed(2)    
+    let total =  (Number(this.state.adult_total_amount) + Number(this.state.child_total_amount) + Number(this.state.da_total_amount) + Number(this.state.student_total_amount)).toFixed(2)
+
                         localStorage.setItem('a_tickets', this.state.a_tickets)
+                        localStorage.setItem('tax',  conv_fee)
                         localStorage.setItem('adult_total_amount', this.state.adult_total_amount)
                         localStorage.setItem('s_tickets', this.state.s_tickets)
                         localStorage.setItem('student_total_amount', this.state.student_total_amount)
@@ -364,9 +369,6 @@ LogAPI.logUserClicks(click);
                                     nameOnCard : this.state.firstName + " " + this.state.lastName, 
                                     card_zipcode : this.state.cardZipCode
                                 }
-
-    let conv_fee = Number((1.5)*( Number(this.state.a_tickets) + Number(this.state.c_tickets) + Number(this.state.da_tickets) + Number(this.state.s_tickets))).toFixed(2)    
-    let total =  (Number(this.state.adult_total_amount) + Number(this.state.child_total_amount) + Number(this.state.da_total_amount) + Number(this.state.student_total_amount)).toFixed(2)
                         
         var billingInformation = {  user_email : localStorage.getItem('email'),
                                     user_name : localStorage.getItem('first_name'),

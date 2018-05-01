@@ -27,7 +27,8 @@ class TicketConfirmation extends Component {
       student_total_amount: 0,
       da_total_amount: 0,
       child_total_amount: 0,
-      total: 0
+      total: 0,
+      tax : 0
     };
   }
 
@@ -93,6 +94,7 @@ class TicketConfirmation extends Component {
       student_total_amount: localStorage.getItem("student_total_amount"),
       da_total_amount: localStorage.getItem("da_total_amount"),
       child_total_amount: localStorage.getItem("child_total_amount"),
+      tax :  Number(localStorage.getItem("tax")),
       total: Number(localStorage.getItem("adult_total_amount")) + Number(localStorage.getItem("student_total_amount")) + Number(localStorage.getItem("da_total_amount")) + Number(localStorage.getItem("child_total_amount"))
     }
       , () => {
@@ -104,6 +106,7 @@ class TicketConfirmation extends Component {
         localStorage.removeItem("student_total_amount")
         localStorage.removeItem("da_total_amount")
         localStorage.removeItem("child_total_amount")
+        localStorage.removeItem("tax")
       }
     )
   }
@@ -265,8 +268,14 @@ class TicketConfirmation extends Component {
                                       <tr>
                                         <td class="emptyrow"></td>
                                         <td class="emptyrow"></td>
+                                        <td class="emptyrow text-center"><strong>Convenience Fee</strong></td>
+                                        <td class="emptyrow text-right">${this.state.tax.toFixed(2)}</td>
+                                      </tr>
+                                      <tr>
+                                        <td class="emptyrow"></td>
+                                        <td class="emptyrow"></td>
                                         <td class="emptyrow text-center"><strong>Total</strong></td>
-                                        <td class="emptyrow text-right">${this.state.total.toFixed(2)}</td>
+                                        <td class="emptyrow text-right">${Number(Number(this.state.total.toFixed(2)) + Number(this.state.tax.toFixed(2)))}</td>
                                       </tr>
                                     </tbody>
                                   </table>
