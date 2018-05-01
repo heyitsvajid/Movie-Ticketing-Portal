@@ -4,6 +4,8 @@ import Index from './Index';
 import Header from './Header';
 import Footer from './Footer';
 import { envURL, reactURL } from '../config/environment';
+import swal from 'sweetalert2';
+
 var LogAPI = require('../utils/logging');
 
 
@@ -71,6 +73,14 @@ class Layout extends Component {
                     else {
                         this.props.history.push('/adminDashboard');
                     }
+                }
+                else{
+                    this.props.history.push('/login');
+                    swal({
+                        type: 'error',
+                        title: 'Login Required',
+                        text: 'Login to book ticket',
+                    })    
                 }
             })
     }
@@ -375,7 +385,7 @@ class Layout extends Component {
                                 <div class="js-spotlight-ad"></div>
                                 <label class="nearby-theaters__label">Filter Ratings</label>
                                 <select id="select-box" name="mpaa_rating"  value={this.state.mpaa_rating} onChange={this.handleChange.bind(this)} class="mb-5 nearby-theaters__select js-nearby-theaters">
-                                    <option value="#" disabled selected>MPAA Ratings</option>
+                                    <option value="#" selected>MPAA Ratings</option>
                                     <option value="G">General Audience</option>
                                                 <option value="PG">PG – Parental Guidance Suggested</option>
                                                 <option value="PG-13">PG-13 – Parents Strongly Cautioned</option>

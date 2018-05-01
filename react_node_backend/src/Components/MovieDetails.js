@@ -269,6 +269,7 @@ LogAPI.logUserClicks(click);
     
       
     }
+    debugger
     return (
     <div>
       <Header/>
@@ -319,8 +320,8 @@ LogAPI.logUserClicks(click);
                         {movie_image}
                         </a>
                         <ul class="movie-details__detail">
-                          <li>{'release_date' in this.state.movie?
-                          (new Date())>=(new Date(this.state.movie.release_date))?'Released':'':'Coming Soon'
+                          <li>{'release_date' in this.state.movie ?
+                          (new Date())>=(new Date(this.state.movie.release_date))?'Released':'Coming Soon':''
                         }
                         </li>
                           <li class="release-date movie-details__release-date">
