@@ -48,12 +48,23 @@ class MovieForm extends Component {
         if (!file) {
             return;
         }
+        // debugger;
+        if ( file.type === 'image/png' ||  file.type === 'image/jpg' || file.type === "image/jpeg" ) {
             reader.onloadend = () => {
                 this.setState({
                     file: file,
                 });
-            }
+            };
             reader.readAsDataURL(file)
+        }
+        else {
+            swal({
+                type: 'error',
+                title: 'File Upload',
+                text: 'Only PNG/JPG/JPEG images allowed',
+            })
+        }
+
 
     }
 
@@ -98,7 +109,7 @@ class MovieForm extends Component {
                 movie_keywords: this.state.movie_keywords,
                 movie_length: this.state.movie_length,
                 movie_definition: this.state.movie_definition,
-            }
+            };
 
             const formData = new FormData();
             formData.append('file', this.state.file);
