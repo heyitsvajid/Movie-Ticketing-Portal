@@ -308,58 +308,136 @@ class AccountSettings extends Component {
 
         let pattern2 = new RegExp(/(^\d{5}$)|(^\d{5}-\d{4}$)/);
         let test2 = pattern2.test(this.state.cardZipCode);
-        const regex = /^\(?([0-9]{3})\)?[-.●]?([0-9]{3})[-.●]?([0-9]{4})$/;
 
-        if( test1 ) {
-            console.log("Test Passed");
-            if( this.state.ExpirationMonth !== '' && this.state.ExpirationYear !== '' ) {
-                console.log("Regex For month and year passed");
-                if( test2 ) {
-                    console.log("All tests passed including Zipcode");
+        let visa = /^4[0-9]{12}(?:[0-9]{3})?$/;
+        let test3 = visa.test(this.state.CardNumber);
 
-                    let url = envURL + 'saveUserCardDetails';
-                    console.log("Save Button Clicked in Profile Save Card Info");
+        let mastercard = /^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$/;
+        let test4 = mastercard.test(this.state.CardNumber);
 
-                    let cardInformation  = {
-                        user_email :  this.state.email,
-                        cardNumber : this.state.CardNumber,
-                        expiryMonth : this.state.ExpirationMonth,
-                        expiryYear : this.state.ExpirationYear,
-                        nameOnCard : this.state.FirstName + " " + this.state.LastName,
-                        card_zipcode : this.state.cardZipCode
-                    };
+        let amex = /^3[47][0-9]{13}$/;
+        let test5 = amex.test(this.state.CardNumber);
 
-                    let payment_details = {
-                        card_details : cardInformation,
-                    };
-                    console.log(payment_details);
+        let dinersclub = /^3(?:0[0-5]|[68][0-9])[0-9]{11}$/;
+        let test6 = dinersclub.test(this.state.CardNumber);
 
-                    axios.post( url, payment_details, { withCredentials : true })
-                        .then((response) => {
-                            console.log("In Response Data of Save User details ", response.data )
-                            if( response.data.results.payment_successfull === true ) {
-                                swal('Card Details Saved', '' , 'success');
+        let discover =  /^6(?:011|5[0-9]{2})[0-9]{12}$/;
+        let test7 = discover.test(this.state.CardNumber);
+
+        let jcb = /^(?:2131|1800|35\d{3})\d{11}$/;
+        let test8 = jcb.test(this.state.CardNumber);
+
+        if(test1) {
+            console.log('16 Digit card number entered');
+            if( test3 || test4 || test5 || test6 || test7 || test8 ) {
+                console.log("Credit card number Test Passed");
+
+                if( this.state.ExpirationMonth !== '' && this.state.ExpirationYear !== '' ) {
+                    if( Number(this.state.ExpirationYear) === 2018 ) {
+                        console.log("Year selected 2018");
+                        console.log('Month selected :', this.state.ExpirationMonth );
+                        let date =new Date();
+                        if( Number(this.state.ExpirationMonth) < (date.getMonth() + 1) ) {
+                            console.log( "Invalid Month" );
+                            this.setState ({
+                                error : 'Card Expired'
+                            })
+                        }
+                        else {
+                            console.log("Regex For month and year passed");
+                            if( test2 ) {
+                                console.log("All tests passed including Zipcode");
+
+                                let url = envURL + 'saveUserCardDetails';
+                                console.log("Save Button Clicked in Profile Save Card Info");
+
+                                let cardInformation  = {
+                                    user_email :  this.state.email,
+                                    cardNumber : this.state.CardNumber,
+                                    expiryMonth : this.state.ExpirationMonth,
+                                    expiryYear : this.state.ExpirationYear,
+                                    nameOnCard : this.state.FirstName + " " + this.state.LastName,
+                                    card_zipcode : this.state.cardZipCode
+                                };
+
+                                let payment_details = {
+                                    card_details : cardInformation,
+                                };
+                                console.log(payment_details);
+
+                                axios.post( url, payment_details, { withCredentials : true })
+                                    .then((response) => {
+                                        console.log("In Response Data of Save User details ", response.data )
+                                        if( response.data.results.payment_successfull === true ) {
+                                            swal('Card Details Saved', '' , 'success');
+                                        }
+
+                                    })
                             }
+                            else {
+                                this.setState({
+                                    error : 'Please enter valid Zipcode'
+                                })
+                            }
+                        }
+                    }
+                    else {
+                        console.log(this.state.ExpirationYear);
+                        console.log("Year selected other that 2018");
+                        console.log("Regex For month and year passed");
+                        if( test2 ) {
+                            console.log("All tests passed including Zipcode");
 
-                        })
+                            let url = envURL + 'saveUserCardDetails';
+                            console.log("Save Button Clicked in Profile Save Card Info");
+
+                            let cardInformation  = {
+                                user_email :  this.state.email,
+                                cardNumber : this.state.CardNumber,
+                                expiryMonth : this.state.ExpirationMonth,
+                                expiryYear : this.state.ExpirationYear,
+                                nameOnCard : this.state.FirstName + " " + this.state.LastName,
+                                card_zipcode : this.state.cardZipCode
+                            };
+
+                            let payment_details = {
+                                card_details : cardInformation,
+                            };
+                            console.log(payment_details);
+
+                            axios.post( url, payment_details, { withCredentials : true })
+                                .then((response) => {
+                                    console.log("In Response Data of Save User details ", response.data )
+                                    if( response.data.results.payment_successfull === true ) {
+                                        swal('Card Details Saved', '' , 'success');
+                                    }
+
+                                })
+                        }
+                        else {
+                            this.setState({
+                                error : 'Please enter valid Zipcode'
+                            })
+                        }
+                    }
                 }
                 else {
                     this.setState({
-                        error : 'Please enter valid Zipcode'
+                        error : 'Please Select Expiration Month and Year'
                     })
                 }
             }
             else {
                 this.setState({
-                    error : 'Please Select Expiration Month and Year'
+                    error : 'Please enter valid card number'
                 })
-            }
-        }
+            }        }
         else {
             this.setState({
-                error : 'Please enter valid 16 Digit Card Number'
+                error : 'Please Enter 16 digit card number'
             })
         }
+
 
         // let url = envURL + 'saveUserCardDetails';
         // console.log("Save Button Clicked in Profile Save Card Info");
