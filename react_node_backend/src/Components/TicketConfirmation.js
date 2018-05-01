@@ -128,7 +128,7 @@ class TicketConfirmation extends Component {
             <div id="headerPurchase">
               <div class="commonContainer">
                 <div id="logo">
-                  <a href='http://www.fandango.com/' title='Click to go to Fandango homepage'>Fandango Home</a>
+                  <a href={reactURL} title='Click to go to Fandango homepage'>Fandango Home</a>
                 </div>
               </div>
             </div>

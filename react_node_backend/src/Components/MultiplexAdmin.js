@@ -371,13 +371,13 @@ class MultiplexAdmin extends Component {
                     update_id: e.target.id,
                     update: !this.state.update,
                     first_name: element.first_name,
-                    last_name: element.last_name,
+                    last_name: element.last_name == null ? "" : element.last_name,
                     email: element.email,
-                    city: element.city,
+                    city: element.city == null ? "" : element.city,
                     state_name: element.state,
-                    zipcode: element.zipcode,
-                    phone_number: element.phone_number,
-                    address: element.address
+                    zipcode: element.zipcode == null ? "" : element.zipcode,
+                    phone_number: element.phone_number == null ? "" : element.phone_number,
+                    address: element.address == null ? "" : element.address
                 })
                 return;
             }

@@ -350,7 +350,7 @@ class AllBillingDetails extends Component {
                         handlePageChange = {this.handlePageChange.bind(this)} pagination_list = {pagination_list}/>
                 <div id="myModal" class="modal fade">
                     <div class="modal-dialog purchase-modal">
-                        <div class="modal-content">
+                        <div class="modal-content content-width">
                             <div class="modal-body">
                                 <section >
                                     <div id="tqpSection" class="showtime">

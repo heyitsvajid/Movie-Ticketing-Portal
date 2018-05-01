@@ -983,7 +983,7 @@ form#dashboard-form {
 img.avatar.img-circle {
   margin-left: 36%;
   width: 25%;
-  height: 25%;
+  height: 180px !important;
 }
 
 select#mpaa_ratings {
@@ -1136,4 +1136,9 @@ li.fd-movie.show-box {
 
 .cancel-update{
   margin-left: 15% !important;
+}
+
+.content-width{
+  width: 107% !important;
+  margin-top: 26%;
 }
