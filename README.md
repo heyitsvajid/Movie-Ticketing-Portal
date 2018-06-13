@@ -8,6 +8,17 @@
 
 ## System Design
 
+## Built with the MERN stack 
+
+|MongoDB|Express|React|NodeJS|
+|--|--|--|--|
+|[![mdb](https://github.com/mongodb-js/leaf/blob/master/dist/mongodb-leaf_256x256.png?raw=true)](https://www.mongodb.com/)|[![mdb](https://camo.githubusercontent.com/fc61dcbdb7a6e49d3adecc12194b24ab20dfa25b/68747470733a2f2f692e636c6f756475702e636f6d2f7a6659366c4c376546612d3330303078333030302e706e67)](http://expressjs.com/de/)|[![mdb](https://cdn.auth0.com/blog/react-js/react.png)](https://facebook.github.io/react/)|[![mdb](https://camo.githubusercontent.com/9c24355bb3afbff914503b663ade7beb341079fa/68747470733a2f2f6e6f64656a732e6f72672f7374617469632f696d616765732f6c6f676f2d6c696768742e737667)](https://nodejs.org/en/)|
+|a free and open-source cross-platform document-oriented database program|Fast, unopinionated, minimalist web framework for node.|a JavaScript library for building user interfaces|a JavaScript runtime built on Chrome's V8 JavaScript engine|
+
+
+## System Architecture
+![Architecture](/Architecture.png)
+
 ### Technology stack
 
 ![](readme-src/2.png)
@@ -63,3 +74,31 @@
 	</tr>
 </tbody>
 </table>
+
+### Steps to run application:
+
+*	Download the kafka latest release and un-zip it.
+*	Go to kafka directory: cd kafka_2.11-1.1.0
+*	Start Zookeeper: bin/zookeeper-server-start.sh config/ zookeeper.properties
+*	Start Kafka :  bin/kafka-server-start.sh config/server.properties
+*	Create Topics : Lab2-Kagdi/kafka_topics
+* Go to Path : \react_node_backend
+* npm install
+* npm run start-dev
+
+> This will start ReactJS server on 3000 port and NodeJS server will start at 3001 port.
+
+* Go to Path : \ kafka_backend
+* npm install
+*	node server.js
+
+> This will start kafka_backend server.
+
+## 📝 Author
+[<img src="" align="right" height="100">](https://github.com/heyitsvajid)
+
+##### Vajid Kagdi <kbd> [Github](https://github.com/heyitsvajid) / [LinkedIn](https://www.linkedin.com/in/heyitsvajid) / [E-Mail](mailto:vajid9@gmail.com)</kbd>
+##### Jay Patel <kbd> [Github](https://github.com/heyitsvajid) / [LinkedIn](https://www.linkedin.com/in/heyitsvajid) / [E-Mail](mailto:vajid9@gmail.com)</kbd>
+##### Murtaza Manasawala <kbd> [Github](https://github.com/heyitsvajid) / [LinkedIn](https://www.linkedin.com/in/heyitsvajid) / [E-Mail](mailto:vajid9@gmail.com)</kbd>
+##### Venkatesh Devale <kbd> [Github](https://github.com/heyitsvajid) / [LinkedIn](https://www.linkedin.com/in/heyitsvajid) / [E-Mail](mailto:vajid9@gmail.com)</kbd>
+##### Pradnyesh Patil <kbd> [Github](https://github.com/heyitsvajid) / [LinkedIn](https://www.linkedin.com/in/heyitsvajid) / [E-Mail](mailto:vajid9@gmail.com)</kbd>
