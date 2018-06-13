@@ -81,7 +81,7 @@
 *	Go to kafka directory: cd kafka_2.11-1.1.0
 *	Start Zookeeper: bin/zookeeper-server-start.sh config/ zookeeper.properties
 *	Start Kafka :  bin/kafka-server-start.sh config/server.properties
-*	Create Topics : Lab2-Kagdi/kafka_topics
+*	Create Topics : /kafka_topics
 * Go to Path : \react_node_backend
 * npm install
 * npm run start-dev
@@ -95,10 +95,10 @@
 > This will start kafka_backend server.
 
 ## 📝 Author
-[<img src="" align="right" height="100">](https://github.com/heyitsvajid)
+[<img src="https://github.com/heyitsvajid/heyitsvajid.github.io/blob/master/img/profile.jpg" align="right" height="100">](https://github.com/heyitsvajid)
 
 ##### Vajid Kagdi <kbd> [Github](https://github.com/heyitsvajid) / [LinkedIn](https://www.linkedin.com/in/heyitsvajid) / [E-Mail](mailto:vajid9@gmail.com)</kbd>
-##### Jay Patel <kbd> [Github](https://github.com/heyitsvajid) / [LinkedIn](https://www.linkedin.com/in/heyitsvajid) / [E-Mail](mailto:vajid9@gmail.com)</kbd>
-##### Murtaza Manasawala <kbd> [Github](https://github.com/heyitsvajid) / [LinkedIn](https://www.linkedin.com/in/heyitsvajid) / [E-Mail](mailto:vajid9@gmail.com)</kbd>
-##### Venkatesh Devale <kbd> [Github](https://github.com/heyitsvajid) / [LinkedIn](https://www.linkedin.com/in/heyitsvajid) / [E-Mail](mailto:vajid9@gmail.com)</kbd>
-##### Pradnyesh Patil <kbd> [Github](https://github.com/heyitsvajid) / [LinkedIn](https://www.linkedin.com/in/heyitsvajid) / [E-Mail](mailto:vajid9@gmail.com)</kbd>
+##### Jay Patel <kbd> </kbd>
+##### Murtaza Manasawala <kbd> </kbd>
+##### Venkatesh Devale <kbd> </kbd>
+##### Pradnyesh Patil <kbd> </kbd>
