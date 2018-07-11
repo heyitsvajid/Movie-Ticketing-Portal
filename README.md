@@ -99,7 +99,7 @@
 [<img src="https://github.com/heyitsvajid/heyitsvajid.github.io/blob/master/img/profile.jpg" align="right" height="100">](https://github.com/heyitsvajid)
 
 ##### Vajid Kagdi <kbd> [Github](https://github.com/heyitsvajid) / [LinkedIn](https://www.linkedin.com/in/heyitsvajid) / [E-Mail](mailto:vajid9@gmail.com)</kbd>
-##### Jay Patel <kbd> </kbd>
+##### Jay Patel <kbd> [Github](https://github.com/pateljay134) / [LinkedIn](https://www.linkedin.com/in/pateljay134) / [E-Mail](mailto:pateljay134@gmail.com) </kbd>
 ##### Murtaza Manasawala <kbd> </kbd>
 ##### Venkatesh Devale <kbd> </kbd>
 ##### Pradnyesh Patil <kbd> </kbd>
