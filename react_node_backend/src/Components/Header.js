@@ -60,7 +60,6 @@ class Header extends Component {
       }else{
         localStorage.setItem('search',this.state.searchQuery)
         this.props.history.push('/movies');
-      
       }
  
       // var data = {
